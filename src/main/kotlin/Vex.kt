@@ -79,10 +79,6 @@ object Vex {
     }
 
     private fun processInput() {
-        if (Controller.jump.isFirstFrameSinceChanged) {
-            println("Jump changed")
-        }
-
         Controller.update()
         ControllerDebugger.update()
     }

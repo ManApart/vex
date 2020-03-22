@@ -1,7 +1,9 @@
 package input
 
+import Vex.window
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWGamepadState
+import org.lwjgl.glfw.GLFWKeyCallback
 
 
 object Controller {
@@ -17,31 +19,41 @@ object Controller {
         id?.let { glfwGetGamepadState(id, state) }
     }
 
-    //    val xAxis = Axis(gamePad, "X Axis", positiveButton = Button(Input.Keys.RIGHT), negativeButton = Button(Input.Keys.LEFT))
-//    val yAxis = Axis(gamePad, "Y Axis", true, positiveButton = Button(Input.Keys.UP), negativeButton = Button(Input.Keys.DOWN))
-//
-//    val xAim = Axis(gamePad, "X Rotation", positiveButton = Button(Input.Keys.D), negativeButton = Button(Input.Keys.A))
-//    val yAim = Axis(gamePad, "Y Rotation", true, positiveButton = Button(Input.Keys.W), negativeButton = Button(Input.Keys.S))
-//
-//    val grapple = Axis(gamePad, "Z Axis", ignorePositive = true, positiveButton =  Button(Input.Keys.SHIFT_LEFT))
-//    val ascend = Axis(gamePad, "Z Axis", ignoreNegative = true, positiveButton =  Button(Input.Keys.SHIFT_RIGHT))
-//
-    val jump = Button(listOf(GLFW_KEY_SPACE), state, listOf(GLFW_GAMEPAD_BUTTON_A))
-//    val dashLeft = Button(listOf(Input.Keys.Z), gamePad, listOf("Button 4"))
-//    val dashRight = Button(listOf(Input.Keys.X), gamePad, listOf("Button 5"))
+    val xAxis = Axis("X Axis", GLFW_GAMEPAD_AXIS_LEFT_X, positiveInputKey = GLFW_KEY_RIGHT, negativeInputKey = GLFW_KEY_LEFT)
+    val yAxis = Axis("Y Axis", GLFW_GAMEPAD_AXIS_LEFT_Y, positiveInputKey = GLFW_KEY_UP, negativeInputKey = GLFW_KEY_DOWN)
+    val xAim = Axis("X Aim", GLFW_GAMEPAD_AXIS_RIGHT_X, positiveInputKey = GLFW_KEY_D, negativeInputKey = GLFW_KEY_A)
+    val yAim = Axis("Y Aim", GLFW_GAMEPAD_AXIS_RIGHT_Y, positiveInputKey = GLFW_KEY_W, negativeInputKey = GLFW_KEY_S)
+    val grapple = Axis("Grapple", GLFW_GAMEPAD_AXIS_RIGHT_TRIGGER, shiftValues = true, positiveInputKey = GLFW_KEY_LEFT_SHIFT)
+    val ascend = Axis("Ascend", GLFW_GAMEPAD_AXIS_LEFT_TRIGGER, shiftValues = true, positiveInputKey = GLFW_KEY_RIGHT_SHIFT)
 
+    val jump = Button("Jump", listOf(GLFW_KEY_SPACE), listOf(GLFW_GAMEPAD_BUTTON_A))
+    val dashLeft = Button("Dash Left", listOf(GLFW_KEY_Z), listOf(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER))
+    val dashRight = Button("Dash Right", listOf(GLFW_KEY_X), listOf(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER))
+
+    val inputs = listOf(
+            xAxis,
+            yAxis,
+            xAim,
+            yAim,
+            grapple,
+            ascend,
+            jump,
+            dashLeft,
+            dashRight
+    )
+
+    init {
+        glfwSetKeyCallback(window, object : GLFWKeyCallback() {
+            override fun invoke(window: Long, key: Int, scancode: Int, action: Int, mods: Int) {
+                inputs.forEach { it.keyPressed(key, action) }
+            }
+        })
+
+    }
 
     fun update() {
         id?.let { glfwGetGamepadState(id, state) }
-//        xAxis.update()
-//        yAxis.update()
-//        yAim.update()
-//        yAim.update()
-//        grapple.update()
-//        ascend.update()
-        jump.update()
-//        dashLeft.update()
-//        dashRight.update()
+        inputs.forEach { it.update() }
     }
 
 }
