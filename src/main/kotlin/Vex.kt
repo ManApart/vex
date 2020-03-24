@@ -11,16 +11,14 @@ import org.lwjgl.system.MemoryUtil
 
 object Vex {
     var window: Long = 0
+    val map = Map()
+    private val mapRenderer = MapRenderer(map)
 
     fun run() {
         println("Hello LWJGL " + Version.getVersion() + "!")
         init()
         loop()
-
-        Callbacks.glfwFreeCallbacks(window)
-        GLFW.glfwDestroyWindow(window)
-        GLFW.glfwTerminate()
-        GLFW.glfwSetErrorCallback(null)?.free()
+        shutDown()
     }
 
     private fun init() {
@@ -32,23 +30,20 @@ object Vex {
         GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE)
         GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE)
 
-        window = GLFW.glfwCreateWindow(300, 300, "Hello World!", MemoryUtil.NULL, MemoryUtil.NULL)
+        window = GLFW.glfwCreateWindow(600, 600, "Vex", MemoryUtil.NULL, MemoryUtil.NULL)
         if (window == MemoryUtil.NULL) throw RuntimeException("Failed to create the GLFW window")
 
         GLFW.glfwSetKeyCallback(window) { window: Long, key: Int, scancode: Int, action: Int, mods: Int ->
             if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE) GLFW.glfwSetWindowShouldClose(window, true)
         }
         MemoryStack.stackPush().use { stack ->
-            val pWidth = stack.mallocInt(1) // int*
-            val pHeight = stack.mallocInt(1) // int*
+            val pWidth = stack.mallocInt(1)
+            val pHeight = stack.mallocInt(1)
 
-            // Get the window size passed to glfwCreateWindow
             GLFW.glfwGetWindowSize(window, pWidth, pHeight)
 
-            // Get the resolution of the primary monitor
             val vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor())
 
-            // Center the window
             GLFW.glfwSetWindowPos(
                     window,
                     (vidmode!!.width() - pWidth[0]) / 2,
@@ -57,30 +52,39 @@ object Vex {
         }
 
         GLFW.glfwMakeContextCurrent(window)
-        // Enable v-sync
         GLFW.glfwSwapInterval(1)
 
         GLFW.glfwShowWindow(window)
+
+        GL.createCapabilities()
+        GL11.glClearColor(0.0f, 0.0f, 1.0f, 0.0f)
+        mapRenderer.init()
     }
 
     private fun loop() {
-        GL.createCapabilities()
-
-        // Set the clear color
-        GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f)
-
         while (!GLFW.glfwWindowShouldClose(window)) {
-            GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
-            GLFW.glfwSwapBuffers(window)
-            GLFW.glfwPollEvents()
-
             processInput()
+            render()
         }
     }
 
+    private fun render() {
+        GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
+        mapRenderer.render()
+        GLFW.glfwSwapBuffers(window)
+    }
+
     private fun processInput() {
+        GLFW.glfwPollEvents()
         Controller.update()
         ControllerDebugger.update()
+    }
+
+    private fun shutDown() {
+        Callbacks.glfwFreeCallbacks(window)
+        GLFW.glfwDestroyWindow(window)
+        GLFW.glfwTerminate()
+        GLFW.glfwSetErrorCallback(null)?.free()
     }
 
 }
