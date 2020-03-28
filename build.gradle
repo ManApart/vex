@@ -58,6 +58,8 @@ dependencies {
     runtimeOnly "org.lwjgl:lwjgl-opengl::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-par::$lwjglNatives"
     runtimeOnly "org.lwjgl:lwjgl-stb::$lwjglNatives"
+    compile group: 'org.l33tlabs.twl', name: 'pngdecoder', version: '1.0'
+
 }
 compileKotlin {
     kotlinOptions {

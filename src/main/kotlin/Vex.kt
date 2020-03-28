@@ -8,11 +8,13 @@ import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
+import player.Player
 
 object Vex {
     var window: Long = 0
-    val map = Map()
-    private val mapRenderer = MapRenderer(map)
+    val map = LevelMap()
+    val player = Player(map)
+    private val mapRenderer = MapRenderer(map, player)
 
     fun run() {
         println("Hello LWJGL " + Version.getVersion() + "!")
