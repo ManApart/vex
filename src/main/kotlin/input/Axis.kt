@@ -24,9 +24,9 @@ class Axis(
         negativeButton.keyPressed(key, action)
     }
 
-    override fun update() {
-        positiveButton.update()
-        negativeButton.update()
+    override fun update(deltaTime: Float) {
+        positiveButton.update(deltaTime)
+        negativeButton.update(deltaTime)
 
         val rawValue = Controller.state.axes(axisIndex)
         value = when {

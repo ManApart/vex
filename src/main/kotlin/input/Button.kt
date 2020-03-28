@@ -9,7 +9,7 @@ class Button(val name: String, inputKeys: List<Int> = listOf(), private val inpu
 
     var isPressed = false
     var isFirstFrameSinceChanged = false
-    var stateTime = 0
+    var stateTime = 0f
 
     private val pressedKeys = inputKeys.map { Pair(it, false) }.toMap().toMutableMap()
 
@@ -22,16 +22,16 @@ class Button(val name: String, inputKeys: List<Int> = listOf(), private val inpu
     }
 
 
-    override fun update() {
+    override fun update(deltaTime: Float) {
         val pressed = isKeyboardPressed() || isGamepadPressed()
 
         if (pressed != isPressed) {
             isPressed = pressed
             isFirstFrameSinceChanged = true
-            stateTime = 0
+            stateTime = 0f
         } else {
             isFirstFrameSinceChanged = false
-            stateTime++
+            stateTime += deltaTime
         }
     }
 

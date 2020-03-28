@@ -17,7 +17,7 @@ class LevelMap {
         for (x in 0 until image.width) {
             val maxY = map[x].size
             for (y in 0 until image.height) {
-                map[x][y] = image.getRGB(x, y)
+                map[x][maxY - 1 - y] = image.getRGB(x, y)
             }
         }
         return map
@@ -41,7 +41,7 @@ class LevelMap {
     fun spawnPlayer(player: Player) {
         for (x in tiles.indices) {
             for (y in tiles[x].indices) {
-                if (tiles[x][y] == SPAWN){
+                if (tiles[x][y] == SPAWN) {
                     player.body.bounds.x = x.toFloat()
                     player.body.bounds.y = y.toFloat()
                 }

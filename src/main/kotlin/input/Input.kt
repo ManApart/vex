@@ -1,6 +1,6 @@
 package input
 
 interface Input {
-    fun update()
+    fun update(deltaTime: Float)
     fun keyPressed(key: Int, action: Int)
 }

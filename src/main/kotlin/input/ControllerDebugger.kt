@@ -15,7 +15,7 @@ object ControllerDebugger {
     fun update() {
 //        debugAllButtons()
 //        debugAllAxis()
-        debugRecognizedAxis()
+//        debugRecognizedAxis()
 //        debugPressedRecognizedButtons()
     }
 

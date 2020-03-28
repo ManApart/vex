@@ -25,6 +25,7 @@ class MapRenderer(private val map: LevelMap, private val player: Player) {
     fun render() {
         drawBackground()
         for (x in 0 until map.getSize()) {
+            val maxY = map.getSize()
             for (y in 0 until map.getSize()) {
                 if (map.getTile(x, y) == TILE) {
                     drawRectangle(Rectangle(x * tileSize, y * tileSize, tileSize, tileSize), tileColor)
@@ -70,13 +71,14 @@ class MapRenderer(private val map: LevelMap, private val player: Player) {
     }
 
     private fun drawRectangle(rect: Rectangle, color: Color) {
+        val y = (height - 1 - rect.y).toFloat()
         glBegin(GL_QUADS)
         glColor3f(color.red, color.blue, color.green)
-        glVertex2f(rect.x, rect.y)
-        glVertex2f(rect.x + rect.width, rect.y)
+        glVertex2f(rect.x, y)
+        glVertex2f(rect.x + rect.width, y)
 
-        glVertex2f(rect.x + rect.width, rect.y + rect.height)
-        glVertex2f(rect.x, rect.y + rect.height)
+        glVertex2f(rect.x + rect.width, y + rect.height)
+        glVertex2f(rect.x, y + rect.height)
         glEnd()
     }
 

@@ -51,9 +51,9 @@ object Controller {
 
     }
 
-    fun update() {
+    fun update(deltaTime: Float) {
         id?.let { glfwGetGamepadState(id, state) }
-        inputs.forEach { it.update() }
+        inputs.forEach { it.update(deltaTime) }
     }
 
 }

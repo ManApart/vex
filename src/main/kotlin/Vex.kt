@@ -68,9 +68,14 @@ object Vex {
     }
 
     private fun loop() {
+        var lastTime = System.currentTimeMillis()
         while (!GLFW.glfwWindowShouldClose(window)) {
-            processInput()
+            val newTime = System.currentTimeMillis()
+            val deltaTime = (newTime - lastTime)/1000f
+            lastTime = newTime
+            processInput(deltaTime)
             render()
+            player.update(deltaTime)
         }
     }
 
@@ -80,9 +85,9 @@ object Vex {
         GLFW.glfwSwapBuffers(window)
     }
 
-    private fun processInput() {
+    private fun processInput(deltaTime: Float) {
         GLFW.glfwPollEvents()
-        Controller.update()
+        Controller.update(deltaTime)
         ControllerDebugger.update()
     }
 
