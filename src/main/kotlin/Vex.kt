@@ -16,6 +16,10 @@ object Vex {
     val player = Player(map)
     private val mapRenderer = MapRenderer(map, player)
 
+    init {
+        map.spawnPlayer(player)
+    }
+
     fun run() {
         println("Hello LWJGL " + Version.getVersion() + "!")
         init()

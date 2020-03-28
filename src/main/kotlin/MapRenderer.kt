@@ -12,6 +12,7 @@ class MapRenderer(private val map: LevelMap, private val player: Player) {
     private val tileSize = 5f
 
     private val tileColor = Color(1f, 1f, 1f)
+    private val playerColor = Color(1f, 0f, 0f)
 
     fun init() {
         glMatrixMode(GL_PROJECTION)
@@ -21,18 +22,18 @@ class MapRenderer(private val map: LevelMap, private val player: Player) {
 
     }
 
-
     fun render() {
-//        drawTexture(0f, 0f, 20f, 10f)
         drawBackground()
         for (x in 0 until map.getSize()) {
             for (y in 0 until map.getSize()) {
                 if (map.getTile(x, y) == TILE) {
-//                    drawSquare(x * tileSize, y * tileSize, tileSize)
                     drawRectangle(Rectangle(x * tileSize, y * tileSize, tileSize, tileSize), tileColor)
+//                } else if (map.getTile(x, y) != SPAWN){
+//                    println("Got: " + map.getTile(x, y))
                 }
             }
         }
+        drawRectangle(player.body.bounds * tileSize, playerColor)
 
     }
 
@@ -66,17 +67,6 @@ class MapRenderer(private val map: LevelMap, private val player: Player) {
         glEnd()
 
 
-    }
-
-    private fun drawSquare(x: Float, y: Float, size: Float) {
-        glBegin(GL_QUADS)
-        glColor3d(0.0, 0.0, 0.0)
-        glVertex2f(x, y)
-        glVertex2f(x + size, y)
-
-        glVertex2f(x + size, y + size)
-        glVertex2f(x, y + size)
-        glEnd()
     }
 
     private fun drawRectangle(rect: Rectangle, color: Color) {
