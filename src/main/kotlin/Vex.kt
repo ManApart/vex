@@ -3,6 +3,7 @@ import input.ControllerDebugger
 import org.lwjgl.Version
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFW.glfwGetTime
 import org.lwjgl.glfw.GLFWErrorCallback
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
@@ -68,10 +69,10 @@ object Vex {
     }
 
     private fun loop() {
-        var lastTime = System.currentTimeMillis()
+        var lastTime = glfwGetTime()
         while (!GLFW.glfwWindowShouldClose(window)) {
-            val newTime = System.currentTimeMillis()
-            val deltaTime = (newTime - lastTime)/1000f
+            val newTime = glfwGetTime()
+            val deltaTime = (newTime - lastTime).toFloat()
             lastTime = newTime
             processInput(deltaTime)
             render()
