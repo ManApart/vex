@@ -6,6 +6,15 @@ Essentially forked / branched from [an older repo](https://github.com/ManApart/v
 
 
 
+Vex
+World map like mario
+Many exits per level
+Climb only tiles
+stamina?
+
+walljumping should not let you move for x amount of time.
+prevent wall jumping up a single wall
+
 
 
 onCollided(direction)

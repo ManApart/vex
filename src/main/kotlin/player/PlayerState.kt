@@ -7,7 +7,8 @@ enum class PlayerState {
     FALLING,
     DASHING,
     GRAPPLING,
-    WALL_RUNNING;
+    WALL_RUNNING,
+    WALL_JUMPING;
 
     fun isInState(vararg states: PlayerState): Boolean {
         return states.contains(this)

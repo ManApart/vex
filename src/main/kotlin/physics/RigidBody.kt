@@ -3,9 +3,9 @@ package physics
 import LevelMap
 import TILE
 import clamp
+import player.MAX_X_VEL
+import player.MAX_Y_VEL
 
-const val MAX_X_VEL = 6f
-const val MAX_Y_VEL = 10f
 const val DAMP = 0.90f
 
 class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, width: Float, height: Float) {
@@ -44,18 +44,13 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
         }
     }
 
-    fun update(deltaTime: Float, ignoreXMax: Boolean = false, ignoreYMax: Boolean = false) {
+    fun update(deltaTime: Float, maxX: Float = MAX_X_VEL, maxY: Float = MAX_Y_VEL) {
         acceleration.scale(deltaTime)
         vel.add(acceleration)
         if (acceleration.x == 0f) vel.x *= DAMP
 
-        if (!ignoreXMax) {
-            vel.x = clamp(vel.x, -MAX_X_VEL, MAX_X_VEL)
-        }
-
-        if (!ignoreYMax) {
-            vel.y = clamp(vel.y, -MAX_Y_VEL, MAX_Y_VEL)
-        }
+        vel.x = clamp(vel.x, -maxX, maxX)
+        vel.y = clamp(vel.y, -maxY, maxY)
 
         vel.scale(deltaTime)
         tryMove()

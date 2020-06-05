@@ -2,17 +2,20 @@ package player
 
 import LevelMap
 import input.Controller
-import physics.Direction
-import physics.RigidBody
-import physics.RigidBodyOwner
+import physics.*
 import kotlin.math.abs
 
+const val MAX_X_VEL = 6f
+const val MAX_X_AIR_VEL = 6f
+const val MAX_Y_VEL = 10f
 const val GRAVITY = 20.0f
 private const val ACCELERATION = 20f
 
 private const val JUMP_VELOCITY = 10f
-private const val WALL_JUMP_KICKOFF_VELOCITY = 6f
+private const val WALL_JUMP_KICKOFF_VELOCITY = 5f
+private const val WALL_JUMP_KICKOFF_VELOCITY_Y = 6f
 private const val JUMP_TIME = .1f
+private const val WALL_JUMP_TIME = .1f
 
 private const val DASH_VELOCITY = 20f
 private const val DASH_TIME = .15f
@@ -69,7 +72,7 @@ class Player(map: LevelMap) : RigidBodyOwner {
     fun update(deltaTime: Float) {
         processKeys()
         updateState(deltaTime)
-        body.update(deltaTime, ignoreXMax(), ignoreYMax())
+        body.update(deltaTime, xMaxVelocity(), yMaxVelocity())
 
 //        println("player.Player is: ${body.bounds.x}, ${body.bounds.y}")
     }
@@ -77,12 +80,15 @@ class Player(map: LevelMap) : RigidBodyOwner {
     private fun processKeys() {
         if (Controller.jump.isFirstPressed()) {
             if (state != PlayerState.JUMPING && body.isCollidedAny(Direction.DOWN, Direction.LEFT, Direction.RIGHT)) {
-                setPlayerState(PlayerState.JUMPING)
-                if (!isGrounded()) {
+                if (isGrounded()) {
+                    setPlayerState(PlayerState.JUMPING)
+                } else {
                     if (body.isCollided(Direction.RIGHT)) {
                         body.vel.x = -WALL_JUMP_KICKOFF_VELOCITY
+                        setPlayerState(PlayerState.WALL_JUMPING)
                     } else if (body.isCollided(Direction.LEFT)) {
                         body.vel.x = WALL_JUMP_KICKOFF_VELOCITY
+                        setPlayerState(PlayerState.WALL_JUMPING)
                     }
                 }
             } else if (hasDoubleJump) {
@@ -105,7 +111,7 @@ class Player(map: LevelMap) : RigidBodyOwner {
             }
         }
 
-        if (abs(Controller.xAxis.value) > 0) {
+        if (abs(Controller.xAxis.value) > 0 && state != PlayerState.WALL_JUMPING) {
             if (isGrounded() && state == PlayerState.IDLE) {
                 setPlayerState(PlayerState.RUNING)
             }
@@ -125,11 +131,25 @@ class Player(map: LevelMap) : RigidBodyOwner {
     private fun updateState(deltaTime: Float) {
         stateTime += deltaTime
 
-        if (state == PlayerState.JUMPING) {
+        if (state.isInState(PlayerState.JUMPING)) {
             if (stateTime < JUMP_TIME) {
                 body.vel.y = JUMP_VELOCITY
             } else {
                 setPlayerState(PlayerState.FALLING)
+            }
+        }
+        if (state.isInState(PlayerState.WALL_JUMPING)) {
+            if (stateTime < JUMP_TIME) {
+                body.vel.y = WALL_JUMP_KICKOFF_VELOCITY_Y
+            } else {
+                setPlayerState(PlayerState.FALLING)
+            }
+        }
+        if (state == PlayerState.WALL_JUMPING) {
+            if (stateTime >= WALL_JUMP_TIME) {
+                setPlayerState(PlayerState.FALLING)
+            } else {
+                body.vel.x = WALL_JUMP_KICKOFF_VELOCITY
             }
         }
 
@@ -153,12 +173,29 @@ class Player(map: LevelMap) : RigidBodyOwner {
 
     private fun isGrounded() = body.isCollided(Direction.DOWN)
 
-    private fun ignoreXMax(): Boolean {
-        return state.isInState(PlayerState.DASHING)
+    private fun xMaxVelocity(): Float {
+        return when {
+            state.isInState(PlayerState.DASHING) -> {
+                DASH_VELOCITY
+            }
+            state.isInState(PlayerState.JUMPING, PlayerState.FALLING) -> {
+                MAX_X_AIR_VEL
+            }
+            state.isInState(PlayerState.WALL_JUMPING) -> {
+                WALL_JUMP_KICKOFF_VELOCITY
+            }
+            else -> {
+                MAX_X_VEL
+            }
+        }
     }
 
-    private fun ignoreYMax(): Boolean {
-        return state.isInState(PlayerState.JUMPING)
+    private fun yMaxVelocity(): Float {
+        return if (state.isInState(PlayerState.JUMPING, PlayerState.WALL_JUMPING)) {
+            JUMP_VELOCITY
+        } else {
+            MAX_Y_VEL
+        }
     }
 
     private fun setStoppedState() {
