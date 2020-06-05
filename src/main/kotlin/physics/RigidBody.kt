@@ -124,7 +124,7 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
     }
 
     private fun collidesRight(current: Rectangle, vel: Vector): Boolean {
-        val farEdge = current.x + current.width + vel.x - .1f
+        val farEdge = current.farX + vel.x - .1f
         val destTile = map.getTile(farEdge, current.y + vel.y)
         return vel.x >= 0 && destTile == TILE
     }
