@@ -2,13 +2,15 @@ import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30.glGenerateMipmap
 import physics.Rectangle
+import physics.Vector
 import player.Player
 import java.nio.ByteBuffer
 
 
 class MapRenderer(private val map: LevelMap, private val player: Player) {
-    private val width = 300.0
-    private val height = 300.0
+    private val screenWidth = 300.0
+    private val screenHeight = 300.0
+
     private val tileSize = 5f
 
     private val tileColor = Color(1f, 1f, 1f)
@@ -17,24 +19,25 @@ class MapRenderer(private val map: LevelMap, private val player: Player) {
     fun init() {
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        glOrtho(0.0, width, height, 0.0, 1.0, -1.0)
+        glOrtho(0.0, screenWidth / 2, screenHeight / 2, 0.0, 1.0, -1.0)
         glMatrixMode(GL_MODELVIEW)
 
     }
 
     fun render() {
+        val offsetX = -player.body.bounds.x * tileSize + 70
+        val offsetY = -player.body.bounds.y * tileSize + 230
         drawBackground()
         for (x in 0 until map.getSize()) {
-            val maxY = map.getSize()
             for (y in 0 until map.getSize()) {
                 if (map.getTile(x, y) == TILE) {
-                    drawRectangle(Rectangle(x * tileSize, y * tileSize, tileSize, tileSize), tileColor)
+                    drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), tileColor)
 //                } else if (map.getTile(x, y) != SPAWN){
 //                    println("Got: " + map.getTile(x, y))
                 }
             }
         }
-        drawRectangle(player.body.bounds * tileSize, playerColor)
+        drawRectangle((player.body.bounds * tileSize) + Vector(offsetX, offsetY), playerColor)
 
     }
 
@@ -60,18 +63,18 @@ class MapRenderer(private val map: LevelMap, private val player: Player) {
         glBegin(GL_QUADS)
         glColor3d(.7, .8, .9)
         glVertex2d(0.0, 0.0)
-        glVertex2d(width, 0.0)
+        glVertex2d(screenWidth/2, 0.0)
 
         glColor3d(.5, .6, .9)
-        glVertex2d(width, height)
-        glVertex2d(0.0, height)
+        glVertex2d(screenWidth/2, screenHeight/2)
+        glVertex2d(0.0, screenHeight/2)
         glEnd()
 
 
     }
 
     private fun drawRectangle(rect: Rectangle, color: Color) {
-        val y = (height - 1 - rect.y).toFloat()
+        val y = (screenHeight - 1 - rect.y).toFloat()
         glBegin(GL_QUADS)
         glColor3f(color.red, color.blue, color.green)
         glVertex2f(rect.x, y)
