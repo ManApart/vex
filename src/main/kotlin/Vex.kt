@@ -13,7 +13,7 @@ import player.Player
 
 object Vex {
     var window: Long = 0
-    val map = LevelMap()
+    val map = LevelMapBuilder().createMap()
     val player = Player(map)
     private val mapRenderer = MapRenderer(map, player)
 

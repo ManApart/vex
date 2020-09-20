@@ -111,7 +111,7 @@ class Player(map: LevelMap) : RigidBodyOwner {
             }
         }
 
-        if (abs(Controller.xAxis.value) > 0 && state != PlayerState.WALL_JUMPING) {
+        if (abs(Controller.xAxis.value) > 0 && state != PlayerState.WALL_JUMPING && state != PlayerState.DASHING) {
             if (isGrounded() && state == PlayerState.IDLE) {
                 setPlayerState(PlayerState.RUNING)
             }

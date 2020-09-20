@@ -1,7 +1,6 @@
 package physics
 
 import LevelMap
-import TILE
 import clamp
 import player.MAX_X_VEL
 import player.MAX_Y_VEL
@@ -126,23 +125,23 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
     private fun collidesRight(current: Rectangle, vel: Vector): Boolean {
         val farEdge = current.farX + vel.x - .1f
         val destTile = map.getTile(farEdge, current.y + vel.y)
-        return vel.x >= 0 && destTile == TILE
+        return vel.x >= 0 && destTile.type == TileType.TILE
     }
 
     private fun collidesLeft(current: Rectangle, vel: Vector): Boolean {
         val destTile = map.getTile(current.x + vel.x + .1f, current.y + vel.y)
-        return vel.x <= 0 && destTile == TILE
+        return vel.x <= 0 && destTile.type == TileType.TILE
     }
 
     private fun collidesUp(current: Rectangle, vel: Vector): Boolean {
         val farEdge = current.y + vel.y + current.height - .1f
         val destTile = map.getTile(current.x + vel.x, farEdge)
-        return vel.y >= 0 && destTile == TILE
+        return vel.y >= 0 && destTile.type == TileType.TILE
     }
 
     private fun collidesDown(current: Rectangle, vel: Vector): Boolean {
         val destTile = map.getTile(current.x + vel.x, current.y + vel.y + .1f)
-        return vel.y >= 0 && destTile == TILE
+        return vel.y >= 0 && destTile.type == TileType.TILE
     }
 
 }
