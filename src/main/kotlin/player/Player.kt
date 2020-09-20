@@ -84,10 +84,10 @@ class Player(map: LevelMap) : RigidBodyOwner {
                     setPlayerState(PlayerState.JUMPING)
                 } else {
                     if (body.isCollided(Direction.RIGHT)) {
-                        body.vel.x = -WALL_JUMP_KICKOFF_VELOCITY
+                        body.velocity.x = -WALL_JUMP_KICKOFF_VELOCITY
                         setPlayerState(PlayerState.WALL_JUMPING)
                     } else if (body.isCollided(Direction.LEFT)) {
-                        body.vel.x = WALL_JUMP_KICKOFF_VELOCITY
+                        body.velocity.x = WALL_JUMP_KICKOFF_VELOCITY
                         setPlayerState(PlayerState.WALL_JUMPING)
                     }
                 }
@@ -133,14 +133,14 @@ class Player(map: LevelMap) : RigidBodyOwner {
 
         if (state.isInState(PlayerState.JUMPING)) {
             if (stateTime < JUMP_TIME) {
-                body.vel.y = JUMP_VELOCITY
+                body.velocity.y = JUMP_VELOCITY
             } else {
                 setPlayerState(PlayerState.FALLING)
             }
         }
         if (state.isInState(PlayerState.WALL_JUMPING)) {
             if (stateTime < JUMP_TIME) {
-                body.vel.y = WALL_JUMP_KICKOFF_VELOCITY_Y
+                body.velocity.y = WALL_JUMP_KICKOFF_VELOCITY_Y
             } else {
                 setPlayerState(PlayerState.FALLING)
             }
@@ -149,14 +149,14 @@ class Player(map: LevelMap) : RigidBodyOwner {
             if (stateTime >= WALL_JUMP_TIME) {
                 setPlayerState(PlayerState.FALLING)
             } else {
-                body.vel.x = WALL_JUMP_KICKOFF_VELOCITY
+                body.velocity.x = WALL_JUMP_KICKOFF_VELOCITY
             }
         }
 
         if (state == PlayerState.DASHING) {
             if (stateTime < DASH_TIME) {
-                body.vel.y = 0f
-                body.vel.x = dir.vector.x * DASH_VELOCITY
+                body.velocity.y = 0f
+                body.velocity.x = dir.vector.x * DASH_VELOCITY
             } else {
                 setStoppedState()
             }

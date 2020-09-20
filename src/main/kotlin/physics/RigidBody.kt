@@ -9,7 +9,7 @@ const val DAMP = 0.90f
 
 class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, width: Float, height: Float) {
     val acceleration = Vector()
-    val vel = Vector()
+    val velocity = Vector()
     val bounds = Rectangle(0f, 0f, width, height)
     private val collided = createCollidedMap()
 
@@ -45,15 +45,15 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
 
     fun update(deltaTime: Float, maxX: Float = MAX_X_VEL, maxY: Float = MAX_Y_VEL) {
         acceleration.scale(deltaTime)
-        vel.add(acceleration)
-        if (acceleration.x == 0f) vel.x *= DAMP
+        velocity.add(acceleration)
+        if (acceleration.x == 0f) velocity.x *= DAMP
 
-        vel.x = clamp(vel.x, -maxX, maxX)
-        vel.y = clamp(vel.y, -maxY, maxY)
+        velocity.x = clamp(velocity.x, -maxX, maxX)
+        velocity.y = clamp(velocity.y, -maxY, maxY)
 
-        vel.scale(deltaTime)
+        velocity.scale(deltaTime)
         tryMove()
-        vel.scale(1.0f / deltaTime)
+        velocity.scale(1.0f / deltaTime)
     }
 
     private fun tryMove() {
@@ -62,42 +62,42 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
     }
 
     private fun moveX() {
-        if (collides(bounds, Vector(vel.x, 0f))) {
-            if (vel.x > 0) {
-                val farEdge = (bounds.x + vel.x + bounds.width).toInt()
+        if (collides(bounds, Vector(velocity.x, 0f))) {
+            if (velocity.x > 0) {
+                val farEdge = (bounds.x + velocity.x + bounds.width).toInt()
                 bounds.x = farEdge - bounds.width
-                vel.x = 0f
+                velocity.x = 0f
                 setNowCollided(Direction.RIGHT)
                 checkDirectionNoLongerCollides(Direction.LEFT)
             } else {
-                bounds.x = (bounds.x + vel.x).toInt() + 1f
-                vel.x = 0f
+                bounds.x = (bounds.x + velocity.x).toInt() + 1f
+                velocity.x = 0f
                 setNowCollided(Direction.LEFT)
                 checkDirectionNoLongerCollides(Direction.RIGHT)
             }
         } else {
-            bounds.x += vel.x
+            bounds.x += velocity.x
             checkDirectionNoLongerCollides(Direction.LEFT)
             checkDirectionNoLongerCollides(Direction.RIGHT)
         }
     }
 
     private fun moveY() {
-        if (collides(bounds, Vector(0f, vel.y))) {
-            if (vel.y > 0) {
-                val farEdge = (bounds.y + vel.y + bounds.height).toInt()
+        if (collides(bounds, Vector(0f, velocity.y))) {
+            if (velocity.y > 0) {
+                val farEdge = (bounds.y + velocity.y + bounds.height).toInt()
                 bounds.y = farEdge - bounds.height
-                vel.y = 0f
+                velocity.y = 0f
                 setNowCollided(Direction.UP)
                 checkDirectionNoLongerCollides(Direction.DOWN)
             } else {
-                bounds.y = (bounds.y + vel.y).toInt() + 1f
-                vel.y = 0f
+                bounds.y = (bounds.y + velocity.y).toInt() + 1f
+                velocity.y = 0f
                 setNowCollided(Direction.DOWN)
                 checkDirectionNoLongerCollides(Direction.UP)
             }
         } else {
-            bounds.y += vel.y
+            bounds.y += velocity.y
             checkDirectionNoLongerCollides(Direction.UP)
             checkDirectionNoLongerCollides(Direction.DOWN)
         }
