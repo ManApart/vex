@@ -1,7 +1,11 @@
+import physics.Vector
 import player.Player
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
+/**
+ * (0,0) is the top of a map
+ */
 class LevelMap(private val tiles: Array<Array<Tile>>) {
 
     fun getTile(x: Float, y: Float): Tile {
@@ -26,4 +30,15 @@ class LevelMap(private val tiles: Array<Array<Tile>>) {
             player.body.bounds.y = spawnTile.y.toFloat()
         }
     }
+
+    fun getFirstCollision(ray: List<Vector>) : Tile? {
+        val vector = ray.firstOrNull { getTile(it.x, it.y).type == TileType.TILE }
+        return if (vector != null){
+            getTile(vector.x, vector.y)
+        } else {
+            null
+        }
+    }
+
+
 }

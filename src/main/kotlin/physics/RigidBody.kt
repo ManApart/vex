@@ -52,7 +52,7 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
         velocity.y = clamp(velocity.y, -maxY, maxY)
 
         velocity.scale(deltaTime)
-        tryMove()
+        tryMove2()
         velocity.scale(1.0f / deltaTime)
     }
 
@@ -101,6 +101,22 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
             checkDirectionNoLongerCollides(Direction.UP)
             checkDirectionNoLongerCollides(Direction.DOWN)
         }
+    }
+
+    private fun tryMove2() {
+        val ray = bounds.source().getRayTo(bounds.source() + velocity)
+        val collidedTile = map.getFirstCollision(ray)
+        if (collidedTile == null) {
+            bounds.x += velocity.x
+            bounds.y += velocity.y
+        } else {
+            if (velocity.x > 0f) {
+                bounds.x = collidedTile.x - bounds.width
+            } else {
+                bounds.x = collidedTile.x.toFloat() + 1cd gam
+            }
+        }
+
     }
 
     private fun checkDirectionNoLongerCollides(direction: Direction) {

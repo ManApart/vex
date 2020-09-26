@@ -1,3 +1,5 @@
+import physics.Vector
+
 /**
 0 = space
 1 = tile
@@ -16,4 +18,12 @@ fun createMap(plan: List<List<Int>>): LevelMap {
         }
     }
     return LevelMap(map)
+}
+
+fun horizontalPoints(size: Int, x: Int = 0, y: Int = 0): List<Vector> {
+    return (0 until size).map { Vector(x + it, y) }
+}
+
+fun verticalPoints(size: Int, x: Int = 0, y: Int = 0): List<Vector> {
+    return (0 until size).map { Vector(x, y + it) }
 }
