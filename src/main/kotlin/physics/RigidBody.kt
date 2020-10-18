@@ -137,8 +137,12 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
         if (velocity.x != 0f) {
             if (velocity.x > 0f) {
                 bounds.x = collidedTile.x - bounds.width
+                setNowCollided(Direction.RIGHT)
+                checkDirectionNoLongerCollides(Direction.LEFT)
             } else {
                 bounds.x = collidedTile.x.toFloat() + 1f
+                setNowCollided(Direction.LEFT)
+                checkDirectionNoLongerCollides(Direction.RIGHT)
             }
         }
     }
@@ -147,8 +151,12 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
         if (velocity.y != 0f) {
             if (velocity.y > 0f) {
                 bounds.y = collidedTile.y - bounds.height
+                setNowCollided(Direction.DOWN)
+                checkDirectionNoLongerCollides(Direction.UP)
             } else {
                 bounds.y = collidedTile.y.toFloat() + 1f
+                setNowCollided(Direction.UP)
+                checkDirectionNoLongerCollides(Direction.DOWN)
             }
         }
     }

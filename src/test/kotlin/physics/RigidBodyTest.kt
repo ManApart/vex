@@ -1,8 +1,7 @@
 package physics
 
 import createMap
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
+import org.junit.Assert.*
 import org.junit.Test
 
 class RigidBodyTest {
@@ -63,6 +62,8 @@ class RigidBodyTest {
         assertEquals(0f, body.bounds.x)
         assertEquals(2f, body.bounds.y)
 
+        assertTrue(body.isCollidedAny(Direction.RIGHT))
+        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.DOWN, Direction.UP))
     }
 
     @Test
@@ -81,6 +82,8 @@ class RigidBodyTest {
         assertEquals(2f, body.bounds.x)
         assertEquals(1f, body.bounds.y)
 
+        assertTrue(body.isCollidedAny(Direction.RIGHT))
+        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.DOWN, Direction.UP))
     }
 
     @Test
@@ -98,6 +101,9 @@ class RigidBodyTest {
 
         assertEquals(2f, body.bounds.x)
         assertEquals(2f, body.bounds.y)
+
+        assertTrue(body.isCollidedAny(Direction.LEFT))
+        assertFalse(body.isCollidedAny(Direction.RIGHT, Direction.DOWN, Direction.UP))
     }
 
     @Test
@@ -114,6 +120,9 @@ class RigidBodyTest {
 
         assertEquals(0f, body.bounds.x)
         assertEquals(2f, body.bounds.y)
+
+        assertTrue(body.isCollidedAny(Direction.DOWN))
+        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.RIGHT, Direction.UP))
     }
 
     @Test
@@ -130,6 +139,9 @@ class RigidBodyTest {
 
         assertEquals(3f, body.bounds.x)
         assertEquals(2f, body.bounds.y)
+
+        assertTrue(body.isCollidedAny(Direction.UP))
+        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.RIGHT, Direction.DOWN))
     }
 
     @Test
@@ -231,7 +243,5 @@ class RigidBodyTest {
 //        assertEquals(0f, body.bounds.x)
 //        assertEquals(0f, body.bounds.y)
 //    }
-
-    //test proper collides with things are set
 
 }
