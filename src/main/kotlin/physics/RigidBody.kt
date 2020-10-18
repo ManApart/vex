@@ -1,6 +1,7 @@
 package physics
 
 import LevelMap
+import Tile
 import clamp
 import player.MAX_X_VEL
 import player.MAX_Y_VEL
@@ -109,24 +110,49 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
         if (collidedTile == null) {
             bounds.x += velocity.x
             bounds.y += velocity.y
-        } else {
-            if (velocity.x != 0f) {
-                if (velocity.x > 0f) {
-                    bounds.x = collidedTile.x - bounds.width
+        } else if (velocity.x != 0f && velocity.y != 0f) {
+            val xRay = bounds.source().getRayTo(bounds.source() + Vector(velocity.x, 0f))
+            val collidedXTile = map.getFirstCollision(xRay)
+
+            if (collidedXTile == null) {
+                bounds.x += velocity.x
+            } else {
+                makeXAdjacentTo(collidedXTile)
+
+                val yRay = bounds.source().getRayTo(bounds.source() + Vector(0f, velocity.y))
+                val collidedYTile = map.getFirstCollision(yRay)
+                if (collidedYTile == null){
+                    bounds.y += velocity.y
                 } else {
-                    bounds.x = collidedTile.x.toFloat() + 1f
+                    makeYAdjacentTo(collidedYTile)
                 }
             }
-            if (velocity.y != 0f) {
-                if (velocity.y > 0f) {
-                    bounds.y = collidedTile.y - bounds.height
-                } else {
-                    bounds.y = collidedTile.y.toFloat() + 1f
-                }
+        } else {
+            makeXAdjacentTo(collidedTile)
+            makeYAdjacentTo(collidedTile)
+        }
+    }
+
+    private fun makeXAdjacentTo(collidedTile: Tile) {
+        if (velocity.x != 0f) {
+            if (velocity.x > 0f) {
+                bounds.x = collidedTile.x - bounds.width
+            } else {
+                bounds.x = collidedTile.x.toFloat() + 1f
             }
         }
-
     }
+
+    private fun makeYAdjacentTo(collidedTile: Tile) {
+        if (velocity.y != 0f) {
+            if (velocity.y > 0f) {
+                bounds.y = collidedTile.y - bounds.height
+            } else {
+                bounds.y = collidedTile.y.toFloat() + 1f
+            }
+        }
+    }
+
 
     private fun checkDirectionNoLongerCollides(direction: Direction) {
         if (!collides(direction, bounds, direction.vector * .2f)) {
