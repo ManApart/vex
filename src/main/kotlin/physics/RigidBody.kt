@@ -113,7 +113,7 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
             if (velocity.x > 0f) {
                 bounds.x = collidedTile.x - bounds.width
             } else {
-                bounds.x = collidedTile.x.toFloat() + 1cd gam
+                bounds.x = collidedTile.x.toFloat() + 1f
             }
         }
 
