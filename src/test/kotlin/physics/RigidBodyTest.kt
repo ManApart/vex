@@ -98,7 +98,38 @@ class RigidBodyTest {
 
         assertEquals(2f, body.bounds.x)
         assertEquals(2f, body.bounds.y)
+    }
 
+    @Test
+    fun stopsInFrontOfCollisionDown(){
+        val owner = RigidBodyStubbedOwner()
+        val body = RigidBody(map, owner, 1f, 1f)
+        body.bounds.x = 0f
+        body.bounds.y = 0f
+
+        //move from 0,0 to 0,3
+        body.velocity.y = 3f
+
+        body.update(1f)
+
+        assertEquals(0f, body.bounds.x)
+        assertEquals(2f, body.bounds.y)
+    }
+
+    @Test
+    fun stopsInFrontOfCollisionUp(){
+        val owner = RigidBodyStubbedOwner()
+        val body = RigidBody(map, owner, 1f, 1f)
+        body.bounds.x = 3f
+        body.bounds.y = 2f
+
+        //move from 3,2 to 3,0
+        body.velocity.y = -3f
+
+        body.update(1f)
+
+        assertEquals(3f, body.bounds.x)
+        assertEquals(2f, body.bounds.y)
     }
 
     //stops in front, different angles

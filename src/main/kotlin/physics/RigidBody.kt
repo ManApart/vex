@@ -110,10 +110,19 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
             bounds.x += velocity.x
             bounds.y += velocity.y
         } else {
-            if (velocity.x > 0f) {
-                bounds.x = collidedTile.x - bounds.width
-            } else {
-                bounds.x = collidedTile.x.toFloat() + 1f
+            if (velocity.x != 0f) {
+                if (velocity.x > 0f) {
+                    bounds.x = collidedTile.x - bounds.width
+                } else {
+                    bounds.x = collidedTile.x.toFloat() + 1f
+                }
+            }
+            if (velocity.y != 0f) {
+                if (velocity.y > 0f) {
+                    bounds.y = collidedTile.y - bounds.height
+                } else {
+                    bounds.y = collidedTile.y.toFloat() + 1f
+                }
             }
         }
 
