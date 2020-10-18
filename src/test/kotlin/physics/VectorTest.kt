@@ -53,6 +53,9 @@ class VectorTest {
 
         assertEquals(listOf(Vector(0, 0)), source.getRayTo(Vector(0f, 0.2f)))
 
+        //Diagonal
+        assertEquals(listOf(Vector(0, 0), Vector(1, 1), Vector(2, 2)), source.getRayTo(Vector(2f, 2f)))
+
     }
 
 }

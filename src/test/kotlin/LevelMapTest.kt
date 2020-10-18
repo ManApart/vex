@@ -31,5 +31,17 @@ class LevelMapTest {
         assertEquals(map.getTile(1,1), map.getFirstCollision(ray))
     }
 
+//    @Test
+//    fun collidesWithCorner(){
+//        val cornerMap = createMap(listOf(
+//                listOf(0,1),
+//                listOf(1,0)
+//        ))
+//
+//        val ray = listOf(Vector(0, 0), Vector(1, 1))
+//
+//        //What is expected behavior for this?
+//        assertEquals(cornerMap.getTile(1,1), cornerMap.getFirstCollision(ray))
+//    }
 
 }

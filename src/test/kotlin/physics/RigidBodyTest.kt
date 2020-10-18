@@ -159,17 +159,20 @@ class RigidBodyTest {
 
     @Test
     fun stopsInFrontOfCollisionDiagonalYSecond(){
+        val map = createMap(listOf(
+                listOf(0,1,0),
+                listOf(0,1,1),
+                listOf(1,1,1)
+        ))
         val owner = RigidBodyStubbedOwner()
         val body = RigidBody(map, owner, 1f, 1f)
-        body.bounds.x = 2f
-        body.bounds.y = 1f
+        body.bounds.x = 0f
+        body.bounds.y = 0f
 
-        //try move from 2,1 to 3,2
+        //try move from 0,0 to 1,1
         /*
-        0,0,0,0
-        0,0,S,1
-        0,1,E,G
-        1,1,1,1
+        S,1,0
+        E,1G,1
         */
 
         body.acceleration.x = -1f
@@ -178,8 +181,8 @@ class RigidBodyTest {
 
         body.update(1f)
 
-        assertEquals(2f, body.bounds.x)
-        assertEquals(2f, body.bounds.y)
+        assertEquals(0f, body.bounds.x)
+        assertEquals(1f, body.bounds.y)
     }
 
     @Test
@@ -205,6 +208,29 @@ class RigidBodyTest {
         assertEquals(0f, body.bounds.x)
         assertEquals(2f, body.bounds.y)
     }
+//
+//    @Test
+//    fun stopsInFrontOfCollisionDiagonalCorner(){
+//        val map = createMap(listOf(
+//                listOf(0,1),
+//                listOf(1,0)
+//        ))
+//
+//        val owner = RigidBodyStubbedOwner()
+//        val body = RigidBody(map, owner, 1f, 1f)
+//        body.bounds.x = 0f
+//        body.bounds.y = 2f
+//
+//        //try move from 0,0 to 1,1
+//        body.acceleration.x = -1f
+//        body.velocity.x = 2f
+//        body.velocity.y = 1f
+//
+//        body.update(1f)
+//
+//        assertEquals(0f, body.bounds.x)
+//        assertEquals(0f, body.bounds.y)
+//    }
 
     //test proper collides with things are set
 
