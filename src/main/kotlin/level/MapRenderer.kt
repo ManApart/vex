@@ -1,3 +1,6 @@
+package level
+
+import Color
 import de.matthiasmann.twl.utils.PNGDecoder
 import org.lwjgl.opengl.GL11.*
 import org.lwjgl.opengl.GL30.glGenerateMipmap

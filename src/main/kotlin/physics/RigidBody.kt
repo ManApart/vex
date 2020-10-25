@@ -1,8 +1,9 @@
 package physics
 
-import LevelMap
-import Tile
+import level.LevelMap
+import level.Tile
 import clamp
+import level.TileType
 import player.MAX_X_VEL
 import player.MAX_Y_VEL
 

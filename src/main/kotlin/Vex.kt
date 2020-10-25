@@ -1,5 +1,4 @@
-import input.Controller
-import input.ControllerDebugger
+import level.LevelManager
 import org.lwjgl.Version
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW
@@ -9,21 +8,16 @@ import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
-import player.Player
 
 object Vex {
     var window: Long = 0
-    val map = LevelMapBuilder().createMap()
-    val player = Player(map)
-    private val mapRenderer = MapRenderer(map, player)
-
-    init {
-        map.spawnPlayer(player)
-    }
+    private val levelManager = LevelManager()
+    private var gameMode = levelManager
 
     fun run() {
         println("Hello LWJGL " + Version.getVersion() + "!")
         init()
+
         loop()
         shutDown()
     }
@@ -65,7 +59,8 @@ object Vex {
 
         GL.createCapabilities()
         GL11.glClearColor(0.0f, 0.0f, 1.0f, 0.0f)
-        mapRenderer.init()
+
+        levelManager.init()
     }
 
     private fun loop() {
@@ -76,20 +71,19 @@ object Vex {
             lastTime = newTime
             processInput(deltaTime)
             render()
-            player.update(deltaTime)
+            gameMode.afterRender(deltaTime)
         }
     }
 
     private fun render() {
         GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
-        mapRenderer.render()
+        gameMode.render()
         GLFW.glfwSwapBuffers(window)
     }
 
     private fun processInput(deltaTime: Float) {
         GLFW.glfwPollEvents()
-        Controller.update(deltaTime)
-        ControllerDebugger.update()
+        gameMode.processInput(deltaTime)
     }
 
     private fun shutDown() {

@@ -1,7 +1,7 @@
+package level
+
 import physics.Vector
 import player.Player
-import java.awt.image.BufferedImage
-import javax.imageio.ImageIO
 
 /**
  * (0,0) is the bottom left of a map

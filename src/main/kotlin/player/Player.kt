@@ -1,6 +1,6 @@
 package player
 
-import LevelMap
+import level.LevelMap
 import input.Controller
 import physics.*
 import kotlin.math.abs

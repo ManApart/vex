@@ -1,3 +1,5 @@
+package level
+
 enum class TileType(val colorKey: Int) {
     TILE(-1),
     SPACE(-16777216),

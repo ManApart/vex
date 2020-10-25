@@ -1,3 +1,5 @@
+package level
+
 import physics.Vector
 
 val DEFAULT_TILE = Tile(TileType.SPACE, 0, 0)

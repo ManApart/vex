@@ -2,6 +2,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import physics.Vector
 import TileTemplateType.*
+import level.TileType
 
 class TestToolsTest {
 

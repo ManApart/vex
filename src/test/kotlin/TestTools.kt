@@ -1,3 +1,7 @@
+import level.DEFAULT_TILE
+import level.LevelMap
+import level.Tile
+import level.TileType
 import physics.RigidBody
 import physics.RigidBodyStubbedOwner
 import physics.Vector
