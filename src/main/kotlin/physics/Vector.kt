@@ -30,6 +30,10 @@ data class Vector(var x: Float = 0f, var y: Float = 0f) {
         return Vector(x + other.x, y + other.y)
     }
 
+    operator fun minus(other: Vector): Vector {
+        return Vector(x - other.x, y - other.y)
+    }
+
     fun distanceTo(other: Vector = Vector()): Int {
         val x = (x - other.x).toDouble().pow(2)
         val y = (y - other.y).toDouble().pow(2)

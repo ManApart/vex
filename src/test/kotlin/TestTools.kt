@@ -1,3 +1,5 @@
+import physics.RigidBody
+import physics.RigidBodyStubbedOwner
 import physics.Vector
 
 /**
@@ -14,10 +16,50 @@ fun createMap(plan: List<List<Int>>): LevelMap {
             } else {
                 TileType.SPACE
             }
-            map[x][y] = Tile(type, x, y)
+            map[x][plan.size-1 - y] = Tile(type, x, plan.size-1 - y)
         }
     }
     return LevelMap(map)
+}
+
+fun createMapFromTemplates(plan: List<List<TileTemplateType>>): LevelMap {
+    return createMap(plan.map { outer -> outer.map { it.solid } })
+}
+
+fun createAndMoveBody(plan: List<List<TileTemplateType>>): RigidBody {
+    var start = Tile()
+    var goal = Tile()
+
+    val map = createMapFromTemplates(plan)
+
+    plan.indices.forEach { y ->
+        plan[y].indices.forEach { x ->
+            val planType = plan[y][x]
+            if (planType == TileTemplateType.S) {
+                start = map.getTile(x, plan.size - 1 - y)
+            }
+            if (planType == TileTemplateType.G || planType == TileTemplateType.GG) {
+                goal = map.getTile(x, plan.size - 1 - y)
+            }
+        }
+    }
+
+    val owner = RigidBodyStubbedOwner()
+    val body = RigidBody(map, owner, 1f, 1f)
+    body.bounds.x = start.x.toFloat()
+    body.bounds.y = start.y.toFloat()
+
+    val velocity = goal.vector - start.vector
+    body.velocity.x = velocity.x
+    body.velocity.y = velocity.y
+
+    //prevent acceleration dampening
+    body.velocity.x += 1f
+    body.acceleration.x = -1f
+
+    body.update(1f)
+
+    return body
 }
 
 fun horizontalPoints(size: Int, x: Int = 0, y: Int = 0): List<Vector> {

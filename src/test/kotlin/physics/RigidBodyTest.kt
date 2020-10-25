@@ -1,224 +1,224 @@
 package physics
 
+import TileTemplateType.*
+import createAndMoveBody
 import createMap
 import org.junit.Assert.*
 import org.junit.Test
 
 class RigidBodyTest {
 
-    private val map = createMap(listOf(
-            listOf(0,0,0,0),
-            listOf(0,0,0,1),
-            listOf(0,1,0,0),
-            listOf(1,1,1,1)
-    ))
-
     @Test
-    fun notCollidedByDefault(){
-        val owner = RigidBodyStubbedOwner()
-        val body = RigidBody(map, owner, 1f, 1f)
-        body.bounds.x = 0f
-        body.bounds.y = 1f
+    fun notCollidedByDefault() {
+        val body = createAndMoveBody(listOf(
+                listOf(S, G),
+                listOf(C, C)
+        ))
 
-        body.update(1f)
-
-        assertEquals(0f, body.bounds.x)
-        assertEquals(1f, body.bounds.y)
-
+        assertEquals(Vector(1, 1), body.bounds.source())
         assertFalse(body.isCollidedAny(*Direction.values()))
     }
 
     @Test
-    fun movesForward(){
-        val owner = RigidBodyStubbedOwner()
-        val body = RigidBody(map, owner, 1f, 1f)
-        body.bounds.x = 0f
-        body.bounds.y = 1f
+    fun movesForward() {
+        val body = createAndMoveBody(listOf(
+                listOf(C, C, C),
+                listOf(C, C, C),
+                listOf(S, O, G)
+        ))
 
-        //try move from 0,1 to 2,1
-        body.acceleration.x = 1f
-        body.velocity.x = 1f
-
-        body.update(1f)
-
-        assertEquals(2f, body.bounds.x)
-        assertEquals(1f, body.bounds.y)
-
+        assertEquals(Vector(2, 0), body.bounds.source())
     }
 
     @Test
-    fun doesNotPassThroughCollision(){
-        val owner = RigidBodyStubbedOwner()
-        val body = RigidBody(map, owner, 1f, 1f)
-        body.bounds.x = 0f
-        body.bounds.y = 2f
+    fun doesNotPassThroughCollision() {
+        val body = createAndMoveBody(listOf(
+                listOf(C, C, C),
+                listOf(C, C, C),
+                listOf(S, C, G)
+        ))
 
-        //try move from 0,1 to 2,1
-        body.acceleration.x = 1f
-        body.velocity.x = 1f
-
-        body.update(1f)
-
-        assertEquals(0f, body.bounds.x)
-        assertEquals(2f, body.bounds.y)
+        assertEquals(Vector(0, 0), body.bounds.source())
 
         assertTrue(body.isCollidedAny(Direction.RIGHT))
         assertFalse(body.isCollidedAny(Direction.LEFT, Direction.DOWN, Direction.UP))
     }
 
     @Test
-    fun stopsInFrontOfCollisionHorizontal(){
-        val owner = RigidBodyStubbedOwner()
-        val body = RigidBody(map, owner, 1f, 1f)
-        body.bounds.x = 0f
-        body.bounds.y = 1f
+    fun stopsInFrontOfCollisionHorizontal() {
+        val body = createAndMoveBody(listOf(
+                listOf(C, C, C, C),
+                listOf(C, C, C, C),
+                listOf(C, C, C, C),
+                listOf(S, O, O, GG)
+        ))
 
-        //try move from 0,1 to 3,1
-        body.acceleration.x = 1f
-        body.velocity.x = 2f
-
-        body.update(1f)
-
-        assertEquals(2f, body.bounds.x)
-        assertEquals(1f, body.bounds.y)
+        assertEquals(Vector(2, 0), body.bounds.source())
 
         assertTrue(body.isCollidedAny(Direction.RIGHT))
         assertFalse(body.isCollidedAny(Direction.LEFT, Direction.DOWN, Direction.UP))
     }
 
     @Test
-    fun stopsInFrontOfCollisionHorizontalNegative(){
-        val owner = RigidBodyStubbedOwner()
-        val body = RigidBody(map, owner, 1f, 1f)
-        body.bounds.x = 3f
-        body.bounds.y = 2f
-
-        //try move from 3,2 to 0,2
-        body.acceleration.x = 1f
-        body.velocity.x = -4f
-
-        body.update(1f)
-
-        assertEquals(2f, body.bounds.x)
-        assertEquals(2f, body.bounds.y)
-
-        assertTrue(body.isCollidedAny(Direction.LEFT))
-        assertFalse(body.isCollidedAny(Direction.RIGHT, Direction.DOWN, Direction.UP))
-    }
-
-    @Test
-    fun stopsInFrontOfCollisionDown(){
-        val owner = RigidBodyStubbedOwner()
-        val body = RigidBody(map, owner, 1f, 1f)
-        body.bounds.x = 0f
-        body.bounds.y = 0f
-
-        //try move from 0,0 to 0,3
-        body.velocity.y = 3f
-
-        body.update(1f)
-
-        assertEquals(0f, body.bounds.x)
-        assertEquals(2f, body.bounds.y)
-
-        assertTrue(body.isCollidedAny(Direction.DOWN))
-        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.RIGHT, Direction.UP))
-    }
-
-    @Test
-    fun stopsInFrontOfCollisionUp(){
-        val owner = RigidBodyStubbedOwner()
-        val body = RigidBody(map, owner, 1f, 1f)
-        body.bounds.x = 3f
-        body.bounds.y = 2f
-
-        //try move from 3,2 to 3,0
-        body.velocity.y = -3f
-
-        body.update(1f)
-
-        assertEquals(3f, body.bounds.x)
-        assertEquals(2f, body.bounds.y)
-
-        assertTrue(body.isCollidedAny(Direction.UP))
-        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.RIGHT, Direction.DOWN))
-    }
-
-    @Test
-    fun stopsInFrontOfCollisionDiagonalXFirst(){
-        val owner = RigidBodyStubbedOwner()
-        val body = RigidBody(map, owner, 1f, 1f)
-        body.bounds.x = 0f
-        body.bounds.y = 1f
-
-        //try move from 0,1 to 1,2
-        /*
-        0,0,0,0
-        S,E,0,1
-        0,1G,0,0
-        1,1,1,1
-        */
-
-        body.acceleration.x = -1f
-        body.velocity.x = 2f
-        body.velocity.y = 1f
-
-        body.update(1f)
-
-        assertEquals(1f, body.bounds.x)
-        assertEquals(1f, body.bounds.y)
-    }
-
-    @Test
-    fun stopsInFrontOfCollisionDiagonalYSecond(){
+    fun stopsInFrontOfPartialCollisionHorizontal() {
         val map = createMap(listOf(
-                listOf(0,1,0),
-                listOf(0,1,1),
-                listOf(1,1,1)
+                listOf(1, 1),
+                listOf(0, 1)
         ))
         val owner = RigidBodyStubbedOwner()
         val body = RigidBody(map, owner, 1f, 1f)
         body.bounds.x = 0f
         body.bounds.y = 0f
 
-        //try move from 0,0 to 1,1
-        /*
-        S,1,0
-        E,1G,1
-        */
-
         body.acceleration.x = -1f
-        body.velocity.x = 2f
-        body.velocity.y = 1f
+        body.velocity.x = 1.5f
 
         body.update(1f)
 
-        assertEquals(0f, body.bounds.x)
-        assertEquals(1f, body.bounds.y)
+        assertEquals(Vector(0, 0), body.bounds.source())
+
+        assertTrue(body.isCollidedAny(Direction.RIGHT))
+        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.DOWN, Direction.UP))
     }
 
     @Test
-    fun stopsInFrontOfCollisionDiagonalStuck(){
+    fun stopsInFrontOfCollisionHorizontalNegative() {
+        val body = createAndMoveBody(listOf(
+                listOf(C, C, C, C),
+                listOf(C, C, C, C),
+                listOf(C, C, C, C),
+                listOf(GG, O, O, S)
+        ))
+
+        assertEquals(Vector(1, 0), body.bounds.source())
+
+        assertTrue(body.isCollidedAny(Direction.LEFT))
+        assertFalse(body.isCollidedAny(Direction.RIGHT, Direction.DOWN, Direction.UP))
+    }
+
+    @Test
+    fun stopsInFrontOfPartialCollisionHorizontalNegative() {
+        val map = createMap(listOf(
+                listOf(1, 1),
+                listOf(1, 0)
+        ))
         val owner = RigidBodyStubbedOwner()
         val body = RigidBody(map, owner, 1f, 1f)
-        body.bounds.x = 0f
-        body.bounds.y = 2f
+        body.bounds.x = 1f
+        body.bounds.y = 0f
 
-        //try move from 0,2 to 1,3
-        /*
-        0,0,0,0
-        0,0,0,1
-        S,1,0,0
-        1,G1,1,1
-        */
-        body.acceleration.x = -1f
-        body.velocity.x = 2f
-        body.velocity.y = 1f
+        body.acceleration.x = 1f
+        body.velocity.x = -1.5f
 
         body.update(1f)
 
-        assertEquals(0f, body.bounds.x)
-        assertEquals(2f, body.bounds.y)
+        assertEquals(Vector(1, 0), body.bounds.source())
+
+        assertTrue(body.isCollidedAny(Direction.LEFT))
+        assertFalse(body.isCollidedAny(Direction.RIGHT, Direction.DOWN, Direction.UP))
+    }
+
+    @Test
+    fun stopsInFrontOfCollisionDown() {
+        val body = createAndMoveBody(listOf(
+                listOf(S, C, C),
+                listOf(O, C, C),
+                listOf(GG, C, C)
+        ))
+
+        assertEquals(Vector(0, 1), body.bounds.source())
+
+        assertTrue(body.isCollidedAny(Direction.DOWN))
+        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.RIGHT, Direction.UP))
+    }
+
+    @Test
+    fun stopsInFrontOfPartialCollisionDown() {
+        val map = createMap(listOf(
+                listOf(0, 1),
+                listOf(1, 1)
+        ))
+        val owner = RigidBodyStubbedOwner()
+        val body = RigidBody(map, owner, 1f, 1f)
+        body.bounds.x = 0f
+        body.bounds.y = 1f
+
+        body.velocity.y = 0.5f * Direction.DOWN.vector.y
+
+        body.update(1f)
+
+        assertEquals(Vector(0, 1), body.bounds.source())
+
+        assertTrue(body.isCollidedAny(Direction.DOWN))
+        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.RIGHT, Direction.UP))
+    }
+
+    @Test
+    fun stopsInFrontOfCollisionUp() {
+        val body = createAndMoveBody(listOf(
+                listOf(GG, C, C),
+                listOf(O, C, C),
+                listOf(S, C, C)
+        ))
+
+        assertEquals(Vector(0, 1), body.bounds.source())
+
+        assertTrue(body.isCollidedAny(Direction.UP))
+        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.RIGHT, Direction.DOWN))
+    }
+
+    @Test
+    fun stopsInFrontOfPartialCollisionUp() {
+        val map = createMap(listOf(
+                listOf(1, 1),
+                listOf(1, 0)
+        ))
+        val owner = RigidBodyStubbedOwner()
+        val body = RigidBody(map, owner, 1f, 1f)
+        body.bounds.x = 1f
+        body.bounds.y = 0f
+
+        body.velocity.y = 0.5f * Direction.UP.vector.y
+
+        body.update(1f)
+
+        assertEquals(Vector(1, 0), body.bounds.source())
+
+        assertTrue(body.isCollidedAny(Direction.UP))
+        assertFalse(body.isCollidedAny(Direction.LEFT, Direction.DOWN, Direction.RIGHT))
+    }
+
+    @Test
+    fun stopsInFrontOfCollisionDiagonalXFirst() {
+        val body = createAndMoveBody(listOf(
+                listOf(S, O, O),
+                listOf(O, GG, C),
+                listOf(C, C, C)
+        ))
+
+        assertEquals(Vector(1, 2), body.bounds.source())
+    }
+
+    @Test
+    fun stopsInFrontOfCollisionDiagonalYSecond() {
+        val body = createAndMoveBody(listOf(
+                listOf(S, C, C),
+                listOf(O, GG, C),
+                listOf(C, C, C)
+        ))
+
+        assertEquals(Vector(0, 1), body.bounds.source())
+    }
+
+    @Test
+    fun stopsInFrontOfCollisionDiagonalStuck() {
+        val body = createAndMoveBody(listOf(
+                listOf(S, C, C),
+                listOf(C, GG, C),
+                listOf(C, C, C)
+        ))
+
+        assertEquals(Vector(0, 2), body.bounds.source())
     }
 //
 //    @Test

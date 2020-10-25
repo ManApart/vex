@@ -8,6 +8,12 @@ import verticalPoints
 class VectorTest {
 
     @Test
+    fun operators() {
+        assertEquals(Vector(2,2), Vector(0,1) + Vector(2, 1))
+        assertEquals(Vector(2,2), Vector(4,3) - Vector(2, 1))
+    }
+
+    @Test
     fun distance() {
         val source = Vector()
 
@@ -55,6 +61,8 @@ class VectorTest {
 
         //Diagonal
         assertEquals(listOf(Vector(0, 0), Vector(1, 1), Vector(2, 2)), source.getRayTo(Vector(2f, 2f)))
+
+        assertEquals(listOf(Vector(0, 2), Vector(1, 3), Vector(2, 4)), Vector(0, 2).getRayTo(Vector(2f, 4f)))
 
     }
 

@@ -4,7 +4,7 @@ import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
 /**
- * (0,0) is the top of a map
+ * (0,0) is the bottom left of a map
  */
 class LevelMap(private val tiles: Array<Array<Tile>>) {
 

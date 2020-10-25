@@ -105,13 +105,14 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
     }
 
     private fun tryMove2() {
-        val ray = bounds.source().getRayTo(bounds.source() + velocity)
+        val moveAmount = moveAmount()
+        val ray = bounds.source().getRayTo(bounds.source() + moveAmount)
         val collidedTile = map.getFirstCollision(ray)
         if (collidedTile == null) {
             bounds.x += velocity.x
             bounds.y += velocity.y
         } else if (velocity.x != 0f && velocity.y != 0f) {
-            val xRay = bounds.source().getRayTo(bounds.source() + Vector(velocity.x, 0f))
+            val xRay = bounds.source().getRayTo(bounds.source() + Vector(moveAmount.x, 0f))
             val collidedXTile = map.getFirstCollision(xRay)
 
             if (collidedXTile == null) {
@@ -119,7 +120,7 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
             } else {
                 makeXAdjacentTo(collidedXTile)
 
-                val yRay = bounds.source().getRayTo(bounds.source() + Vector(0f, velocity.y))
+                val yRay = bounds.source().getRayTo(bounds.source() + Vector(0f, moveAmount.y))
                 val collidedYTile = map.getFirstCollision(yRay)
                 if (collidedYTile == null){
                     bounds.y += velocity.y
@@ -131,6 +132,22 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
             makeXAdjacentTo(collidedTile)
             makeYAdjacentTo(collidedTile)
         }
+    }
+
+    private fun moveAmount() : Vector {
+        val width = if (velocity.x > 0){
+            bounds.width
+        } else {
+            0f
+        }
+
+        val height = if (velocity.y > 0){
+            bounds.height
+        } else {
+            0f
+        }
+
+        return velocity + Vector(width, height)
     }
 
     private fun makeXAdjacentTo(collidedTile: Tile) {
@@ -151,12 +168,12 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
         if (velocity.y != 0f) {
             if (velocity.y > 0f) {
                 bounds.y = collidedTile.y - bounds.height
-                setNowCollided(Direction.DOWN)
-                checkDirectionNoLongerCollides(Direction.UP)
-            } else {
-                bounds.y = collidedTile.y.toFloat() + 1f
                 setNowCollided(Direction.UP)
                 checkDirectionNoLongerCollides(Direction.DOWN)
+            } else {
+                bounds.y = collidedTile.y.toFloat() + 1f
+                setNowCollided(Direction.DOWN)
+                checkDirectionNoLongerCollides(Direction.UP)
             }
         }
     }

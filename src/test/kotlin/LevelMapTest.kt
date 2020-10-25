@@ -12,7 +12,7 @@ class LevelMapTest {
 
     @Test
     fun noCollisionWithRay(){
-        val ray = listOf(Vector(0, 0), Vector(1, 0), Vector(1, 0))
+        val ray = listOf(Vector(0, 2), Vector(1, 2), Vector(1, 2))
 
         assertNull(map.getFirstCollision(ray))
     }
@@ -26,7 +26,7 @@ class LevelMapTest {
 
     @Test
     fun collidesWithRayBackwards(){
-        val ray = listOf(Vector(2, 0), Vector(1, 1), Vector(0, 2))
+        val ray = listOf(Vector(2, 2), Vector(1, 1), Vector(0, 0))
 
         assertEquals(map.getTile(1,1), map.getFirstCollision(ray))
     }
