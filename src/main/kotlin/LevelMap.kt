@@ -1,35 +1,20 @@
+import physics.Vector
 import player.Player
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
-const val TILE = -1
-const val SPACE = -16777216
-const val SPAWN = -10252883
+/**
+ * (0,0) is the bottom left of a map
+ */
+class LevelMap(private val tiles: Array<Array<Tile>>) {
 
-class LevelMap {
-    private val fileName = "/data/test-level.png"
-    private val tiles = loadBinary(fileName)
-
-    private fun loadBinary(fileName: String): Array<Array<Int>> {
-        val image: BufferedImage = ImageIO.read(this::class.java.getResourceAsStream(fileName))
-
-        val map = Array(image.width) { Array(image.height) { 0 } }
-        for (x in 0 until image.width) {
-            val maxY = map[x].size
-            for (y in 0 until image.height) {
-                map[x][maxY - 1 - y] = image.getRGB(x, y)
-            }
-        }
-        return map
-    }
-
-    fun getTile(x: Float, y: Float): Int {
+    fun getTile(x: Float, y: Float): Tile {
         return getTile(x.toInt(), y.toInt())
     }
 
-    fun getTile(x: Int, y: Int): Int {
+    fun getTile(x: Int, y: Int): Tile {
         if (x < 0 || x >= tiles.size || y < 0 || y >= tiles[x].size) {
-            return 0
+            return DEFAULT_TILE
         }
         return tiles[x][y]
     }
@@ -39,13 +24,21 @@ class LevelMap {
     }
 
     fun spawnPlayer(player: Player) {
-        for (x in tiles.indices) {
-            for (y in tiles[x].indices) {
-                if (tiles[x][y] == SPAWN) {
-                    player.body.bounds.x = x.toFloat()
-                    player.body.bounds.y = y.toFloat()
-                }
-            }
+        val spawnTile = tiles.flatten().firstOrNull { it.type == TileType.SPAWN }
+        if (spawnTile != null) {
+            player.body.bounds.x = spawnTile.x.toFloat()
+            player.body.bounds.y = spawnTile.y.toFloat()
         }
     }
+
+    fun getFirstCollision(ray: List<Vector>) : Tile? {
+        val vector = ray.firstOrNull { getTile(it.x, it.y).type == TileType.TILE }
+        return if (vector != null){
+            getTile(vector.x, vector.y)
+        } else {
+            null
+        }
+    }
+
+
 }

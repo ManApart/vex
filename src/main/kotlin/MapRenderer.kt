@@ -30,7 +30,7 @@ class MapRenderer(private val map: LevelMap, private val player: Player) {
         drawBackground()
         for (x in 0 until map.getSize()) {
             for (y in 0 until map.getSize()) {
-                if (map.getTile(x, y) == TILE) {
+                if (map.getTile(x, y).type == TileType.TILE) {
                     drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), tileColor)
 //                } else if (map.getTile(x, y) != SPAWN){
 //                    println("Got: " + map.getTile(x, y))

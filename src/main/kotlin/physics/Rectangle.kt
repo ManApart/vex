@@ -13,5 +13,8 @@ data class Rectangle(var x: Float = 0f, var y: Float = 0f, val width: Float = 0f
     val farX get() = x + width
     val farY get() = y + height
 
+    fun source() : Vector {
+        return Vector(x, y)
+    }
 
 }
