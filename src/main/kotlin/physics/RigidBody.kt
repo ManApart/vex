@@ -53,58 +53,11 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
         velocity.y = clamp(velocity.y, -maxY, maxY)
 
         velocity.scale(deltaTime)
-        tryMove2()
+        tryMove()
         velocity.scale(1.0f / deltaTime)
     }
 
     private fun tryMove() {
-        moveX()
-        moveY()
-    }
-
-    private fun moveX() {
-        if (collides(bounds, Vector(velocity.x, 0f))) {
-            if (velocity.x > 0) {
-                val farEdge = (bounds.x + velocity.x + bounds.width).toInt()
-                bounds.x = farEdge - bounds.width
-                velocity.x = 0f
-                setNowCollided(Direction.RIGHT)
-                checkDirectionNoLongerCollides(Direction.LEFT)
-            } else {
-                bounds.x = (bounds.x + velocity.x).toInt() + 1f
-                velocity.x = 0f
-                setNowCollided(Direction.LEFT)
-                checkDirectionNoLongerCollides(Direction.RIGHT)
-            }
-        } else {
-            bounds.x += velocity.x
-            checkDirectionNoLongerCollides(Direction.LEFT)
-            checkDirectionNoLongerCollides(Direction.RIGHT)
-        }
-    }
-
-    private fun moveY() {
-        if (collides(bounds, Vector(0f, velocity.y))) {
-            if (velocity.y > 0) {
-                val farEdge = (bounds.y + velocity.y + bounds.height).toInt()
-                bounds.y = farEdge - bounds.height
-                velocity.y = 0f
-                setNowCollided(Direction.UP)
-                checkDirectionNoLongerCollides(Direction.DOWN)
-            } else {
-                bounds.y = (bounds.y + velocity.y).toInt() + 1f
-                velocity.y = 0f
-                setNowCollided(Direction.DOWN)
-                checkDirectionNoLongerCollides(Direction.UP)
-            }
-        } else {
-            bounds.y += velocity.y
-            checkDirectionNoLongerCollides(Direction.UP)
-            checkDirectionNoLongerCollides(Direction.DOWN)
-        }
-    }
-
-    private fun tryMove2() {
         val moveAmount = moveAmount()
         val ray = bounds.source().getRayTo(bounds.source() + moveAmount)
         val collidedTile = map.getFirstCollision(ray)

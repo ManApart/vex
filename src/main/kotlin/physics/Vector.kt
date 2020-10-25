@@ -118,11 +118,11 @@ data class Vector(var x: Float = 0f, var y: Float = 0f) {
         var previousPoint = this
 
         (0..quantity).forEach {
-            val x = xDiff * (it / quantity.toFloat())
-            val y = yDiff * (it / quantity.toFloat())
+            val x = (xDiff * (it / quantity.toFloat())) + this.x
+            val y = (yDiff * (it / quantity.toFloat())) + this.y
 
             val point = Vector(x.toInt(), y.toInt())
-            if (point != previousPoint) {
+            if (point != previousPoint && !x.isNaN()) {
                 points.add(point)
                 previousPoint = point
             }
