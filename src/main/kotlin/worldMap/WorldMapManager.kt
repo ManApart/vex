@@ -3,20 +3,20 @@ package worldMap
 import GameMode
 
 class WorldMapManager : GameMode {
+    val worldMap = WorldMapBuilder.world1
+    val renderer = WorldMapRenderer(worldMap)
 
     override fun init() {
-        TODO("Not yet implemented")
+        initializeRender()
     }
 
     override fun processInput(deltaTime: Float) {
-        TODO("Not yet implemented")
     }
 
     override fun render() {
-        TODO("Not yet implemented")
+        renderer.render()
     }
 
     override fun afterRender(deltaTime: Float) {
-        TODO("Not yet implemented")
     }
 }

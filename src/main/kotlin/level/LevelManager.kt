@@ -4,20 +4,22 @@ import GameMode
 import input.Controller
 import input.ControllerDebugger
 import player.Player
+import worldMap.initializeRender
 
 class LevelManager : GameMode {
-    val map = LevelMapBuilder().createMap()
+    val level = Levels.testLevel
+    val map = LevelMapBuilder().createMap(level.fileName)
     val player = Player(map)
 
     init {
         map.spawnPlayer(player)
     }
 
-    private val mapRenderer = MapRenderer(map, player)
+    private val mapRenderer = LevelMapRenderer(map, player)
 
 
     override fun init(){
-        mapRenderer.init()
+        initializeRender()
     }
 
     override fun processInput(deltaTime: Float){

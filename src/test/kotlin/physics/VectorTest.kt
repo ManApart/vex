@@ -10,8 +10,8 @@ class VectorTest {
 
     @Test
     fun operators() {
-        assertEquals(Vector(2,2), Vector(0,1) + Vector(2, 1))
-        assertEquals(Vector(2,2), Vector(4,3) - Vector(2, 1))
+        assertEquals(Vector(2, 2), Vector(0, 1) + Vector(2, 1))
+        assertEquals(Vector(2, 2), Vector(4, 3) - Vector(2, 1))
     }
 
     @Test
@@ -26,7 +26,7 @@ class VectorTest {
     @Test
     fun getRayNoDistance() {
         assertEquals(listOf(Vector(0, 0)), source.getRayTo(Vector(.2f, .1f)))
-        assertEquals(listOf(Vector(20, 30)), Vector(20,30).getRayTo(Vector(20.2f, 30.1f)))
+        assertEquals(listOf(Vector(20, 30)), Vector(20, 30).getRayTo(Vector(20.2f, 30.1f)))
     }
 
     @Test
