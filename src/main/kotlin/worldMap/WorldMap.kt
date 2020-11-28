@@ -1,6 +1,4 @@
 package worldMap
 
-import level.LevelTemplate
-
-class WorldMap(val levels: Map<Int, LevelTemplate>, val connections: List<Connection>) {
+class WorldMap(val levels: List<LevelWrapper>, val connections: List<Connection>) {
 }

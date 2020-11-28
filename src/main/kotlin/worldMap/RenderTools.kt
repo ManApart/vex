@@ -19,7 +19,6 @@ fun initializeRender() {
     GL11.glMatrixMode(GL11.GL_MODELVIEW)
 }
 
-
 fun loadTexture(fileName: String) {
     val decoder = PNGDecoder(LevelMapRenderer::class.java.getResourceAsStream(fileName))
 
@@ -35,7 +34,6 @@ fun loadTexture(fileName: String) {
     GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR.toFloat())
     GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA, decoder.width, decoder.height, 0, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, buffer)
     GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D)
-
 }
 
 fun drawBackground() {
@@ -48,14 +46,12 @@ fun drawBackground() {
     GL11.glVertex2d(screenWidth / 2, screenHeight / 2)
     GL11.glVertex2d(0.0, screenHeight / 2)
     GL11.glEnd()
-
-
 }
 
 fun drawRectangle(rect: Rectangle, color: Color) {
     val y = (screenHeight - 1 - rect.y).toFloat()
     GL11.glBegin(GL11.GL_QUADS)
-    GL11.glColor3f(color.red, color.blue, color.green)
+    GL11.glColor3f(color.red, color.green, color.blue)
     GL11.glVertex2f(rect.x, y)
     GL11.glVertex2f(rect.x + rect.width, y)
 

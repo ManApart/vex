@@ -7,7 +7,7 @@ import player.Player
 import worldMap.initializeRender
 
 class LevelManager : GameMode {
-    val level = Levels.testLevel
+    val level = Levels.levels[0]!!
     val map = LevelMapBuilder().createMap(level.fileName)
     val player = Player(map)
 

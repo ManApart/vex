@@ -3,7 +3,7 @@ package level
 import java.awt.image.BufferedImage
 import javax.imageio.ImageIO
 
-private const val levelDir = "/data/"
+private const val levelDir = "/data/levels/"
 
 class LevelMapBuilder {
     fun createMap(fileName: String): LevelMap {
