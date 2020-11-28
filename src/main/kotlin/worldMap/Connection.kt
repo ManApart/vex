@@ -1,10 +1,13 @@
 package worldMap
 
 class Connection(
-        val levelIdA: Int,
+        levelIdA: Int,
         val exitIdA: Int,
-        val levelIdB: Int,
-        val exitIdB: Int
+        levelIdB: Int,
+        val exitIdB: Int,
+        levels: Map<Int, LevelWrapper>
 ) {
-//    val source by lazy {  }
+    val source = levels[levelIdA]!!
+    val destination = levels[levelIdB]!!
+
 }

@@ -6,6 +6,7 @@ import level.LevelMapRenderer
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
 import physics.Rectangle
+import physics.Vector
 import java.nio.ByteBuffer
 
 const val screenWidth = 300.0
@@ -59,6 +60,29 @@ fun drawRectangle(rect: Rectangle, color: Color) {
     GL11.glVertex2f(rect.x, y + rect.height)
     GL11.glEnd()
 }
+
+fun drawLine(source: Vector, dest: Vector, color: Color) {
+    val sourceY = (screenHeight - 1 - source.y).toFloat()
+    val destY = (screenHeight - 1 - dest.y).toFloat()
+
+    GL11.glBegin(GL11.GL_LINES)
+    GL11.glColor3f(color.red, color.green, color.blue)
+    GL11.glVertex2f(source.x, sourceY)
+    GL11.glVertex2f(dest.x, destY)
+    GL11.glEnd()
+}
+
+//working but offset seems inverted
+//fun drawLine(source: Vector, dest: Vector, color: Color) {
+//    val sourceY = (screenHeight - 1 - source.y).toFloat()
+//    val destY = (screenHeight - 1 - dest.y).toFloat()
+//
+//    GL11.glBegin(GL11.GL_LINES)
+//    GL11.glColor3f(color.red, color.green, color.blue)
+//    GL11.glVertex2f(source.x, sourceY)
+//    GL11.glVertex2f(dest.x, destY)
+//    GL11.glEnd()
+//}
 
 fun drawTexture(x: Float, y: Float, width: Float, height: Float) {
 //        tex.bind()

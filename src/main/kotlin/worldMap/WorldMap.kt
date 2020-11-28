@@ -1,4 +1,4 @@
 package worldMap
 
-class WorldMap(val levels: List<LevelWrapper>, val connections: List<Connection>) {
+class WorldMap(val levels: Map<Int, LevelWrapper>, val connections: List<Connection>) {
 }

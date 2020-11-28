@@ -1,7 +1,6 @@
 package worldMap
 
 import Color
-import physics.Rectangle
 import physics.Vector
 
 class WorldMapRenderer(private val map: WorldMap) {
@@ -9,7 +8,8 @@ class WorldMapRenderer(private val map: WorldMap) {
     private val levelColor = Color(0f, 1f, 0f)
     private val playerColor = Color(1f, 0f, 0f)
     private val connectionColor = Color(1f, 1f, 1f)
-    private val offset = Vector(20, 230)
+    private val levelOffset = Vector(20, 230)
+    private val connectionOffset = Vector(20f, 230- levelScale)
 
     fun render() {
 //        drawBackground()
@@ -19,14 +19,16 @@ class WorldMapRenderer(private val map: WorldMap) {
     }
 
     private fun drawLevels() {
-        map.levels.forEach { level ->
-            drawRectangle((level.bounds * levelScale) + offset, levelColor)
+        map.levels.values.forEach { level ->
+            drawRectangle((level.bounds * levelScale) + levelOffset, levelColor)
         }
     }
 
     private fun drawConnections() {
         map.connections.forEach { connection ->
-            //draw line
+            val source = (connection.source.bounds.center() * levelScale) + connectionOffset
+            val destination = (connection.destination.bounds.center() * levelScale) + connectionOffset
+            drawLine(source, destination, connectionColor)
         }
     }
 }
