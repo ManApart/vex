@@ -2,6 +2,7 @@ package worldMap
 
 import Color
 import physics.Vector
+import player.WorldMapPlayer
 
 class WorldMapRenderer(private val map: WorldMap) {
     private val levelScale = 5f
@@ -11,17 +12,11 @@ class WorldMapRenderer(private val map: WorldMap) {
     private val levelOffset = Vector(20, 230)
     private val connectionOffset = Vector(20f, 230- levelScale)
 
-    fun render() {
+    fun render(player: WorldMapPlayer) {
 //        drawBackground()
         drawConnections()
         drawLevels()
-//        drawRectangle((player.body.bounds * tileSize) + Vector(offsetX, offsetY), playerColor)
-    }
-
-    private fun drawLevels() {
-        map.levels.values.forEach { level ->
-            drawRectangle((level.bounds * levelScale) + levelOffset, levelColor)
-        }
+        drawPlayer(player)
     }
 
     private fun drawConnections() {
@@ -31,4 +26,16 @@ class WorldMapRenderer(private val map: WorldMap) {
             drawLine(source, destination, connectionColor)
         }
     }
+
+
+    private fun drawLevels() {
+        map.levels.values.forEach { level ->
+            drawRectangle((level.bounds * levelScale) + levelOffset, levelColor)
+        }
+    }
+
+    private fun drawPlayer(player: WorldMapPlayer) {
+        drawRectangle((player.bounds * levelScale) + levelOffset, playerColor)
+    }
+
 }
