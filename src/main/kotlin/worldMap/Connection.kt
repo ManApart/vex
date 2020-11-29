@@ -2,13 +2,13 @@ package worldMap
 
 class Connection(
         levelIdA: Int,
-        val exitIdA: Int,
+        exitIdA: Int,
         levelIdB: Int,
-        val exitIdB: Int,
-        levels: Map<Int, LevelWrapper>
+        exitIdB: Int,
+        levels: List<Exit>
 ) {
-    val source = levels[levelIdA]!!
-    val destination = levels[levelIdB]!!
+    val source = levels.first { it.level.id == levelIdA && it.exitId == exitIdA }
+    val destination = levels.first { it.level.id == levelIdB && it.exitId == exitIdB }
     var unlocked = false
 
 }

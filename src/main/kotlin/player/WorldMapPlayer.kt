@@ -2,9 +2,9 @@ package player
 
 import input.Controller
 import physics.Rectangle
-import worldMap.LevelWrapper
+import worldMap.Exit
 
-class WorldMapPlayer(originLevel: LevelWrapper) {
+class WorldMapPlayer(originLevel: Exit) {
     val currentLevel = originLevel
     val goalLevel = originLevel
     val bounds = Rectangle(originLevel.bounds.x, originLevel.bounds.y, 0.6f, 0.8f)

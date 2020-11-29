@@ -8,7 +8,8 @@ import player.WorldMapPlayer
 class WorldMapManager : GameMode {
     val worldMap = WorldMapBuilder.world1
     val renderer = WorldMapRenderer(worldMap)
-    val player = WorldMapPlayer(worldMap.levels.values.first())
+    val start = worldMap.exits.first().also { it.unlocked = true }
+    val player = WorldMapPlayer(start)
 
     override fun init() {
         initializeRender()

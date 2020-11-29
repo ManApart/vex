@@ -29,8 +29,8 @@ class WorldMapRenderer(private val map: WorldMap) {
 
 
     private fun drawLevels() {
-        map.levels.values.forEach { level ->
-            drawRectangle((level.bounds * levelScale) + levelOffset, levelColor)
+        map.exits.forEach { exit ->
+            drawRectangle((exit.bounds * levelScale) + levelOffset, levelColor)
         }
     }
 

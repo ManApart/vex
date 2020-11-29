@@ -8,6 +8,7 @@ import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL11
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
+import worldMap.Exit
 import worldMap.WorldMapManager
 
 object Vex {
@@ -93,6 +94,14 @@ object Vex {
         GLFW.glfwDestroyWindow(window)
         GLFW.glfwTerminate()
         GLFW.glfwSetErrorCallback(null)?.free()
+    }
+
+    fun enterLevel(level: Exit, exitID: Int){
+
+    }
+
+    fun exitLevel(level: Exit, exitID: Int){
+
     }
 
 }
