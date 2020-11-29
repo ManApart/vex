@@ -29,6 +29,17 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
         return collided[direction]!!
     }
 
+    fun getContainingTiles(): List<Tile> {
+        return listOf(
+                Vector(bounds.x.toInt(), bounds.y.toInt()),
+                Vector(bounds.farX.toInt(), bounds.farY.toInt()),
+                Vector(bounds.x.toInt(), bounds.farY.toInt()),
+                Vector(bounds.farX.toInt(), bounds.y.toInt())
+        ) //Convert to set in order to only get unique points
+                .toSet()
+                .map { this.map.getTile(it.x, it.y) }
+    }
+
     private fun setNowCollided(direction: Direction) {
         val wasCollided = isCollided(direction)
         collided[direction] = true
@@ -76,7 +87,7 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
 
                 val yRay = bounds.source().getRayTo(bounds.source() + Vector(0f, moveAmount.y))
                 val collidedYTile = map.getFirstCollision(yRay)
-                if (collidedYTile == null){
+                if (collidedYTile == null) {
                     bounds.y += velocity.y
                 } else {
                     makeYAdjacentTo(collidedYTile)
@@ -88,14 +99,14 @@ class RigidBody(private val map: LevelMap, private val owner: RigidBodyOwner, wi
         }
     }
 
-    private fun moveAmount() : Vector {
-        val width = if (velocity.x > 0){
+    private fun moveAmount(): Vector {
+        val width = if (velocity.x > 0) {
             bounds.width
         } else {
             0f
         }
 
-        val height = if (velocity.y > 0){
+        val height = if (velocity.y > 0) {
             bounds.height
         } else {
             0f

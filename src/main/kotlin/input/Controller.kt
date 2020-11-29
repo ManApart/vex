@@ -27,6 +27,7 @@ object Controller {
     val ascend = Axis("Ascend", GLFW_GAMEPAD_AXIS_LEFT_TRIGGER, shiftValues = true, positiveInputKey = GLFW_KEY_RIGHT_SHIFT)
 
     val jump = Button("Jump", listOf(GLFW_KEY_SPACE), listOf(GLFW_GAMEPAD_BUTTON_A))
+    val interact = Button("Interact", listOf(GLFW_KEY_ENTER), listOf(GLFW_GAMEPAD_BUTTON_X))
     val dashLeft = Button("Dash Left", listOf(GLFW_KEY_Z), listOf(GLFW_GAMEPAD_BUTTON_LEFT_BUMPER))
     val dashRight = Button("Dash Right", listOf(GLFW_KEY_X), listOf(GLFW_GAMEPAD_BUTTON_RIGHT_BUMPER))
 
@@ -38,6 +39,7 @@ object Controller {
             grapple,
             ascend,
             jump,
+            interact,
             dashLeft,
             dashRight
     )

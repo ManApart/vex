@@ -2,6 +2,7 @@ package player
 
 import level.LevelMap
 import input.Controller
+import level.TileType
 import physics.*
 import kotlin.math.abs
 
@@ -22,7 +23,7 @@ private const val DASH_TIME = .15f
 
 
 class Player(map: LevelMap) : RigidBodyOwner {
-
+    private val mapId = map.id
     var state = PlayerState.FALLING
     var stateTime = 0f
     var dir = Direction.LEFT
@@ -125,6 +126,13 @@ class Player(map: LevelMap) : RigidBodyOwner {
 
         if (abs(Controller.yAxis.value) > 0) {
 //            body.accel.y = player.ACCELERATION * Controller.yAxis.value
+        }
+
+        if (Controller.interact.isFirstPressed()) {
+            val exit = body.getContainingTiles().firstOrNull { it.type == TileType.EXIT }
+            if (exit != null) {
+                Vex.exitLevel(mapId, exit.id)
+            }
         }
     }
 

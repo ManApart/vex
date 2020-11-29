@@ -6,7 +6,7 @@ import player.Player
 /**
  * (0,0) is the bottom left of a map
  */
-class LevelMap(private val tiles: Array<Array<Tile>>) {
+class LevelMap(private val tiles: Array<Array<Tile>>, val id: Int = 0) {
 
     fun getTile(x: Float, y: Float): Tile {
         return getTile(x.toInt(), y.toInt())
@@ -24,7 +24,7 @@ class LevelMap(private val tiles: Array<Array<Tile>>) {
     }
 
     fun spawnPlayer(player: Player, exitId: Int = 0) {
-        val spawnTile = tiles.flatten().firstOrNull { it.type == TileType.SPAWN && it.id == exitId }
+        val spawnTile = tiles.flatten().firstOrNull { it.type == TileType.EXIT && it.id == exitId }
         if (spawnTile != null) {
             player.body.bounds.x = spawnTile.x.toFloat()
             player.body.bounds.y = spawnTile.y.toFloat()

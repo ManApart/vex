@@ -99,7 +99,8 @@ object Vex {
         this.gameMode = LevelManager(exit.level, exit.exitId)
     }
 
-    fun exitLevel(exit: Exit){
+    fun exitLevel(levelId: Int, exitId: Int){
+        val exit = worldManager.worldMap.exits.first { it.level.id == levelId && it.exitId == exitId }
         worldManager.worldMap.unlockNeighbors(exit)
         worldManager.player.setPosition(exit)
         this.gameMode = worldManager

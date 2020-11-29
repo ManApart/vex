@@ -3,7 +3,7 @@ package level
 enum class TileType(val colorKey: Int) {
     TILE(255),
     SPACE(0),
-    SPAWN(100)
+    EXIT(100)
 }
 
 fun fromInt(value: Int) : TileType {

@@ -6,8 +6,8 @@ import javax.imageio.ImageIO
 private const val levelDir = "/data/levels/"
 
 class LevelMapBuilder {
-    fun createMap(fileName: String): LevelMap {
-        return LevelMap(loadBinary(levelDir + fileName))
+    fun createMap(template: LevelTemplate): LevelMap {
+        return LevelMap(loadBinary(levelDir + template.fileName), template.id)
     }
 
     private fun loadBinary(fileName: String): Array<Array<Tile>> {

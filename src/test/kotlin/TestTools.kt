@@ -30,7 +30,7 @@ fun createMapFromTemplates(plan: List<List<TileTemplateType>>): LevelMap {
     return createMap(plan.map { outer -> outer.map { it.solid } })
 }
 
-fun createAndMoveBody(plan: List<List<TileTemplateType>>): RigidBody {
+fun createAndMoveBody(plan: List<List<TileTemplateType>>, width: Float = 1f, height: Float = 1f): RigidBody {
     var start = Tile()
     var goal = Tile()
 
@@ -49,7 +49,7 @@ fun createAndMoveBody(plan: List<List<TileTemplateType>>): RigidBody {
     }
 
     val owner = RigidBodyStubbedOwner()
-    val body = RigidBody(map, owner, 1f, 1f)
+    val body = RigidBody(map, owner, width, height)
     body.bounds.x = start.x.toFloat()
     body.bounds.y = start.y.toFloat()
 

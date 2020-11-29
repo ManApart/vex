@@ -244,4 +244,30 @@ class RigidBodyTest {
 //        assertEquals(0f, body.bounds.y)
 //    }
 
+    @Test
+    fun getContainingTiles() {
+        val body = createAndMoveBody(listOf(
+                listOf(S, O),
+                listOf(O, O)
+        ), .8f, .8f)
+        body.bounds.width
+
+        assertEquals(Vector(0,0), body.bounds.source())
+        assertEquals(1, body.getContainingTiles().size)
+        assertEquals(0, body.getContainingTiles().first().x)
+        assertEquals(0, body.getContainingTiles().first().y)
+    }
+
+    @Test
+    fun getContainingIncludesNeighbors() {
+        val body = createAndMoveBody(listOf(
+                listOf(S, O),
+                listOf(O, O)
+        ), .8f, .8f)
+        body.bounds.x = .5f
+        body.bounds.y = 0.5f
+
+        assertEquals(4, body.getContainingTiles().size)
+    }
+
 }

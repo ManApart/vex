@@ -29,7 +29,7 @@ class LevelMapRenderer(private val map: LevelMap, private val player: Player) {
             for (y in 0 until map.getSize()) {
                 when (map.getTile(x, y).type) {
                     TileType.TILE -> drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), tileColor)
-                    TileType.SPAWN -> drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), spawnColor)
+                    TileType.EXIT -> drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), spawnColor)
                     else -> {
                     }
                 }
