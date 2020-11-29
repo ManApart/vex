@@ -14,4 +14,14 @@ class WorldMap(val exits: List<Exit>, connections: List<Connection>) {
                     }
                 }.flatten()
     }
+
+    fun unlockNeighbors(source: Exit) {
+        if (source.exitId != 0) {
+            this.connections.filter { it.source == source || it.destination == source }.forEach {
+                it.unlocked = true
+                it.source.unlocked = true
+                it.destination.unlocked = true
+            }
+        }
+    }
 }

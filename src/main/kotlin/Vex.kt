@@ -95,12 +95,14 @@ object Vex {
         GLFW.glfwSetErrorCallback(null)?.free()
     }
 
-    fun enterLevel(level: Exit){
-        this.gameMode = LevelManager(level.level, level.exitId)
+    fun enterLevel(exit: Exit){
+        this.gameMode = LevelManager(exit.level, exit.exitId)
     }
 
-    fun exitLevel(level: Exit){
-
+    fun exitLevel(exit: Exit){
+        worldManager.worldMap.unlockNeighbors(exit)
+        worldManager.player.setPosition(exit)
+        this.gameMode = worldManager
     }
 
 }

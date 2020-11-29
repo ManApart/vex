@@ -5,8 +5,8 @@ import physics.Rectangle
 import worldMap.Exit
 
 class WorldMapPlayer(origin: Exit) {
-    val currentExit = origin
-    val goalExit = origin
+    var currentExit = origin
+    var goalExit = origin
     val bounds = Rectangle(origin.bounds.x, origin.bounds.y, 0.6f, 0.8f)
 
 
@@ -17,6 +17,13 @@ class WorldMapPlayer(origin: Exit) {
 
     }
 
+    fun setPosition(exit: Exit) {
+       currentExit = exit
+       goalExit = exit
+       bounds.x = exit.bounds.x
+       bounds.y = exit.bounds.y
+    }
+
     private fun processKeys() {
         if (Controller.jump.isFirstPressed()) {
             if (currentExit == goalExit){
@@ -24,6 +31,7 @@ class WorldMapPlayer(origin: Exit) {
             }
         }
     }
+
 
 
 }
