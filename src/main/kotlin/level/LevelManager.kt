@@ -6,13 +6,12 @@ import input.ControllerDebugger
 import player.Player
 import worldMap.initializeRender
 
-class LevelManager : GameMode {
-    val level = Levels.levels[0]!!
+class LevelManager(val level: LevelTemplate = Levels.levels[0]!!, exitId: Int = 0) : GameMode {
     val map = LevelMapBuilder().createMap(level.fileName)
     val player = Player(map)
 
     init {
-        map.spawnPlayer(player)
+        map.spawnPlayer(player, exitId)
     }
 
     private val mapRenderer = LevelMapRenderer(map, player)

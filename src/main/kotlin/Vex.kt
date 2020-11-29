@@ -13,7 +13,6 @@ import worldMap.WorldMapManager
 
 object Vex {
     var window: Long = 0
-    private val levelManager = LevelManager()
     private val worldManager = WorldMapManager()
     private var gameMode: GameMode = worldManager
 
@@ -63,7 +62,7 @@ object Vex {
         GL.createCapabilities()
         GL11.glClearColor(0.0f, 0.0f, 1.0f, 0.0f)
 
-        levelManager.init()
+        gameMode.init()
     }
 
     private fun loop() {
@@ -96,11 +95,11 @@ object Vex {
         GLFW.glfwSetErrorCallback(null)?.free()
     }
 
-    fun enterLevel(level: Exit, exitID: Int){
-
+    fun enterLevel(level: Exit){
+        this.gameMode = LevelManager(level.level, level.exitId)
     }
 
-    fun exitLevel(level: Exit, exitID: Int){
+    fun exitLevel(level: Exit){
 
     }
 

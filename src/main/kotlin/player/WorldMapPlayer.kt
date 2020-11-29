@@ -4,10 +4,10 @@ import input.Controller
 import physics.Rectangle
 import worldMap.Exit
 
-class WorldMapPlayer(originLevel: Exit) {
-    val currentLevel = originLevel
-    val goalLevel = originLevel
-    val bounds = Rectangle(originLevel.bounds.x, originLevel.bounds.y, 0.6f, 0.8f)
+class WorldMapPlayer(origin: Exit) {
+    val currentExit = origin
+    val goalExit = origin
+    val bounds = Rectangle(origin.bounds.x, origin.bounds.y, 0.6f, 0.8f)
 
 
     fun update(deltaTime: Float) {
@@ -19,9 +19,8 @@ class WorldMapPlayer(originLevel: Exit) {
 
     private fun processKeys() {
         if (Controller.jump.isFirstPressed()) {
-            if (currentLevel == goalLevel){
-                //Load Level
-                // Eventually figure out which exit, maybe show all known exits on map
+            if (currentExit == goalExit){
+                Vex.enterLevel(currentExit)
             }
         }
     }

@@ -23,8 +23,8 @@ class LevelMap(private val tiles: Array<Array<Tile>>) {
         return tiles.size
     }
 
-    fun spawnPlayer(player: Player) {
-        val spawnTile = tiles.flatten().firstOrNull { it.type == TileType.SPAWN }
+    fun spawnPlayer(player: Player, exitId: Int = 0) {
+        val spawnTile = tiles.flatten().firstOrNull { it.type == TileType.SPAWN && it.id == exitId }
         if (spawnTile != null) {
             player.body.bounds.x = spawnTile.x.toFloat()
             player.body.bounds.y = spawnTile.y.toFloat()
