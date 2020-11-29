@@ -9,5 +9,6 @@ class Connection(
 ) {
     val source = levels[levelIdA]!!
     val destination = levels[levelIdB]!!
+    var unlocked = false
 
 }
