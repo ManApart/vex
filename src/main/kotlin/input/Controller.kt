@@ -1,9 +1,11 @@
 package input
 
 import Vex.window
+import getAngle
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.glfw.GLFWGamepadState
 import org.lwjgl.glfw.GLFWKeyCallback
+import toDegrees
 
 
 object Controller {
@@ -56,6 +58,14 @@ object Controller {
     fun update(deltaTime: Float) {
         id?.let { glfwGetGamepadState(id, state) }
         inputs.forEach { it.update(deltaTime) }
+    }
+
+    fun getLeftStickAngle(): Double {
+        return getAngle(xAxis.value, yAxis.value).toDegrees()
+    }
+
+    fun getAimAngle(): Double {
+        return getAngle(xAim.value, yAim.value).toDegrees()
     }
 
 }

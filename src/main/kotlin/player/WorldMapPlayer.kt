@@ -15,23 +15,29 @@ class WorldMapPlayer(origin: Exit) {
 //        updateState(deltaTime)
 //        body.update(deltaTime, xMaxVelocity(), yMaxVelocity())
 
+        //if current and goal don't match, move to goal
+        //on arrival set current to goal
+
     }
 
     fun setPosition(exit: Exit) {
-       currentExit = exit
-       goalExit = exit
-       bounds.x = exit.bounds.x
-       bounds.y = exit.bounds.y
+        currentExit = exit
+        goalExit = exit
+        bounds.x = exit.bounds.x
+        bounds.y = exit.bounds.y
     }
 
     private fun processKeys() {
         if (Controller.jump.isFirstPressed()) {
-            if (currentExit == goalExit){
+            if (currentExit == goalExit) {
                 Vex.enterLevel(currentExit)
             }
         }
-    }
 
+        val desiredAngle = Controller.getLeftStickAngle()
+        // get connection with angle nearest to controller
+        // set goal to that location
+    }
 
 
 }

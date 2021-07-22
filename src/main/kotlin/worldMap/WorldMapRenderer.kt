@@ -10,7 +10,7 @@ class WorldMapRenderer(private val map: WorldMap) {
     private val playerColor = Color(1f, 0f, 0f)
     private val connectionColor = Color(1f, 1f, 1f)
     private val levelOffset = Vector(20, 230)
-    private val connectionOffset = Vector(20f, 230- levelScale)
+    private val connectionOffset = Vector(20f, 230 - levelScale)
 
     fun render(player: WorldMapPlayer) {
 //        drawBackground()
@@ -20,7 +20,7 @@ class WorldMapRenderer(private val map: WorldMap) {
     }
 
     private fun drawConnections() {
-        map.connections.filter { it.unlocked }.forEach { connection ->
+        map.connections.filter { it.unlocked || Debug.allLevelsUnlocked }.forEach { connection ->
             val source = (connection.source.bounds.center() * levelScale) + connectionOffset
             val destination = (connection.destination.bounds.center() * levelScale) + connectionOffset
             drawLine(source, destination, connectionColor)
@@ -29,7 +29,7 @@ class WorldMapRenderer(private val map: WorldMap) {
 
 
     private fun drawLevels() {
-        map.exits.filter { it.unlocked }.forEach { exit ->
+        map.exits.filter { it.unlocked || Debug.allLevelsUnlocked }.forEach { exit ->
             drawRectangle((exit.bounds * levelScale) + levelOffset, levelColor)
         }
     }

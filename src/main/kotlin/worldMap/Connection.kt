@@ -1,5 +1,7 @@
 package worldMap
 
+import getAngle
+
 class Connection(val source: Exit, val destination: Exit) {
     constructor(levelIdA: Int,
                 exitIdA: Int,
@@ -9,5 +11,6 @@ class Connection(val source: Exit, val destination: Exit) {
     ) : this(levels.first { it.level.id == levelIdA && it.exitId == exitIdA }, levels.first { it.level.id == levelIdB && it.exitId == exitIdB })
 
     var unlocked = false
+    val angle = getAngle(source.bounds.source(), destination.bounds.source())
 
 }
