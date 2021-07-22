@@ -10,7 +10,8 @@ import com.soywiz.korim.color.Colors
 import level.LevelMap
 import level.LevelMapBuilder
 import level.LevelTemplate
-import player.Player
+import player.PlayerOld
+import ui.Player
 import ui.VIRTUAL_SIZE
 import kotlin.properties.Delegates
 
@@ -21,10 +22,13 @@ class LevelScene(private val template: LevelTemplate, private val spawnExitId: I
     override suspend fun Container.sceneInit() {
         map = LevelMapBuilder().createMap(template)
         player = Player(map)
-        map.spawnPlayer(player, spawnExitId)
+
 
         fixedSizeContainer(VIRTUAL_SIZE, VIRTUAL_SIZE, clip = false) {
             solidRect(VIRTUAL_SIZE, VIRTUAL_SIZE, Colors.BLUE)
+            paint(map)
+            addChild(player)
+            player.init(map.getSpawnTile(spawnExitId)!!)
         }
 
         addFixedUpdater(30.timesPerSecond) {

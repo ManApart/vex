@@ -1,12 +1,15 @@
 package level
 
 import physics.Vector
-import player.Player
+import player.PlayerOld
+import ui.Player
 
 /**
  * (0,0) is the bottom left of a map
+ * Is this still true?
  */
 class LevelMap(val id: Int = 0, private val tiles: Array<Array<Tile>>) {
+    val size = tiles.size
 
     fun getTile(x: Float, y: Float): Tile {
         return getTile(x.toInt(), y.toInt())
@@ -19,21 +22,28 @@ class LevelMap(val id: Int = 0, private val tiles: Array<Array<Tile>>) {
         return tiles[x][y]
     }
 
-    fun getSize(): Int {
-        return tiles.size
+    fun getSpawnTile(exitId: Int): Tile? {
+        return tiles.flatten().firstOrNull { it.type == TileType.EXIT && it.id == exitId }
     }
 
     fun spawnPlayer(player: Player, exitId: Int = 0) {
         val spawnTile = tiles.flatten().firstOrNull { it.type == TileType.EXIT && it.id == exitId }
         if (spawnTile != null) {
-            player.body.bounds.x = spawnTile.x.toFloat()
-            player.body.bounds.y = spawnTile.y.toFloat()
+//            player.body.bounds.x = spawnTile.x.toFloat()
+//            player.body.bounds.y = spawnTile.y.toFloat()
         }
     }
+//    fun spawnPlayer(player: PlayerOld, exitId: Int = 0) {
+//        val spawnTile = tiles.flatten().firstOrNull { it.type == TileType.EXIT && it.id == exitId }
+//        if (spawnTile != null) {
+//            player.body.bounds.x = spawnTile.x.toFloat()
+//            player.body.bounds.y = spawnTile.y.toFloat()
+//        }
+//    }
 
-    fun getFirstCollision(ray: List<Vector>) : Tile? {
+    fun getFirstCollision(ray: List<Vector>): Tile? {
         val vector = ray.firstOrNull { getTile(it.x, it.y).type == TileType.TILE }
-        return if (vector != null){
+        return if (vector != null) {
             getTile(vector.x, vector.y)
         } else {
             null

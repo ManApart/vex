@@ -21,7 +21,7 @@ private const val DASH_VELOCITY = 20f
 private const val DASH_TIME = .15f
 
 
-class Player(map: LevelMap) : RigidBodyOwner {
+class PlayerOld(map: LevelMap) : RigidBodyOwner {
     private val mapId = map.id
     var state = PlayerState.FALLING
     var stateTime = 0f

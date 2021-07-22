@@ -1,13 +1,14 @@
 package level
 
+import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
 
-enum class TileType(val colorKey: RGBA) {
-    TILE(RGBA(255, 255, 255)),
-    SPACE(RGBA(0, 0, 0)),
-    EXIT(RGBA(0, 255, 0))
+enum class TileType(val colorKey: Int, val color: RGBA) {
+    TILE(255, Colors.WHITE),
+    SPACE(0, Colors.BLACK),
+    EXIT( 100, Colors.GREEN)
 }
 
-fun from(value: RGBA): TileType {
+fun from(value: Int): TileType {
     return TileType.values().firstOrNull { it.colorKey == value } ?: TileType.SPACE
 }

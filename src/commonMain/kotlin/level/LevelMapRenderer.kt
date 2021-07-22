@@ -1,12 +1,10 @@
 package level
 
 import Color
-import physics.Rectangle
-import physics.Vector
-import player.Player
+import player.PlayerOld
 
 
-class LevelMapRenderer(private val map: LevelMap, private val player: Player) {
+class LevelMapRenderer(private val map: LevelMap, private val player: PlayerOld) {
     private val tileSize = 5f
 
     private val tileColor = Color(1f, 1f, 1f)
@@ -23,8 +21,8 @@ class LevelMapRenderer(private val map: LevelMap, private val player: Player) {
     }
 
     private fun drawTiles(offsetX: Float, offsetY: Float) {
-        for (x in 0 until map.getSize()) {
-            for (y in 0 until map.getSize()) {
+        for (x in 0 until map.size) {
+            for (y in 0 until map.size) {
                 when (map.getTile(x, y).type) {
 //                    TileType.TILE -> drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), tileColor)
 //                    TileType.EXIT -> drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), spawnColor)

@@ -21,7 +21,7 @@ object MainModule : Module() {
     override val scaleAnchor: Anchor = Anchor.TOP_LEFT
 
     override suspend fun AsyncInjector.configure() {
-        mapPrototype { LevelTemplate(0, "Start", "test-level") }
+        mapPrototype { LevelTemplate(0, "Start", "small-level") }
         mapPrototype { LevelScene(get()) }
     }
 }
