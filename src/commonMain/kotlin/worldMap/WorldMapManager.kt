@@ -1,27 +1,26 @@
 package worldMap
 
-import GameMode
 import player.WorldMapPlayer
 
-class WorldMapManager : GameMode {
+class WorldMapManager {
     val worldMap = WorldMapBuilder.world1
     val renderer = WorldMapRenderer(worldMap)
     val start = worldMap.exits.first().also { it.unlocked = true }
     val player = WorldMapPlayer(start)
 
-    override fun init() {
+    fun init() {
     }
 
-    override fun processInput(deltaTime: Float) {
+    fun processInput(deltaTime: Float) {
 //        Controller.update(deltaTime)
 //        ControllerDebugger.update()
     }
 
-    override fun render() {
+    fun render() {
         renderer.render(player)
     }
 
-    override fun afterRender(deltaTime: Float) {
+    fun afterRender(deltaTime: Float) {
         player.update(deltaTime)
     }
 }

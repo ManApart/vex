@@ -6,7 +6,7 @@ import player.Player
 /**
  * (0,0) is the bottom left of a map
  */
-class LevelMap(private val tiles: Array<Array<Tile>>, val id: Int = 0) {
+class LevelMap(val id: Int = 0, private val tiles: Array<Array<Tile>>) {
 
     fun getTile(x: Float, y: Float): Tile {
         return getTile(x.toInt(), y.toInt())

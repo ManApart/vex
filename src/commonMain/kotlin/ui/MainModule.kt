@@ -3,6 +3,7 @@ package ui
 import com.soywiz.korge.scene.Module
 import com.soywiz.korinject.AsyncInjector
 import com.soywiz.korma.geom.*
+import level.LevelTemplate
 import ui.level.LevelScene
 
 const val WINDOW_WIDTH = 1000
@@ -20,6 +21,7 @@ object MainModule : Module() {
     override val scaleAnchor: Anchor = Anchor.TOP_LEFT
 
     override suspend fun AsyncInjector.configure() {
-        mapPrototype { LevelScene() }
+        mapPrototype { LevelTemplate(0, "Start", "test-level") }
+        mapPrototype { LevelScene(get()) }
     }
 }

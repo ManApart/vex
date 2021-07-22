@@ -1,6 +1,5 @@
 package ui.level
 
-import GameMode
 import com.soywiz.klock.timesPerSecond
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
@@ -8,26 +7,30 @@ import com.soywiz.korge.view.addFixedUpdater
 import com.soywiz.korge.view.fixedSizeContainer
 import com.soywiz.korge.view.solidRect
 import com.soywiz.korim.color.Colors
-import level.LevelManager
+import level.LevelMap
+import level.LevelMapBuilder
+import level.LevelTemplate
+import player.Player
 import ui.VIRTUAL_SIZE
-import worldMap.Exit
-import worldMap.WorldMapManager
+import kotlin.properties.Delegates
 
-class LevelScene  : Scene() {
-    private val worldManager = WorldMapManager()
-    private var gameMode: GameMode = worldManager
+class LevelScene(private val template: LevelTemplate, private val spawnExitId: Int = 0) : Scene() {
+    var map: LevelMap by Delegates.notNull()
+    var player: Player by Delegates.notNull()
 
     override suspend fun Container.sceneInit() {
+        map = LevelMapBuilder().createMap(template)
+        player = Player(map)
+        map.spawnPlayer(player, spawnExitId)
 
         fixedSizeContainer(VIRTUAL_SIZE, VIRTUAL_SIZE, clip = false) {
-          solidRect(VIRTUAL_SIZE, VIRTUAL_SIZE, Colors.BLUE)
+            solidRect(VIRTUAL_SIZE, VIRTUAL_SIZE, Colors.BLUE)
         }
 
-        addFixedUpdater(30.timesPerSecond){
+        addFixedUpdater(30.timesPerSecond) {
             tick()
         }
 
-        gameMode.init()
     }
 
     private fun tick() {
@@ -36,15 +39,15 @@ class LevelScene  : Scene() {
 //        gameMode.afterRender(deltaTime)
     }
 
-    fun enterLevel(exit: Exit){
-        this.gameMode = LevelManager(exit.level, exit.exitId)
-    }
+//    fun enterLevel(exit: Exit){
+//        this.gameMode = LevelManager(exit.level, exit.exitId)
+//    }
 
-    fun exitLevel(levelId: Int, exitId: Int){
-        val exit = worldManager.worldMap.exits.first { it.level.id == levelId && it.exitId == exitId }
-        worldManager.worldMap.unlockNeighbors(exit)
-        worldManager.player.setPosition(exit)
-        this.gameMode = worldManager
+    fun exitLevel(levelId: Int, exitId: Int) {
+//        val exit = worldManager.worldMap.exits.first { it.level.id == levelId && it.exitId == exitId }
+//        worldManager.worldMap.unlockNeighbors(exit)
+//        worldManager.player.setPosition(exit)
+//        this.gameMode = worldManager
     }
 
 }
