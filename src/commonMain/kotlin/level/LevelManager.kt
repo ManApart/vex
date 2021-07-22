@@ -1,10 +1,7 @@
 package level
 
 import GameMode
-import input.Controller
-import input.ControllerDebugger
 import player.Player
-import worldMap.initializeRender
 
 class LevelManager(val level: LevelTemplate = Levels.levels[0]!!, exitId: Int = 0) : GameMode {
     val map = LevelMapBuilder().createMap(level)
@@ -18,12 +15,12 @@ class LevelManager(val level: LevelTemplate = Levels.levels[0]!!, exitId: Int = 
 
 
     override fun init(){
-        initializeRender()
+//        initializeRender()
     }
 
     override fun processInput(deltaTime: Float){
-        Controller.update(deltaTime)
-        ControllerDebugger.update()
+//        Controller.update(deltaTime)
+//        ControllerDebugger.update()
     }
 
     override fun render(){

@@ -1,6 +1,5 @@
 package player
 
-import input.Controller
 import physics.Rectangle
 import worldMap.Exit
 
@@ -28,13 +27,13 @@ class WorldMapPlayer(origin: Exit) {
     }
 
     private fun processKeys() {
-        if (Controller.jump.isFirstPressed()) {
-            if (currentExit == goalExit) {
-                Vex.enterLevel(currentExit)
-            }
-        }
-
-        val desiredAngle = Controller.getLeftStickAngle()
+//        if (Controller.jump.isFirstPressed()) {
+//            if (currentExit == goalExit) {
+//                Vex.enterLevel(currentExit)
+//            }
+//        }
+//
+//        val desiredAngle = Controller.getLeftStickAngle()
         // get connection with angle nearest to controller
         // set goal to that location
     }

@@ -4,8 +4,6 @@ import Color
 import physics.Rectangle
 import physics.Vector
 import player.Player
-import worldMap.drawBackground
-import worldMap.drawRectangle
 
 
 class LevelMapRenderer(private val map: LevelMap, private val player: Player) {
@@ -18,9 +16,9 @@ class LevelMapRenderer(private val map: LevelMap, private val player: Player) {
     fun render() {
         val offsetX = -player.body.bounds.x * tileSize + 70
         val offsetY = -player.body.bounds.y * tileSize + 230
-        drawBackground()
+//        drawBackground()
         drawTiles(offsetX, offsetY)
-        drawRectangle((player.body.bounds * tileSize) + Vector(offsetX, offsetY), playerColor)
+//        drawRectangle((player.body.bounds * tileSize) + Vector(offsetX, offsetY), playerColor)
 
     }
 
@@ -28,8 +26,8 @@ class LevelMapRenderer(private val map: LevelMap, private val player: Player) {
         for (x in 0 until map.getSize()) {
             for (y in 0 until map.getSize()) {
                 when (map.getTile(x, y).type) {
-                    TileType.TILE -> drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), tileColor)
-                    TileType.EXIT -> drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), spawnColor)
+//                    TileType.TILE -> drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), tileColor)
+//                    TileType.EXIT -> drawRectangle(Rectangle(x * tileSize + offsetX, offsetY + y * tileSize, tileSize, tileSize), spawnColor)
                     else -> {
                     }
                 }

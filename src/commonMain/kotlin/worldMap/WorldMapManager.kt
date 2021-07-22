@@ -1,8 +1,6 @@
 package worldMap
 
 import GameMode
-import input.Controller
-import input.ControllerDebugger
 import player.WorldMapPlayer
 
 class WorldMapManager : GameMode {
@@ -12,12 +10,11 @@ class WorldMapManager : GameMode {
     val player = WorldMapPlayer(start)
 
     override fun init() {
-        initializeRender()
     }
 
     override fun processInput(deltaTime: Float) {
-        Controller.update(deltaTime)
-        ControllerDebugger.update()
+//        Controller.update(deltaTime)
+//        ControllerDebugger.update()
     }
 
     override fun render() {

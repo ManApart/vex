@@ -1,7 +1,6 @@
 package player
 
 import level.LevelMap
-import input.Controller
 import level.TileType
 import physics.*
 import kotlin.math.abs
@@ -79,61 +78,61 @@ class Player(map: LevelMap) : RigidBodyOwner {
     }
 
     private fun processKeys() {
-        if (Controller.jump.isFirstPressed()) {
-            if (state != PlayerState.JUMPING && body.isCollidedAny(Direction.DOWN, Direction.LEFT, Direction.RIGHT)) {
-                if (isGrounded()) {
-                    setPlayerState(PlayerState.JUMPING)
-                } else {
-                    if (body.isCollided(Direction.RIGHT)) {
-                        body.velocity.x = -WALL_JUMP_KICKOFF_VELOCITY
-                        setPlayerState(PlayerState.WALL_JUMPING)
-                    } else if (body.isCollided(Direction.LEFT)) {
-                        body.velocity.x = WALL_JUMP_KICKOFF_VELOCITY
-                        setPlayerState(PlayerState.WALL_JUMPING)
-                    }
-                }
-            } else if (hasDoubleJump) {
-                hasDoubleJump = false
-                setPlayerState(PlayerState.JUMPING)
-            }
-        }
-
-        if (Controller.dashLeft.isFirstPressed()) {
-            if (state != PlayerState.DASHING) {
-                dir = Direction.LEFT
-                setPlayerState(PlayerState.DASHING)
-            }
-        }
-
-        if (Controller.dashRight.isFirstPressed()) {
-            if (state != PlayerState.DASHING) {
-                dir = Direction.RIGHT
-                setPlayerState(PlayerState.DASHING)
-            }
-        }
-
-        if (abs(Controller.xAxis.value) > 0 && state != PlayerState.WALL_JUMPING && state != PlayerState.DASHING) {
-            if (isGrounded() && state == PlayerState.IDLE) {
-                setPlayerState(PlayerState.RUNING)
-            }
-            dir = Direction.fromNumber(Controller.xAxis.value)
-            body.acceleration.x = ACCELERATION * Controller.xAxis.value
-        } else if (state == PlayerState.RUNING) {
-            if (isGrounded()) {
-                setPlayerState(PlayerState.IDLE)
-            }
-        }
-
-        if (abs(Controller.yAxis.value) > 0) {
-//            body.accel.y = player.ACCELERATION * Controller.yAxis.value
-        }
-
-        if (Controller.interact.isFirstPressed()) {
-            val exit = body.getContainingTiles().firstOrNull { it.type == TileType.EXIT }
-            if (exit != null) {
-                Vex.exitLevel(mapId, exit.id)
-            }
-        }
+//        if (Controller.jump.isFirstPressed()) {
+//            if (state != PlayerState.JUMPING && body.isCollidedAny(Direction.DOWN, Direction.LEFT, Direction.RIGHT)) {
+//                if (isGrounded()) {
+//                    setPlayerState(PlayerState.JUMPING)
+//                } else {
+//                    if (body.isCollided(Direction.RIGHT)) {
+//                        body.velocity.x = -WALL_JUMP_KICKOFF_VELOCITY
+//                        setPlayerState(PlayerState.WALL_JUMPING)
+//                    } else if (body.isCollided(Direction.LEFT)) {
+//                        body.velocity.x = WALL_JUMP_KICKOFF_VELOCITY
+//                        setPlayerState(PlayerState.WALL_JUMPING)
+//                    }
+//                }
+//            } else if (hasDoubleJump) {
+//                hasDoubleJump = false
+//                setPlayerState(PlayerState.JUMPING)
+//            }
+//        }
+//
+//        if (Controller.dashLeft.isFirstPressed()) {
+//            if (state != PlayerState.DASHING) {
+//                dir = Direction.LEFT
+//                setPlayerState(PlayerState.DASHING)
+//            }
+//        }
+//
+//        if (Controller.dashRight.isFirstPressed()) {
+//            if (state != PlayerState.DASHING) {
+//                dir = Direction.RIGHT
+//                setPlayerState(PlayerState.DASHING)
+//            }
+//        }
+//
+//        if (abs(Controller.xAxis.value) > 0 && state != PlayerState.WALL_JUMPING && state != PlayerState.DASHING) {
+//            if (isGrounded() && state == PlayerState.IDLE) {
+//                setPlayerState(PlayerState.RUNING)
+//            }
+//            dir = Direction.fromNumber(Controller.xAxis.value)
+//            body.acceleration.x = ACCELERATION * Controller.xAxis.value
+//        } else if (state == PlayerState.RUNING) {
+//            if (isGrounded()) {
+//                setPlayerState(PlayerState.IDLE)
+//            }
+//        }
+//
+//        if (abs(Controller.yAxis.value) > 0) {
+////            body.accel.y = player.ACCELERATION * Controller.yAxis.value
+//        }
+//
+//        if (Controller.interact.isFirstPressed()) {
+//            val exit = body.getContainingTiles().firstOrNull { it.type == TileType.EXIT }
+//            if (exit != null) {
+//                Vex.exitLevel(mapId, exit.id)
+//            }
+//        }
     }
 
     private fun updateState(deltaTime: Float) {

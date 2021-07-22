@@ -23,19 +23,19 @@ class WorldMapRenderer(private val map: WorldMap) {
         map.connections.filter { it.unlocked || Debug.allLevelsUnlocked }.forEach { connection ->
             val source = (connection.source.bounds.center() * levelScale) + connectionOffset
             val destination = (connection.destination.bounds.center() * levelScale) + connectionOffset
-            drawLine(source, destination, connectionColor)
+//            drawLine(source, destination, connectionColor)
         }
     }
 
 
     private fun drawLevels() {
         map.exits.filter { it.unlocked || Debug.allLevelsUnlocked }.forEach { exit ->
-            drawRectangle((exit.bounds * levelScale) + levelOffset, levelColor)
+//            drawRectangle((exit.bounds * levelScale) + levelOffset, levelColor)
         }
     }
 
     private fun drawPlayer(player: WorldMapPlayer) {
-        drawRectangle((player.bounds * levelScale) + levelOffset, playerColor)
+//        drawRectangle((player.bounds * levelScale) + levelOffset, playerColor)
     }
 
 }
