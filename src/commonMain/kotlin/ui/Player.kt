@@ -12,6 +12,7 @@ class Player(private val map: LevelMap) : Container() {
     fun init(spawnTile: Tile) {
         solidRect(TILE_SIZE, 2* TILE_SIZE, Colors.PINK)
         position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
+//            registerBodyWithFixture(type = BodyType.DYNAMIC, density = 2, friction = 0.01)
     }
 
 }

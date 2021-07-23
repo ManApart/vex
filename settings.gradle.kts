@@ -1,1 +1,1 @@
-rootProject.name = "stars-between"
+rootProject.name = "vex"

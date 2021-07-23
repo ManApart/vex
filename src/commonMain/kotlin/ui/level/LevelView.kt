@@ -8,7 +8,7 @@ import level.LevelMap
 const val TILE_SIZE = 10
 
 fun Container.paint(map: LevelMap) {
-    scale = 2.0
+    scale = 4.0
     (0 until map.size).flatMap { x ->
         (0 until map.size).map { y ->
             paint(map, x, y)
