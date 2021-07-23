@@ -14,6 +14,7 @@ buildscript {
     }
     dependencies {
         classpath("com.soywiz.korlibs.korge.plugins:korge-gradle-plugin:$korgePluginVersion")
+//        commonMainApi("com.soywiz.korlibs.korge:korge-box2d:$korgeVersion")
     }
 }
 apply<KorgeGradlePlugin>()

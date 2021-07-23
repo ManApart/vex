@@ -1,8 +1,6 @@
 package level
 
 import physics.Vector
-import player.PlayerOld
-import ui.Player
 
 /**
  * (0,0) is the bottom left of a map
@@ -25,21 +23,6 @@ class LevelMap(val id: Int = 0, private val tiles: Array<Array<Tile>>) {
     fun getSpawnTile(exitId: Int): Tile? {
         return tiles.flatten().firstOrNull { it.type == TileType.EXIT && it.id == exitId }
     }
-
-    fun spawnPlayer(player: Player, exitId: Int = 0) {
-        val spawnTile = tiles.flatten().firstOrNull { it.type == TileType.EXIT && it.id == exitId }
-        if (spawnTile != null) {
-//            player.body.bounds.x = spawnTile.x.toFloat()
-//            player.body.bounds.y = spawnTile.y.toFloat()
-        }
-    }
-//    fun spawnPlayer(player: PlayerOld, exitId: Int = 0) {
-//        val spawnTile = tiles.flatten().firstOrNull { it.type == TileType.EXIT && it.id == exitId }
-//        if (spawnTile != null) {
-//            player.body.bounds.x = spawnTile.x.toFloat()
-//            player.body.bounds.y = spawnTile.y.toFloat()
-//        }
-//    }
 
     fun getFirstCollision(ray: List<Vector>): Tile? {
         val vector = ray.firstOrNull { getTile(it.x, it.y).type == TileType.TILE }

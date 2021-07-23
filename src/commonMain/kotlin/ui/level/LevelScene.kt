@@ -10,7 +10,6 @@ import com.soywiz.korim.color.Colors
 import level.LevelMap
 import level.LevelMapBuilder
 import level.LevelTemplate
-import player.PlayerOld
 import ui.Player
 import ui.VIRTUAL_SIZE
 import kotlin.properties.Delegates
