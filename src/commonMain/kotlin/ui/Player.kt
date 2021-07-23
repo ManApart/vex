@@ -4,12 +4,14 @@ import clamp
 import com.soywiz.klock.TimeSpan
 import com.soywiz.klock.timesPerSecond
 import com.soywiz.korev.Key
+import com.soywiz.korge.box2d.registerBodyWithFixture
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korma.geom.Point
 import level.LevelMap
 import level.Tile
+import org.jbox2d.dynamics.BodyType
 import ui.level.TILE_SIZE
 import kotlin.math.abs
 import kotlin.math.min
@@ -37,7 +39,7 @@ class Player(private val map: LevelMap) : Container() {
         solidRect(TILE_SIZE, 2 * TILE_SIZE, Colors.PINK)
         position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
 
-//        solidRect(50, 50, Colors.RED).position(400, 50).registerBodyWithFixture(type = BodyType.DYNAMIC, density = 2, friction = 0.01)
+        registerBodyWithFixture(type = BodyType.DYNAMIC, density = 2, friction = 0.01, gravityScale = 0.0)
 //            registerBodyWithFixture(type = BodyType.DYNAMIC, density = 2, friction = 0.01)
         setupControls()
         addFixedUpdater(30.timesPerSecond) {
