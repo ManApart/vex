@@ -5,20 +5,7 @@ package player
 //import physics.*
 //import kotlin.math.abs
 //
-//const val MAX_X_VEL = 6.0
-//const val MAX_X_AIR_VEL = 6.0
-//const val MAX_Y_VEL = 10.0
-//const val GRAVITY = 20.0
-//private const val ACCELERATION = 20f
-//
-//private const val JUMP_VELOCITY = 10f
-//private const val WALL_JUMP_KICKOFF_VELOCITY = 5f
-//private const val WALL_JUMP_KICKOFF_VELOCITY_Y = 6f
-//private const val JUMP_TIME = .1f
-//private const val WALL_JUMP_TIME = .1f
-//
-//private const val DASH_VELOCITY = 20f
-//private const val DASH_TIME = .15f
+
 //
 //
 //class PlayerOld(map: LevelMap) : RigidBodyOwner {

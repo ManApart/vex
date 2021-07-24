@@ -6,10 +6,12 @@ import com.soywiz.korev.Key
 import com.soywiz.korge.box2d.body
 import com.soywiz.korge.box2d.registerBodyWithFixture
 import com.soywiz.korge.input.keys
+import com.soywiz.korge.scene.SceneContainer
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import level.LevelMap
 import level.Tile
+import level.TileType
 import org.jbox2d.collision.shapes.CircleShape
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.BodyType
@@ -38,7 +40,7 @@ class Player(private val map: LevelMap) : Container() {
 
         container {
             position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
-            solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK).xy( - TILE_SIZE / 2, - TILE_SIZE)
+            solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK).xy(-TILE_SIZE / 2, -TILE_SIZE)
             registerBodyWithFixture(
                 type = BodyType.DYNAMIC,
                 density = 2,
@@ -47,6 +49,20 @@ class Player(private val map: LevelMap) : Container() {
                 shape = CircleShape(0.225)
             )
             this@Player.body = body!!
+
+            var previousTile = map.getTile(0,0)
+            onCollision(filter = {
+                val tile = map.getTile((it.pos.x / TILE_SIZE).toInt(), (it.pos.y / TILE_SIZE).toInt())
+                it is SolidRect
+                        && (tile.x != 0 && tile.y != 0)
+                        && tile != previousTile
+                        && tile.type != TileType.SPACE
+            }) { other ->
+                val tile = map.getTile((other.pos.x / TILE_SIZE).toInt(), (other.pos.y / TILE_SIZE).toInt())
+                println("Collided wit $tile")
+                previousTile = tile
+            }
+
             setupControls()
         }
 
