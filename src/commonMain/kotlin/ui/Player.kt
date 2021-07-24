@@ -10,6 +10,7 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import level.LevelMap
 import level.Tile
+import org.jbox2d.collision.shapes.CircleShape
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.BodyType
 import ui.level.TILE_SIZE
@@ -35,19 +36,18 @@ class Player(private val map: LevelMap) : Container() {
 
     fun init(spawnTile: Tile) {
 
-        val collider = ellipse(0.9 * TILE_SIZE / 2.0, 0.9 * TILE_SIZE / 2.0, Colors.PINK) {
-            alpha = 0.0
+        container {
             position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
-
-            registerBodyWithFixture(type = BodyType.DYNAMIC, density = 2, friction = 1, fixedRotation = true)
+            solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK).xy( - TILE_SIZE / 2, - TILE_SIZE)
+            registerBodyWithFixture(
+                type = BodyType.DYNAMIC,
+                density = 2,
+                friction = 1,
+                fixedRotation = true,
+                shape = CircleShape(0.225)
+            )
             this@Player.body = body!!
             setupControls()
-        }
-
-        solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK) {
-            addUpdater {
-                position(collider.x - TILE_SIZE / 2, collider.y - TILE_SIZE)
-            }
         }
 
     }
