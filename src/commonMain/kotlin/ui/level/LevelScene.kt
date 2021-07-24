@@ -3,9 +3,6 @@ package ui.level
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.camera.cameraContainer
-import com.soywiz.korge.view.centerOn
-import com.soywiz.korge.view.solidRect
-import com.soywiz.korim.color.Colors
 import level.LevelMap
 import level.LevelMapBuilder
 import level.LevelTemplate
