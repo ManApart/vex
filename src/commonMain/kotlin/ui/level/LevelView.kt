@@ -11,7 +11,7 @@ import org.jbox2d.dynamics.BodyType
 const val TILE_SIZE = 10
 
 fun Container.paint(map: LevelMap) {
-    scale = 4.0
+    scale = 1.0
     (0 until map.size).flatMap { x ->
         (0 until map.size).map { y ->
             paint(map, x, y)

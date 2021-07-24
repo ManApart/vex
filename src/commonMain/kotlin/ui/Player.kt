@@ -50,18 +50,9 @@ class Player(private val map: LevelMap) : Container() {
             )
             this@Player.body = body!!
 
-            var previousTile = map.getTile(0,0)
-            onCollision(filter = {
-                val tile = map.getTile((it.pos.x / TILE_SIZE).toInt(), (it.pos.y / TILE_SIZE).toInt())
-                it is SolidRect
-                        && (tile.x != 0 && tile.y != 0)
-                        && tile != previousTile
-                        && tile.type != TileType.SPACE
-            }) { other ->
-                val tile = map.getTile((other.pos.x / TILE_SIZE).toInt(), (other.pos.y / TILE_SIZE).toInt())
-                println("Collided wit $tile")
-                previousTile = tile
-            }
+            body!!.world
+
+            setupCollision()
 
             setupControls()
         }
@@ -72,7 +63,7 @@ class Player(private val map: LevelMap) : Container() {
 
         keys {
             justDown(Key.SPACE) {
-                body.let { it.linearVelocityY += 30 }
+                body.linearVelocityY = -6f
             }
         }
         addUpdaterWithViews { views: Views, dt: TimeSpan ->
@@ -85,7 +76,24 @@ class Player(private val map: LevelMap) : Container() {
                 }
 
             }
-            body?.let { it.linearVelocityX = clamp(it.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL) }
+            body.linearVelocityX = clamp(body.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
+        }
+    }
+
+    private fun setupCollision() {
+        val previousTiles = mutableListOf<View>()
+        onCollision(filter = {
+            val tile = map.getTile((it.pos.x / TILE_SIZE).toInt(), (it.pos.y / TILE_SIZE).toInt())
+            it is SolidRect
+                    && (tile.x != 0 && tile.y != 0)
+                    && !previousTiles.contains(it)
+                    && tile.type != TileType.SPACE
+        }) { other ->
+            val tile = map.getTile((other.pos.x / TILE_SIZE).toInt(), (other.pos.y / TILE_SIZE).toInt())
+            previousTiles.add(other)
+        }
+        onCollisionExit {
+            previousTiles.remove(it)
         }
     }
 
