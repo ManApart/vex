@@ -6,7 +6,6 @@ import com.soywiz.korev.Key
 import com.soywiz.korge.box2d.body
 import com.soywiz.korge.box2d.registerBodyWithFixture
 import com.soywiz.korge.input.keys
-import com.soywiz.korge.scene.SceneContainer
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import level.LevelMap
@@ -34,11 +33,10 @@ private const val DASH_VELOCITY = 20
 private const val DASH_TIME = .15
 
 class Player(private val map: LevelMap) : Container() {
-    private lateinit var body: Body
+    private lateinit var body2: Body
 
     fun init(spawnTile: Tile) {
 
-        container {
             position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
             solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK).xy(-TILE_SIZE / 2, -TILE_SIZE)
             registerBodyWithFixture(
@@ -48,14 +46,10 @@ class Player(private val map: LevelMap) : Container() {
                 fixedRotation = true,
                 shape = CircleShape(0.225)
             )
-            this@Player.body = body!!
-
-            body!!.world
+            this@Player.body2 = this.body!!
 
             setupCollision()
-
             setupControls()
-        }
 
     }
 
@@ -63,7 +57,7 @@ class Player(private val map: LevelMap) : Container() {
 
         keys {
             justDown(Key.SPACE) {
-                body.linearVelocityY = -6f
+                body2.linearVelocityY = -6f
             }
         }
         addUpdaterWithViews { views: Views, dt: TimeSpan ->
@@ -76,7 +70,7 @@ class Player(private val map: LevelMap) : Container() {
                 }
 
             }
-            body.linearVelocityX = clamp(body.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
+            body2.linearVelocityX = clamp(body2.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
         }
     }
 

@@ -1,10 +1,9 @@
 package ui.level
 
-import com.soywiz.klock.timesPerSecond
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.addFixedUpdater
-import com.soywiz.korge.view.fixedSizeContainer
+import com.soywiz.korge.view.camera.cameraContainer
+import com.soywiz.korge.view.centerOn
 import com.soywiz.korge.view.solidRect
 import com.soywiz.korim.color.Colors
 import level.LevelMap
@@ -22,25 +21,13 @@ class LevelScene(private val template: LevelTemplate, private val spawnExitId: I
         map = LevelMapBuilder().createMap(template)
         player = Player(map)
 
-
-        fixedSizeContainer(VIRTUAL_SIZE, VIRTUAL_SIZE, clip = false) {
-            solidRect(VIRTUAL_SIZE, VIRTUAL_SIZE, Colors.BLUE)
-            paint(map)
-            addChild(player)
+        cameraContainer(VIRTUAL_SIZE.toDouble(), VIRTUAL_SIZE.toDouble(), clip = true) {
+            paint(map).addChild(player)
             player.init(map.getSpawnTile(spawnExitId)!!)
-        }
-
-        addFixedUpdater(30.timesPerSecond) {
-            tick()
-        }
+        }.follow(player, true)
 
     }
 
-    private fun tick() {
-//        processInput(deltaTime)
-//        render()
-//        gameMode.afterRender(deltaTime)
-    }
 
 //    fun enterLevel(exit: Exit){
 //        this.gameMode = LevelManager(exit.level, exit.exitId)
