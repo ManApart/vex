@@ -2,10 +2,14 @@ package ui
 
 import clamp
 import com.soywiz.klock.TimeSpan
+import com.soywiz.korev.GameButton
+import com.soywiz.korev.GameStick
 import com.soywiz.korev.Key
 import com.soywiz.korge.box2d.body
 import com.soywiz.korge.box2d.registerBodyWithFixture
+import com.soywiz.korge.input.gamepad
 import com.soywiz.korge.input.keys
+import com.soywiz.korge.input.onDown
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import level.LevelMap
@@ -63,27 +67,40 @@ class Player(private val map: LevelMap) : Container() {
 
     private fun setupControls() {
 
+        gamepad {
+            down(0, GameButton.BUTTON0) {
+                jump()
+            }
+        }
+
         keys {
             justDown(Key.SPACE) {
-                if (grounded) {
-                    rigidBody.linearVelocityY = -6f
-                } else if (hasDoubleJump){
-                    hasDoubleJump = false
-                    rigidBody.linearVelocityY = -6f
-                }
+                jump()
             }
         }
         addUpdaterWithViews { views: Views, dt: TimeSpan ->
             var dx = 0f
             val scale = dt.milliseconds.toFloat() / 20
             with(views.input) {
+                val buttons = connectedGamepads.firstOrNull()
+                val stickAmount = buttons?.get(GameStick.LEFT)?.x ?: 0.0
                 when {
+                    abs(stickAmount) > .1f -> dx = (stickAmount * ACCELERATION * scale).toFloat()
                     keys[Key.RIGHT] -> dx = ACCELERATION * scale
                     keys[Key.LEFT] -> dx = -ACCELERATION * scale
                 }
 
             }
             rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
+        }
+    }
+
+    private fun jump() {
+        if (grounded) {
+            rigidBody.linearVelocityY = -6f
+        } else if (hasDoubleJump) {
+            hasDoubleJump = false
+            rigidBody.linearVelocityY = -6f
         }
     }
 
