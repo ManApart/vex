@@ -44,6 +44,7 @@ class Player(private val map: LevelMap) : Container() {
 
     private var goingRight = true
     private var hasDoubleJump = false
+    private var hasDash = true
     private var grounded = false
     private var touchingWallLeft = false
     private var touchingWallRight = false
@@ -71,6 +72,8 @@ class Player(private val map: LevelMap) : Container() {
     private fun addOnUpdate() {
         addUpdater { dt ->
             stateTime += dt.milliseconds
+            if(grounded) hasDash = true
+
             when (state) {
                 PlayerState.DASHING -> {
                     if (stateTime > DASH_TIME) {
@@ -78,6 +81,21 @@ class Player(private val map: LevelMap) : Container() {
                         setPlayerState(newState)
                     } else {
                         rigidBody.linearVelocityX = if (goingRight) DASH_VELOCITY else -DASH_VELOCITY
+                    }
+                }
+                PlayerState.JUMPING -> {
+                    if (rigidBody.linearVelocityY > 0) {
+                        setPlayerState(PlayerState.FALLING)
+                    }
+                }
+                PlayerState.RUNNING -> {
+                    if (abs(rigidBody.linearVelocityX) < .1) {
+                        setPlayerState(PlayerState.IDLE)
+                    }
+                }
+                PlayerState.IDLE -> {
+                    if (abs(rigidBody.linearVelocityX) > .1) {
+                        setPlayerState(PlayerState.RUNNING)
                     }
                 }
             }
@@ -168,8 +186,8 @@ class Player(private val map: LevelMap) : Container() {
     }
 
     private fun dash(right: Boolean = true) {
-        if (state == PlayerState.DASHING) return
-
+        if (state == PlayerState.DASHING || !hasDash) return
+        hasDash = false
         setPlayerState(PlayerState.DASHING)
         if (right) {
             goingRight = true
@@ -195,6 +213,7 @@ class Player(private val map: LevelMap) : Container() {
     private fun onGroundContact() {
         grounded = true
         hasDoubleJump = true
+        hasDash = true
         if (state == PlayerState.FALLING) setPlayerState(PlayerState.RUNNING)
     }
 
