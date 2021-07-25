@@ -2,6 +2,20 @@
 
 Essentially forked / branched from [an older repo](https://github.com/ManApart/vex) when the GDX (JInput) seemed to not recognize Windows 10 and then crash on startup.
 
+## Running
+
+```
+runJvm
+runJs
+jsBrowserDistribution
+```
+
+## Pushing to web
+
+```
+aws s3 sync build/distributions/ s3://austinkucera.com/games/vex/
+```
+
 ## TODO
 
 
