@@ -9,7 +9,6 @@ import com.soywiz.korge.box2d.body
 import com.soywiz.korge.box2d.registerBodyWithFixture
 import com.soywiz.korge.input.gamepad
 import com.soywiz.korge.input.keys
-import com.soywiz.korge.input.onDown
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import level.LevelMap
@@ -48,9 +47,11 @@ class Player(private val map: LevelMap) : Container() {
     private var grounded = false
 
     fun init(spawnTile: Tile) {
-
         position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
         solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK).xy(-TILE_SIZE / 2, -TILE_SIZE)
+//        createColliderBox()
+        val footTrigger = Trigger(map, ::onGroundContact, ::onLeaveGround, false)
+        footTrigger.init(this)
         registerBodyWithFixture(
             type = BodyType.DYNAMIC,
             density = 2,
@@ -60,7 +61,6 @@ class Player(private val map: LevelMap) : Container() {
         )
         this@Player.rigidBody = this.body!!
 
-        setupCollision()
         setupControls()
 
     }
@@ -104,30 +104,18 @@ class Player(private val map: LevelMap) : Container() {
         }
     }
 
-    private fun setupCollision() {
-        val previousTiles = mutableListOf<View>()
-        onCollision(filter = {
-            val tile = map.getTile((it.pos.x / TILE_SIZE).toInt(), (it.pos.y / TILE_SIZE).toInt())
-            it is SolidRect
-                    && (tile.x != 0 && tile.y != 0)
-                    && !previousTiles.contains(it)
-                    && tile.type != TileType.SPACE
-        }) { other ->
-            previousTiles.add(other)
-            grounded = true
-            hasDoubleJump = true
-//            setPlayerState(PlayerState.IDLE)
-        }
-        onCollisionExit {
-            previousTiles.remove(it)
-            if (previousTiles.isEmpty()) grounded = false
-        }
-    }
-
     private fun setPlayerState(state: PlayerState) {
         println("${this.state} -> $state")
         this.state = state
         this.stateTime = 0f
     }
 
+    private fun onLeaveGround() {
+        grounded = false
+    }
+    private fun onGroundContact() {
+        println("Grounded")
+        grounded = true
+        hasDoubleJump =true
+    }
 }
