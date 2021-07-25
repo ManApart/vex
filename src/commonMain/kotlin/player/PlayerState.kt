@@ -2,7 +2,7 @@ package player
 
 enum class PlayerState {
     IDLE,
-    RUNING,
+    RUNNING,
     JUMPING,
     FALLING,
     DASHING,

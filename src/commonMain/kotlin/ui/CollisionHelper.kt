@@ -2,22 +2,28 @@ package ui
 
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
+import com.soywiz.korim.color.RGBA
+import com.soywiz.korma.geom.shape.Shape2d
 import level.LevelMap
 import level.TileType
+import physics.Rectangle
 import ui.level.TILE_SIZE
 
 class Trigger(
+    parent: Container,
+    rect: Rectangle,
     private val map: LevelMap,
     private val onContactStart: () -> Unit = {},
     private val onContactEnd: () -> Unit = {},
-    private val display: Boolean = false
+    display: Boolean = false,
+    color: RGBA = Colors.GREEN
 ) : Container() {
     private val contactedViews = mutableListOf<View>()
 
-    fun init(parent: Container) {
+    init {
         parent.addChild(this)
-        solidRect(1.1 * TILE_SIZE, .3 * TILE_SIZE, Colors.GREEN) {
-            xy(-1.1 * TILE_SIZE / 2, TILE_SIZE / 2.0)
+        solidRect(rect.width.toDouble(), rect.height.toDouble(), color) {
+            xy(rect.x, rect.y)
             if (!display) alpha = 0.0
         }
 

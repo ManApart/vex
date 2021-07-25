@@ -27,7 +27,7 @@ private fun Container.paint(map: LevelMap, x: Int, y: Int) {
     solidRect(TILE_SIZE, TILE_SIZE, tile.type.color) {
         position(x * TILE_SIZE, y * TILE_SIZE)
         if (tile.type == TileType.TILE) {
-            registerBodyWithFixture(type = BodyType.STATIC)
+            registerBodyWithFixture(type = BodyType.STATIC, restitution = 0)
         }
     }
 }

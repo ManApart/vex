@@ -13,10 +13,10 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import level.LevelMap
 import level.Tile
-import level.TileType
 import org.jbox2d.collision.shapes.CircleShape
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.BodyType
+import physics.Rectangle
 import player.PlayerState
 import ui.level.TILE_SIZE
 import kotlin.math.abs
@@ -34,35 +34,79 @@ private const val WALL_JUMP_KICKOFF_VELOCITY_Y = 6
 private const val JUMP_TIME = .1
 private const val WALL_JUMP_TIME = .1
 
-private const val DASH_VELOCITY = 20
-private const val DASH_TIME = .15
+private const val DASH_VELOCITY = 10f
+private const val DASH_TIME = 150.0
 
 class Player(private val map: LevelMap) : Container() {
     private lateinit var rigidBody: Body
     private var state = PlayerState.FALLING
-    private var stateTime = 0f
+    private var stateTime = 0.0
 
-    //        var dir = Direction.LEFT
+    private var goingRight = true
     private var hasDoubleJump = false
     private var grounded = false
+    private var touchingWallLeft = false
+    private var touchingWallRight = false
 
     fun init(spawnTile: Tile) {
         position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
         solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK).xy(-TILE_SIZE / 2, -TILE_SIZE)
-//        createColliderBox()
-        val footTrigger = Trigger(map, ::onGroundContact, ::onLeaveGround, false)
-        footTrigger.init(this)
+
+        addTriggers()
+
         registerBodyWithFixture(
             type = BodyType.DYNAMIC,
             density = 2,
             friction = 1,
             fixedRotation = true,
-            shape = CircleShape(0.225)
+            shape = CircleShape(0.225),
+            restitution = 0
         )
         this@Player.rigidBody = this.body!!
 
         setupControls()
 
+        addOnUpdate()
+    }
+
+    private fun addOnUpdate() {
+        addUpdater { dt ->
+            stateTime += dt.milliseconds
+            when (state) {
+                PlayerState.DASHING -> {
+                    if (stateTime > DASH_TIME) {
+                        val newState = if(grounded) PlayerState.RUNNING else PlayerState.FALLING
+                        setPlayerState(newState)
+                    } else {
+                        rigidBody.linearVelocityX = if (goingRight) DASH_VELOCITY else -DASH_VELOCITY
+                    }
+                }
+            }
+        }
+    }
+
+    private fun addTriggers() {
+        val groundRect = Rectangle(-0.9f * TILE_SIZE / 2, TILE_SIZE / 2f, 0.9f * TILE_SIZE, .3f * TILE_SIZE)
+        Trigger(this, groundRect, map, ::onGroundContact, ::onLeaveGround, true)
+
+        Trigger(
+            this,
+            Rectangle(TILE_SIZE / 2f, TILE_SIZE / 3f, TILE_SIZE / 2.1f, .3f * TILE_SIZE),
+            map,
+            { touchingWallRight = true },
+            { touchingWallRight = false },
+            true,
+            Colors.PEACHPUFF
+        )
+        Trigger(
+            this,
+            Rectangle(-TILE_SIZE / 1f, TILE_SIZE / 3f, TILE_SIZE / 2.1f, .3f * TILE_SIZE),
+            map,
+            { touchingWallLeft = true },
+            { touchingWallLeft = false },
+            true,
+            Colors.INDIGO
+        )
     }
 
     private fun setupControls() {
@@ -77,6 +121,12 @@ class Player(private val map: LevelMap) : Container() {
             justDown(Key.SPACE) {
                 jump()
             }
+            justDown(Key.Z) {
+                dash(false)
+            }
+            justDown(Key.X) {
+                dash(true)
+            }
         }
         addUpdaterWithViews { views: Views, dt: TimeSpan ->
             var dx = 0f
@@ -89,8 +139,8 @@ class Player(private val map: LevelMap) : Container() {
                     keys[Key.RIGHT] -> dx = ACCELERATION * scale
                     keys[Key.LEFT] -> dx = -ACCELERATION * scale
                 }
-
             }
+            if (dx != 0f) goingRight = dx > 0
             rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
         }
     }
@@ -98,24 +148,41 @@ class Player(private val map: LevelMap) : Container() {
     private fun jump() {
         if (grounded) {
             rigidBody.linearVelocityY = -6f
+            setPlayerState(PlayerState.JUMPING)
         } else if (hasDoubleJump) {
             hasDoubleJump = false
             rigidBody.linearVelocityY = -6f
+            setPlayerState(PlayerState.JUMPING)
+        }
+    }
+
+    private fun dash(right: Boolean = true) {
+        setPlayerState(PlayerState.DASHING)
+        if (right) {
+            goingRight = true
+            rigidBody.linearVelocityX = DASH_VELOCITY
+        } else {
+            goingRight = false
+            rigidBody.linearVelocityX = -DASH_VELOCITY
         }
     }
 
     private fun setPlayerState(state: PlayerState) {
-        println("${this.state} -> $state")
-        this.state = state
-        this.stateTime = 0f
+        if (this.state != state) {
+            println("${this.state} -> $state")
+            this.state = state
+            this.stateTime = 0.0
+        }
     }
 
     private fun onLeaveGround() {
         grounded = false
     }
+
     private fun onGroundContact() {
-        println("Grounded")
         grounded = true
-        hasDoubleJump =true
+        hasDoubleJump = true
+       if (state == PlayerState.FALLING) setPlayerState(PlayerState.RUNNING)
     }
+
 }
