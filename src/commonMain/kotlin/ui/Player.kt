@@ -28,9 +28,9 @@ const val GRAVITY = 20.0
 private const val ACCELERATION = .2f
 private const val FRICTION = 1.0
 
-private const val JUMP_VELOCITY = 10
-private const val WALL_JUMP_KICKOFF_VELOCITY = 5
-private const val WALL_JUMP_KICKOFF_VELOCITY_Y = 6
+private const val JUMP_VELOCITY = 6f
+private const val WALL_JUMP_KICKOFF_VELOCITY = 5f
+private const val WALL_JUMP_KICKOFF_VELOCITY_Y = 6f
 private const val JUMP_TIME = .1
 private const val WALL_JUMP_TIME = .1
 
@@ -65,7 +65,6 @@ class Player(private val map: LevelMap) : Container() {
         this@Player.rigidBody = this.body!!
 
         setupControls()
-
         addOnUpdate()
     }
 
@@ -75,7 +74,7 @@ class Player(private val map: LevelMap) : Container() {
             when (state) {
                 PlayerState.DASHING -> {
                     if (stateTime > DASH_TIME) {
-                        val newState = if(grounded) PlayerState.RUNNING else PlayerState.FALLING
+                        val newState = if (grounded) PlayerState.RUNNING else PlayerState.FALLING
                         setPlayerState(newState)
                     } else {
                         rigidBody.linearVelocityX = if (goingRight) DASH_VELOCITY else -DASH_VELOCITY
@@ -91,26 +90,25 @@ class Player(private val map: LevelMap) : Container() {
 
         Trigger(
             this,
-            Rectangle(TILE_SIZE / 2f, TILE_SIZE / 3f, TILE_SIZE / 2.1f, .3f * TILE_SIZE),
+            Rectangle(TILE_SIZE / 2.7f, TILE_SIZE / 3f, TILE_SIZE / 1.5f, .3f * TILE_SIZE),
             map,
             { touchingWallRight = true },
             { touchingWallRight = false },
             true,
-            Colors.PEACHPUFF
+            Colors.RED
         )
         Trigger(
             this,
-            Rectangle(-TILE_SIZE / 1f, TILE_SIZE / 3f, TILE_SIZE / 2.1f, .3f * TILE_SIZE),
+            Rectangle(-TILE_SIZE * 1f, TILE_SIZE / 3f, TILE_SIZE / 1.5f, .3f * TILE_SIZE),
             map,
             { touchingWallLeft = true },
             { touchingWallLeft = false },
             true,
-            Colors.INDIGO
+            Colors.YELLOWGREEN
         )
     }
 
     private fun setupControls() {
-
         gamepad {
             down(0, GameButton.BUTTON0) {
                 jump()
@@ -146,17 +144,32 @@ class Player(private val map: LevelMap) : Container() {
     }
 
     private fun jump() {
-        if (grounded) {
-            rigidBody.linearVelocityY = -6f
-            setPlayerState(PlayerState.JUMPING)
-        } else if (hasDoubleJump) {
-            hasDoubleJump = false
-            rigidBody.linearVelocityY = -6f
-            setPlayerState(PlayerState.JUMPING)
+        when {
+            grounded -> {
+                rigidBody.linearVelocityY = -JUMP_VELOCITY
+                setPlayerState(PlayerState.JUMPING)
+            }
+            touchingWallRight -> {
+                rigidBody.linearVelocityX = -WALL_JUMP_KICKOFF_VELOCITY
+                rigidBody.linearVelocityY = -WALL_JUMP_KICKOFF_VELOCITY_Y
+                setPlayerState(PlayerState.JUMPING)
+            }
+            touchingWallLeft -> {
+                rigidBody.linearVelocityX = WALL_JUMP_KICKOFF_VELOCITY
+                rigidBody.linearVelocityY = -WALL_JUMP_KICKOFF_VELOCITY_Y
+                setPlayerState(PlayerState.JUMPING)
+            }
+            hasDoubleJump -> {
+                hasDoubleJump = false
+                rigidBody.linearVelocityY = -JUMP_VELOCITY
+                setPlayerState(PlayerState.JUMPING)
+            }
         }
     }
 
     private fun dash(right: Boolean = true) {
+        if (state == PlayerState.DASHING) return
+
         setPlayerState(PlayerState.DASHING)
         if (right) {
             goingRight = true
@@ -182,7 +195,7 @@ class Player(private val map: LevelMap) : Container() {
     private fun onGroundContact() {
         grounded = true
         hasDoubleJump = true
-       if (state == PlayerState.FALLING) setPlayerState(PlayerState.RUNNING)
+        if (state == PlayerState.FALLING) setPlayerState(PlayerState.RUNNING)
     }
 
 }
