@@ -6,7 +6,6 @@ import com.soywiz.korge.view.camera.cameraContainer
 import level.LevelMap
 import level.LevelMapBuilder
 import level.LevelTemplate
-import ui.Player
 import ui.VIRTUAL_SIZE
 import kotlin.properties.Delegates
 

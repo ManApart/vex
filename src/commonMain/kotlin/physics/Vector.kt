@@ -1,5 +1,6 @@
 package physics
 
+import com.soywiz.korma.geom.Point
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -136,6 +137,10 @@ data class Vector(var x: Float = 0f, var y: Float = 0f) {
         if (previousPoint != rounded) {
             points.add(rounded)
         }
+    }
+
+    fun toPoint(): Point {
+        return Point(x, y)
     }
 
 }

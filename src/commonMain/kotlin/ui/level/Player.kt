@@ -1,4 +1,4 @@
-package ui
+package ui.level
 
 import clamp
 import com.soywiz.klock.TimeSpan
@@ -18,7 +18,7 @@ import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.BodyType
 import physics.Rectangle
 import player.PlayerState
-import ui.level.TILE_SIZE
+import ui.Trigger
 import kotlin.math.abs
 
 const val MAX_X_VEL = 2f
