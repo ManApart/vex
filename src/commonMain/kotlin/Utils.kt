@@ -5,6 +5,7 @@ fun clamp(x: Float, min: Float, max: Float) : Float {
         else -> x
     }
 }
+
 fun clamp(x: Double, min: Double, max: Double) : Double {
    return when {
         x < min -> min

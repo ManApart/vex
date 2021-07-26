@@ -22,17 +22,15 @@ import ui.level.TILE_SIZE
 import kotlin.math.abs
 
 const val MAX_X_VEL = 2f
-const val MAX_X_AIR_VEL = 6.0
-const val MAX_Y_VEL = 10.0
-const val GRAVITY = 20.0
+const val MAX_X_AIR_VEL = 6.0f
+const val MAX_Y_VEL = 10.0f
 private const val ACCELERATION = .2f
 private const val FRICTION = 1.0
 
-private const val JUMP_VELOCITY = 6f
+private const val JUMP_VELOCITY = 3f
 private const val WALL_JUMP_KICKOFF_VELOCITY = 5f
 private const val WALL_JUMP_KICKOFF_VELOCITY_Y = 6f
-private const val JUMP_TIME = .1
-private const val WALL_JUMP_TIME = .1
+private const val JUMP_TIME = 300
 
 private const val DASH_VELOCITY = 10f
 private const val DASH_TIME = 150.0
@@ -48,6 +46,7 @@ class Player(private val map: LevelMap) : Container() {
     private var grounded = false
     private var touchingWallLeft = false
     private var touchingWallRight = false
+    private var jumpHeld = false
 
     fun init(spawnTile: Tile) {
         position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
@@ -58,7 +57,7 @@ class Player(private val map: LevelMap) : Container() {
         registerBodyWithFixture(
             type = BodyType.DYNAMIC,
             density = 2,
-            friction = 1,
+            friction = FRICTION,
             fixedRotation = true,
             shape = CircleShape(0.225),
             restitution = 0
@@ -67,39 +66,6 @@ class Player(private val map: LevelMap) : Container() {
 
         setupControls()
         addOnUpdate()
-    }
-
-    private fun addOnUpdate() {
-        addUpdater { dt ->
-            stateTime += dt.milliseconds
-            if(grounded) hasDash = true
-
-            when (state) {
-                PlayerState.DASHING -> {
-                    if (stateTime > DASH_TIME) {
-                        val newState = if (grounded) PlayerState.RUNNING else PlayerState.FALLING
-                        setPlayerState(newState)
-                    } else {
-                        rigidBody.linearVelocityX = if (goingRight) DASH_VELOCITY else -DASH_VELOCITY
-                    }
-                }
-                PlayerState.JUMPING -> {
-                    if (rigidBody.linearVelocityY > 0) {
-                        setPlayerState(PlayerState.FALLING)
-                    }
-                }
-                PlayerState.RUNNING -> {
-                    if (abs(rigidBody.linearVelocityX) < .1) {
-                        setPlayerState(PlayerState.IDLE)
-                    }
-                }
-                PlayerState.IDLE -> {
-                    if (abs(rigidBody.linearVelocityX) > .1) {
-                        setPlayerState(PlayerState.RUNNING)
-                    }
-                }
-            }
-        }
     }
 
     private fun addTriggers() {
@@ -127,23 +93,22 @@ class Player(private val map: LevelMap) : Container() {
     }
 
     private fun setupControls() {
+
         gamepad {
-            down(0, GameButton.BUTTON0) {
-                jump()
-            }
+            down(0, GameButton.BUTTON0) { jumpHeld = true; jump() }
+            up(0, GameButton.BUTTON0) { jumpHeld = false }
+            down(0, GameButton.L1) { dash(false) }
+            down(0, GameButton.R1) { dash(true) }
+            down(0, GameButton.BUTTON2) { interact() }
         }
 
         keys {
-            justDown(Key.SPACE) {
-                jump()
-            }
-            justDown(Key.Z) {
-                dash(false)
-            }
-            justDown(Key.X) {
-                dash(true)
-            }
+            justDown(Key.SPACE) { jump() }
+            justDown(Key.Z) { dash(false) }
+            justDown(Key.X) { dash(true) }
+            justDown(Key.V) { interact() }
         }
+
         addUpdaterWithViews { views: Views, dt: TimeSpan ->
             var dx = 0f
             val scale = dt.milliseconds.toFloat() / 20
@@ -158,6 +123,47 @@ class Player(private val map: LevelMap) : Container() {
             }
             if (dx != 0f) goingRight = dx > 0
             rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
+        }
+    }
+
+    private fun addOnUpdate() {
+        addUpdater { dt ->
+            stateTime += dt.milliseconds
+            if (grounded) hasDash = true
+
+            when (state) {
+                PlayerState.DASHING -> {
+                    if (stateTime > DASH_TIME) {
+                        val newState = if (grounded) PlayerState.RUNNING else PlayerState.FALLING
+                        setPlayerState(newState)
+                    } else {
+                        rigidBody.linearVelocityX = if (goingRight) DASH_VELOCITY else -DASH_VELOCITY
+                    }
+                }
+                PlayerState.JUMPING -> {
+                    if (stateTime < JUMP_TIME && jumpHeld) {
+                        rigidBody.linearVelocityY = -JUMP_VELOCITY
+                    } else {
+                        setPlayerState(PlayerState.FALLING)
+                    }
+                }
+                PlayerState.RUNNING -> {
+                    if (abs(rigidBody.linearVelocityX) < .1) {
+                        setPlayerState(PlayerState.IDLE)
+                    }
+                }
+                PlayerState.IDLE -> {
+                    if (abs(rigidBody.linearVelocityX) > .1) {
+                        setPlayerState(PlayerState.RUNNING)
+                    }
+                }
+            }
+            if (grounded) {
+                rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX, -MAX_X_VEL, MAX_X_VEL)
+            } else {
+                rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX, -MAX_X_AIR_VEL, MAX_X_AIR_VEL)
+            }
+            rigidBody.linearVelocityY = clamp(rigidBody.linearVelocityY, -MAX_Y_VEL, MAX_Y_VEL)
         }
     }
 
@@ -204,6 +210,13 @@ class Player(private val map: LevelMap) : Container() {
             this.state = state
             this.stateTime = 0.0
         }
+    }
+
+    private fun interact() {
+//        val exit = body.getContainingTiles().firstOrNull { it.type == TileType.EXIT }
+////            if (exit != null) {
+////                Vex.exitLevel(mapId, exit.id)
+////            }
     }
 
     private fun onLeaveGround() {
