@@ -12,8 +12,8 @@ class WorldMapScene(private val spawnExitId: Int = 0) : Scene() {
     override suspend fun Container.sceneInit() {
 
 //        cameraContainer(VIRTUAL_SIZE.toDouble(), VIRTUAL_SIZE.toDouble(), clip = true) {
-        paint(WorldMapManager.worldMap)
-        player = Player(WorldMapManager.start).also { addChild(it) }
+        val exits = paint(WorldMapManager.worldMap)
+        player = Player(WorldMapManager.start, exits).also { it.init(); addChild(it) }
 //        }.follow(player, true)
 
     }

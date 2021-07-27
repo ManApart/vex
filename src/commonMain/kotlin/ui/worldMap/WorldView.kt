@@ -9,12 +9,14 @@ import worldMap.WorldMap
 
 private const val SCALE = 20
 
-fun Container.paint(map: WorldMap): Container {
-    return container {
+fun Container.paint(map: WorldMap): List<MapExit> {
+    var exits = listOf<MapExit>()
+    container {
         solidRect(20 * SCALE, 20 * SCALE, Colors.BEIGE)
 
-        map.exits.filter { it.unlocked || Debug.allLevelsUnlocked }.forEach { exit ->
-            solidRect(10, 10, Colors.GREEN).xy(exit.bounds.x * SCALE, exit.bounds.y * SCALE)
+        exits = map.exits.filter { it.unlocked || Debug.allLevelsUnlocked }.map { exit ->
+            val rect = solidRect(10, 10, Colors.GREEN).xy(exit.bounds.x * SCALE, exit.bounds.y * SCALE)
+            MapExit(exit, rect)
         }
 
         map.connections.filter { it.unlocked || Debug.allLevelsUnlocked }.forEach { connection ->
@@ -26,6 +28,6 @@ fun Container.paint(map: WorldMap): Container {
                 }
             }
         }
-
     }
+    return exits
 }
