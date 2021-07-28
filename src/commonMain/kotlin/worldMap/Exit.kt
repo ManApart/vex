@@ -7,4 +7,10 @@ import physics.Vector
 class Exit(val level: LevelTemplate, val exitId: Int, position: Vector){
     val bounds = Rectangle(position.x, position.y, 1f, 1f)
     var unlocked = false
+    val connections = mutableListOf<Connection>()
+
+    override fun toString(): String {
+        return "$exitId: $level"
+    }
 }
+
