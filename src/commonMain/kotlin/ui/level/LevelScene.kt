@@ -14,7 +14,7 @@ import ui.worldMap.WorldMapScene
 import worldMap.WorldMapManager
 import kotlin.properties.Delegates
 
-class LevelScene(private val template: LevelTemplate, private val spawnExitId: Int = 0) : Scene() {
+class LevelScene(private val template: LevelTemplate, private val spawnExitId: Int) : Scene() {
     var map: LevelMap by Delegates.notNull()
     var player: Player by Delegates.notNull()
 
@@ -29,13 +29,13 @@ class LevelScene(private val template: LevelTemplate, private val spawnExitId: I
 
     }
 
-
-    fun exitLevel(levelId: Int, exitId: Int) {
+    private fun exitLevel(levelId: Int, exitId: Int) {
         val exit = WorldMapManager.worldMap.exits.first { it.level.id == levelId && it.id == exitId }
         WorldMapManager.worldMap.unlockNeighbors(exit)
+        println("Exiting Level $levelId at $exitId")
         launchImmediately {
             sceneContainer.changeTo<WorldMapScene>(
-                exit.id,
+                exit,
                 transition = AlphaTransition,
                 time = TimeSpan(500.0)
             )

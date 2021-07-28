@@ -14,7 +14,6 @@ class Connection(val source: Exit, val destination: Exit) {
 
     var unlocked = true
 
-    //    val angle = getAngle(source.bounds.source(), destination.bounds.source())
     init {
         source.connections.add(this)
         destination.connections.add(this)

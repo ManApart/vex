@@ -10,20 +10,21 @@ import worldMap.Exit
 import worldMap.WorldMapManager
 import kotlin.properties.Delegates
 
-class WorldMapScene(private val spawnExitId: Int = 0) : Scene() {
+class WorldMapScene(private val spawn: Exit) : Scene() {
     var player: Player by Delegates.notNull()
 
     override suspend fun Container.sceneInit() {
-        val start = WorldMapManager.worldMap.exits.first { spawnExitId == it.id }.also { it.unlocked = true }
         val exits = paint(WorldMapManager.worldMap)
-        player = Player(start, exits, ::enterLevel).also { it.init(); addChild(it) }
+        player = Player(spawn, exits, ::enterLevel).also { it.init(); addChild(it) }
 
     }
 
     private fun enterLevel(exit: Exit) {
+        println("Entering Level ${exit.level.id} ${exit.level.name} at ${exit.id}")
         launchImmediately {
             sceneContainer.changeTo<LevelScene>(
                 exit.level,
+                exit.id,
                 transition = AlphaTransition,
                 time = TimeSpan(500.0)
             )
