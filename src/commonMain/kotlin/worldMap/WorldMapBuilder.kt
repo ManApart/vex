@@ -8,11 +8,11 @@ object WorldMapBuilder {
 
     private fun buildWorld(): WorldMap {
         val levels = listOf(
-                Exit(levels[0]!!, 0, Vector(0,0)),
-                Exit(levels[0]!!, 100, Vector(2,0)),
-                Exit(levels[0]!!, 255, Vector(0,2)),
-                Exit(levels[1]!!, 0, Vector(10,3)),
-                Exit(levels[2]!!, 0, Vector(3,10))
+                Exit(0, levels[0]!!, Vector(0,0)),
+                Exit(100, levels[0]!!, Vector(2,0)),
+                Exit(255, levels[0]!!, Vector(0,2)),
+                Exit(0, levels[1]!!, Vector(10,3)),
+                Exit(0, levels[2]!!, Vector(3,10))
         )
 
         val connections = listOf(

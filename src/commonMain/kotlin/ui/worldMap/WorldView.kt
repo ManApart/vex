@@ -19,7 +19,7 @@ fun Container.paint(map: WorldMap): List<MapExit> {
             MapExit(exit, rect)
         }
 
-        map.connections.filter { it.unlocked || Debug.allLevelsUnlocked }.forEach { connection ->
+        map.connections.filter { it.unlocked }.forEach { connection ->
             val source = (connection.source.bounds * SCALE.toFloat()).center().toPoint()
             val destination = (connection.destination.bounds * SCALE.toFloat()).center().toPoint()
             graphics {

@@ -13,6 +13,7 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import level.LevelMap
 import level.Tile
+import level.TileType
 import org.jbox2d.collision.shapes.CircleShape
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.BodyType
@@ -35,7 +36,7 @@ private const val JUMP_TIME = 300
 private const val DASH_VELOCITY = 10f
 private const val DASH_TIME = 150.0
 
-class Player(private val map: LevelMap) : Container() {
+class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Unit) : Container() {
     private lateinit var rigidBody: Body
     private var state = PlayerState.FALLING
     private var stateTime = 0.0
@@ -106,7 +107,7 @@ class Player(private val map: LevelMap) : Container() {
             justDown(Key.SPACE) { jump() }
             justDown(Key.Z) { dash(false) }
             justDown(Key.X) { dash(true) }
-            justDown(Key.V) { interact() }
+            justDown(Key.ENTER) { interact() }
         }
 
         addUpdaterWithViews { views: Views, dt: TimeSpan ->
@@ -213,10 +214,10 @@ class Player(private val map: LevelMap) : Container() {
     }
 
     private fun interact() {
-//        val exit = body.getContainingTiles().firstOrNull { it.type == TileType.EXIT }
-////            if (exit != null) {
-////                Vex.exitLevel(mapId, exit.id)
-////            }
+        val tile = map.getTile((pos.x / TILE_SIZE).toInt(), (pos.y / TILE_SIZE).toInt())
+        if (tile.type == TileType.EXIT){
+            exitLevel(map.id, tile.id)
+        }
     }
 
     private fun onLeaveGround() {

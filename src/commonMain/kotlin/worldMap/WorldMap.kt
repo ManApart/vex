@@ -16,7 +16,7 @@ class WorldMap(val exits: List<Exit>, connections: List<Connection>) {
     }
 
     fun unlockNeighbors(source: Exit) {
-        if (source.exitId != 0) {
+        if (source.id != 0) {
             this.connections.filter { it.source == source || it.destination == source }.forEach {
                 it.unlocked = true
                 it.source.unlocked = true

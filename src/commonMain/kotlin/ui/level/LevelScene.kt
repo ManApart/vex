@@ -1,12 +1,17 @@
 package ui.level
 
+import com.soywiz.klock.TimeSpan
+import com.soywiz.korge.scene.AlphaTransition
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.camera.cameraContainer
+import com.soywiz.korio.async.launchImmediately
 import level.LevelMap
 import level.LevelMapBuilder
 import level.LevelTemplate
 import ui.VIRTUAL_SIZE
+import ui.worldMap.WorldMapScene
+import worldMap.WorldMapManager
 import kotlin.properties.Delegates
 
 class LevelScene(private val template: LevelTemplate, private val spawnExitId: Int = 0) : Scene() {
@@ -15,7 +20,7 @@ class LevelScene(private val template: LevelTemplate, private val spawnExitId: I
 
     override suspend fun Container.sceneInit() {
         map = LevelMapBuilder().createMap(template)
-        player = Player(map)
+        player = Player(map, ::exitLevel)
 
         cameraContainer(VIRTUAL_SIZE.toDouble(), VIRTUAL_SIZE.toDouble(), clip = true) {
             paint(map).addChild(player)
@@ -25,15 +30,16 @@ class LevelScene(private val template: LevelTemplate, private val spawnExitId: I
     }
 
 
-//    fun enterLevel(exit: Exit){
-//        this.gameMode = LevelManager(exit.level, exit.exitId)
-//    }
-
     fun exitLevel(levelId: Int, exitId: Int) {
-//        val exit = worldManager.worldMap.exits.first { it.level.id == levelId && it.exitId == exitId }
-//        worldManager.worldMap.unlockNeighbors(exit)
-//        worldManager.player.setPosition(exit)
-//        this.gameMode = worldManager
+        val exit = WorldMapManager.worldMap.exits.first { it.level.id == levelId && it.id == exitId }
+        WorldMapManager.worldMap.unlockNeighbors(exit)
+        launchImmediately {
+            sceneContainer.changeTo<WorldMapScene>(
+                exit.id,
+                transition = AlphaTransition,
+                time = TimeSpan(500.0)
+            )
+        }
     }
 
 }

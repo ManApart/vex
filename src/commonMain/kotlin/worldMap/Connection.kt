@@ -9,8 +9,8 @@ class Connection(val source: Exit, val destination: Exit) {
         exitIdB: Int,
         levels: List<Exit>
     ) : this(
-        levels.first { it.level.id == levelIdA && it.exitId == exitIdA },
-        levels.first { it.level.id == levelIdB && it.exitId == exitIdB })
+        levels.first { it.level.id == levelIdA && it.id == exitIdA },
+        levels.first { it.level.id == levelIdB && it.id == exitIdB })
 
     var unlocked = true
 

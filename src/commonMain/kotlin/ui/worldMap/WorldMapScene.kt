@@ -14,7 +14,7 @@ class WorldMapScene(private val spawnExitId: Int = 0) : Scene() {
     var player: Player by Delegates.notNull()
 
     override suspend fun Container.sceneInit() {
-        val start = WorldMapManager.worldMap.exits.first { spawnExitId == it.exitId }.also { it.unlocked = true }
+        val start = WorldMapManager.worldMap.exits.first { spawnExitId == it.id }.also { it.unlocked = true }
         val exits = paint(WorldMapManager.worldMap)
         player = Player(start, exits, ::enterLevel).also { it.init(); addChild(it) }
 
@@ -28,13 +28,6 @@ class WorldMapScene(private val spawnExitId: Int = 0) : Scene() {
                 time = TimeSpan(500.0)
             )
         }
-    }
-
-    fun exitLevel(levelId: Int, exitId: Int) {
-//        val exit = worldManager.worldMap.exits.first { it.level.id == levelId && it.exitId == exitId }
-//        worldManager.worldMap.unlockNeighbors(exit)
-//        worldManager.player.setPosition(exit)
-//        this.gameMode = worldManager
     }
 
 }
