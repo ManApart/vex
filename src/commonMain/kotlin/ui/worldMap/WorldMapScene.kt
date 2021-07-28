@@ -1,7 +1,11 @@
 package ui.worldMap
 
+import com.soywiz.klock.TimeSpan
+import com.soywiz.korge.scene.AlphaTransition
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.view.Container
+import com.soywiz.korio.async.launchImmediately
+import ui.level.LevelScene
 import worldMap.Exit
 import worldMap.WorldMapManager
 import kotlin.properties.Delegates
@@ -10,17 +14,20 @@ class WorldMapScene(private val spawnExitId: Int = 0) : Scene() {
     var player: Player by Delegates.notNull()
 
     override suspend fun Container.sceneInit() {
-
-//        cameraContainer(VIRTUAL_SIZE.toDouble(), VIRTUAL_SIZE.toDouble(), clip = true) {
+        val start = WorldMapManager.worldMap.exits.first { spawnExitId == it.exitId }.also { it.unlocked = true }
         val exits = paint(WorldMapManager.worldMap)
-        player = Player(WorldMapManager.start, exits).also { it.init(); addChild(it) }
-//        }.follow(player, true)
+        player = Player(start, exits, ::enterLevel).also { it.init(); addChild(it) }
 
     }
 
-
-    fun enterLevel(exit: Exit) {
-
+    private fun enterLevel(exit: Exit) {
+        launchImmediately {
+            sceneContainer.changeTo<LevelScene>(
+                exit.level,
+                transition = AlphaTransition,
+                time = TimeSpan(500.0)
+            )
+        }
     }
 
     fun exitLevel(levelId: Int, exitId: Int) {

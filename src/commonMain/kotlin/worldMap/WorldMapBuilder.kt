@@ -1,6 +1,6 @@
 package worldMap
 
-import level.Levels
+import level.levels
 import physics.Vector
 
 object WorldMapBuilder {
@@ -8,11 +8,11 @@ object WorldMapBuilder {
 
     private fun buildWorld(): WorldMap {
         val levels = listOf(
-                Exit(Levels.levels[0]!!, 0, Vector(0,0)),
-                Exit(Levels.levels[0]!!, 100, Vector(2,0)),
-                Exit(Levels.levels[0]!!, 255, Vector(0,2)),
-                Exit(Levels.levels[1]!!, 0, Vector(10,3)),
-                Exit(Levels.levels[2]!!, 0, Vector(3,10))
+                Exit(levels[0]!!, 0, Vector(0,0)),
+                Exit(levels[0]!!, 100, Vector(2,0)),
+                Exit(levels[0]!!, 255, Vector(0,2)),
+                Exit(levels[1]!!, 0, Vector(10,3)),
+                Exit(levels[2]!!, 0, Vector(3,10))
         )
 
         val connections = listOf(

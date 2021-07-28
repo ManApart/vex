@@ -1,8 +1,12 @@
 package ui.worldMap
 
 import com.soywiz.klock.seconds
+import com.soywiz.korev.GameButton
 import com.soywiz.korev.GameStick
+import com.soywiz.korev.Key
 import com.soywiz.korge.animate.animateParallel
+import com.soywiz.korge.input.gamepad
+import com.soywiz.korge.input.keys
 import com.soywiz.korge.tween.get
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
@@ -13,7 +17,7 @@ import com.soywiz.korma.geom.degrees
 import ui.level.TILE_SIZE
 import worldMap.Exit
 
-class Player(origin: Exit, private val exits: List<MapExit>) : Container() {
+class Player(origin: Exit, private val exits: List<MapExit>, private val enterLevel: (Exit) -> Unit) : Container() {
     private var currentExit = exits.firstOrNull { it.exit == origin }!!
     private var goalExit = currentExit
     private var startAnimating = false
@@ -33,8 +37,15 @@ class Player(origin: Exit, private val exits: List<MapExit>) : Container() {
     }
 
     private fun setupControls() {
-
+        gamepad {
+            down(0, GameButton.BUTTON0) { enterLevel(currentExit.exit) }
+        }
+        keys {
+            justDown(Key.SPACE){ enterLevel(currentExit.exit)}
+        }
     }
+
+
 
     private suspend fun addOnUpdate() {
         addUpdaterWithViews { views, _ ->
