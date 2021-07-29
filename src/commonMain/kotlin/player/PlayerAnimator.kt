@@ -23,6 +23,14 @@ class PlayerAnimator(image: Bitmap, private val sprite: Sprite) {
         return SpriteAnimation(image, 39, 36, topMargin, columns = cols)
     }
 
+    fun setFacing(right: Boolean) {
+        when {
+            right && sprite.scaleX < 0 -> sprite.scaleX *= -1
+            !right && sprite.scaleX > 0 -> sprite.scaleX *= -1
+        }
+
+    }
+
     fun evaluate(state: PlayerState) {
         sprite.playAnimationLooped(animations[state], spriteDisplayTime = TimeSpan(200.0))
     }

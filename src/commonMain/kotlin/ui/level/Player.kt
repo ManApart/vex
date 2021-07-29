@@ -55,9 +55,8 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
 
     suspend fun init(spawnTile: Tile) {
         position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
-        val rect = solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK).xy(-TILE_SIZE / 2, -TILE_SIZE)
 
-        buildSprite(rect)
+        buildSprite()
         addTriggers()
 
         registerBodyWithFixture(
@@ -98,7 +97,7 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
         )
     }
 
-    private suspend fun buildSprite(rect: SolidRect) {
+    private suspend fun buildSprite() {
         val image = Resources.getImage("character.png")
         sprite = sprite()
         sprite.smoothing = false
@@ -141,8 +140,8 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
                 }
             }
             if (dx != 0f) {
-                goingRight = dx >= 0
-                sprite.scaleX *= if (goingRight) 1.0 else -1.0
+                goingRight = dx > 0
+                animator.setFacing(goingRight)
             }
             rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
         }
@@ -180,10 +179,12 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
                     }
                 }
             }
-            if (grounded) {
-                rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX, -MAX_X_VEL, MAX_X_VEL)
-            } else {
-                rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX, -MAX_X_AIR_VEL, MAX_X_AIR_VEL)
+            if (state != PlayerState.DASHING) {
+                if (grounded) {
+                    rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX, -MAX_X_VEL, MAX_X_VEL)
+                } else {
+                    rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX, -MAX_X_AIR_VEL, MAX_X_AIR_VEL)
+                }
             }
             rigidBody.linearVelocityY = clamp(rigidBody.linearVelocityY, -MAX_Y_VEL, MAX_Y_VEL)
         }
@@ -217,7 +218,6 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
     private fun dash(right: Boolean = true) {
         if (state == PlayerState.DASHING || !hasDash) return
         hasDash = false
-        setPlayerState(PlayerState.DASHING)
         if (right) {
             goingRight = true
             rigidBody.linearVelocityX = DASH_VELOCITY
@@ -225,11 +225,14 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
             goingRight = false
             rigidBody.linearVelocityX = -DASH_VELOCITY
         }
+        animator.setFacing(right)
+        setPlayerState(PlayerState.DASHING)
     }
 
     private fun setPlayerState(state: PlayerState) {
         if (this.state != state) {
-            println("${this.state} -> $state")
+            val right = if (goingRight) "right" else "left"
+            println("${this.state} -> $state $right")
             animator.evaluate(state)
             this.state = state
             this.stateTime = 0.0
