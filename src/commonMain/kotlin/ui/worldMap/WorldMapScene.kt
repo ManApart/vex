@@ -23,8 +23,7 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
         println("Entering Level ${exit.level.id} ${exit.level.name} at ${exit.id}")
         launchImmediately {
             sceneContainer.changeTo<LevelScene>(
-                exit.level,
-                exit.id,
+                exit,
                 transition = AlphaTransition,
                 time = TimeSpan(500.0)
             )

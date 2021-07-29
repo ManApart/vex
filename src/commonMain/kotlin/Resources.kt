@@ -5,10 +5,18 @@ import level.LevelTemplate
 
 object Resources {
     private val levels = mutableMapOf<Int, Bitmap>()
+    private val images = mutableMapOf<String, Bitmap>()
 
     suspend fun getLevel(template: LevelTemplate): Bitmap {
         return levels.getOrPut(template.id) {
             resourcesVfs["levels/${template.fileName}.png"].readBitmap()
         }
     }
+
+    suspend fun getImage(path: String): Bitmap {
+        return images.getOrPut(path) {
+            resourcesVfs[path].readBitmap()
+        }
+    }
+
 }

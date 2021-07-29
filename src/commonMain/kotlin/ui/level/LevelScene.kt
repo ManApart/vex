@@ -11,20 +11,21 @@ import level.LevelMapBuilder
 import level.LevelTemplate
 import ui.VIRTUAL_SIZE
 import ui.worldMap.WorldMapScene
+import worldMap.Exit
 import worldMap.WorldMapManager
 import kotlin.properties.Delegates
 
-class LevelScene(private val template: LevelTemplate, private val spawnExitId: Int) : Scene() {
+class LevelScene(private val exit: Exit) : Scene() {
     var map: LevelMap by Delegates.notNull()
     var player: Player by Delegates.notNull()
 
     override suspend fun Container.sceneInit() {
-        map = LevelMapBuilder().createMap(template)
+        map = LevelMapBuilder().createMap(exit.level)
         player = Player(map, ::exitLevel)
 
         cameraContainer(VIRTUAL_SIZE.toDouble(), VIRTUAL_SIZE.toDouble(), clip = true) {
             paint(map).addChild(player)
-            player.init(map.getSpawnTile(spawnExitId)!!)
+            player.init(map.getSpawnTile(exit.id)!!)
         }.follow(player, true)
 
     }

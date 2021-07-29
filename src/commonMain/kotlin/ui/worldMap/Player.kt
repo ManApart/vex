@@ -31,7 +31,6 @@ class Player(origin: Exit, private val exits: List<MapExit>, private val enterLe
                 currentExit = exits.first { it.view == view }
             }
         }
-
         setupControls()
         addOnUpdate()
     }
@@ -44,8 +43,6 @@ class Player(origin: Exit, private val exits: List<MapExit>, private val enterLe
             justDown(Key.SPACE){ enterLevel(currentExit.exit)}
         }
     }
-
-
 
     private suspend fun addOnUpdate() {
         addUpdaterWithViews { views, _ ->

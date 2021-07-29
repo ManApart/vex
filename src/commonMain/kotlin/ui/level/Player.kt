@@ -11,6 +11,7 @@ import com.soywiz.korge.input.gamepad
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
+import com.soywiz.korma.geom.Anchor
 import level.LevelMap
 import level.Tile
 import level.TileType
@@ -18,6 +19,7 @@ import org.jbox2d.collision.shapes.CircleShape
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.BodyType
 import physics.Rectangle
+import player.PlayerAnimator
 import player.PlayerState
 import ui.Trigger
 import kotlin.math.abs
@@ -40,6 +42,8 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
     private lateinit var rigidBody: Body
     private var state = PlayerState.FALLING
     private var stateTime = 0.0
+    private lateinit var sprite: Sprite
+    private lateinit var animator: PlayerAnimator
 
     private var goingRight = true
     private var hasDoubleJump = false
@@ -49,10 +53,11 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
     private var touchingWallRight = false
     private var jumpHeld = false
 
-    fun init(spawnTile: Tile) {
+    suspend fun init(spawnTile: Tile) {
         position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
-        solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK).xy(-TILE_SIZE / 2, -TILE_SIZE)
+        val rect = solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK).xy(-TILE_SIZE / 2, -TILE_SIZE)
 
+        buildSprite(rect)
         addTriggers()
 
         registerBodyWithFixture(
@@ -93,10 +98,22 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
         )
     }
 
+    private suspend fun buildSprite(rect: SolidRect) {
+        val image = Resources.getImage("character.png")
+        sprite = sprite()
+        sprite.smoothing = false
+        sprite.scale = 0.8
+        animator = PlayerAnimator(image, sprite)
+        sprite.xy(0, 10)
+        sprite.anchor(Anchor.BOTTOM_CENTER)
+
+        animator.evaluate(state)
+    }
+
     private fun setupControls() {
 
         gamepad {
-            down(0, GameButton.BUTTON0) { jumpHeld = true; jump() }
+            down(0, GameButton.BUTTON0) { jump(); jumpHeld = true }
             up(0, GameButton.BUTTON0) { jumpHeld = false }
             down(0, GameButton.L1) { dash(false) }
             down(0, GameButton.R1) { dash(true) }
@@ -104,7 +121,8 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
         }
 
         keys {
-            justDown(Key.SPACE) { jump() }
+            down(Key.SPACE) { jump(); jumpHeld = true }
+            up(Key.SPACE) { jumpHeld = false }
             justDown(Key.Z) { dash(false) }
             justDown(Key.X) { dash(true) }
             justDown(Key.ENTER) { interact() }
@@ -122,7 +140,10 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
                     keys[Key.LEFT] -> dx = -ACCELERATION * scale
                 }
             }
-            if (dx != 0f) goingRight = dx > 0
+            if (dx != 0f) {
+                goingRight = dx >= 0
+                sprite.scaleX *= if (goingRight) 1.0 else -1.0
+            }
             rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
         }
     }
@@ -169,6 +190,7 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
     }
 
     private fun jump() {
+        if (jumpHeld) return
         when {
             grounded -> {
                 rigidBody.linearVelocityY = -JUMP_VELOCITY
@@ -208,6 +230,7 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
     private fun setPlayerState(state: PlayerState) {
         if (this.state != state) {
             println("${this.state} -> $state")
+            animator.evaluate(state)
             this.state = state
             this.stateTime = 0.0
         }
@@ -215,7 +238,7 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
 
     private fun interact() {
         val tile = map.getTile((pos.x / TILE_SIZE).toInt(), (pos.y / TILE_SIZE).toInt())
-        if (tile.type == TileType.EXIT){
+        if (tile.type == TileType.EXIT) {
             exitLevel(map.id, tile.id)
         }
     }

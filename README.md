@@ -16,6 +16,21 @@ jsBrowserDistribution
 aws s3 sync build/distributions/ s3://austinkucera.com/games/vex/
 ```
 
+## Credits
+https://rvros.itch.io/animated-pixel-hero
+https://edermunizz.itch.io/free-pixel-art-forest
+https://edermunizz.itch.io/free-pixel-art-overworld-tileset
+https://edermunizz.itch.io/free-pixel-art-plataformer-painted-style
+https://bakudas.itch.io/generic-platformer-pack
+https://trixelized.itch.io/starstring-fields
+https://trixelized.itch.io/kinda-cute-forest
+https://trixelized.itch.io/nightfield
+https://pixelhole.itch.io/pixelholes-overworld-tileset
+https://szadiart.itch.io/platformer-fantasy-set1
+https://merchant-shade.itch.io/16x16-mini-world-sprites
+
+character - 36x39
+
 ## TODO
 
 

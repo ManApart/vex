@@ -60,3 +60,5 @@ versions.json
 .gradle
 build/
 bundles/
+
+ignored/
