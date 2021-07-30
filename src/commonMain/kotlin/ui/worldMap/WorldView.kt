@@ -1,6 +1,7 @@
 package ui.worldMap
 
 import Debug
+import center
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.vector.StrokeInfo
@@ -20,8 +21,8 @@ fun Container.paint(map: WorldMap): List<MapExit> {
         }
 
         map.connections.filter { it.unlocked }.forEach { connection ->
-            val source = (connection.source.bounds * SCALE.toFloat()).center().toPoint()
-            val destination = (connection.destination.bounds * SCALE.toFloat()).center().toPoint()
+            val source = (connection.source.bounds * SCALE.toFloat()).center()
+            val destination = (connection.destination.bounds * SCALE.toFloat()).center()
             graphics {
                 stroke(Colors.GREEN, StrokeInfo(thickness = 2.0)) {
                     line(source, destination)

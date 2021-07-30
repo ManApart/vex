@@ -12,13 +12,13 @@ import com.soywiz.korge.input.keys
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korma.geom.Anchor
+import com.soywiz.korma.geom.Rectangle
 import level.LevelMap
 import level.Tile
 import level.TileType
 import org.jbox2d.collision.shapes.CircleShape
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.BodyType
-import physics.Rectangle
 import player.PlayerAnimator
 import player.PlayerState
 import ui.Trigger

@@ -3,10 +3,9 @@ package ui
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
-import com.soywiz.korma.geom.shape.Shape2d
+import com.soywiz.korma.geom.Rectangle
 import level.LevelMap
 import level.TileType
-import physics.Rectangle
 import ui.level.TILE_SIZE
 
 class Trigger(
@@ -22,7 +21,7 @@ class Trigger(
 
     init {
         parent.addChild(this)
-        solidRect(rect.width.toDouble(), rect.height.toDouble(), color) {
+        solidRect(rect.width, rect.height, color) {
             xy(rect.x, rect.y)
             if (!display) alpha = 0.0
         }

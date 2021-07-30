@@ -1,6 +1,6 @@
 package level
 
-import physics.Vector
+import org.jbox2d.common.Vec2
 
 /**
  * (0,0) is the bottom left of a map
@@ -24,7 +24,7 @@ class LevelMap(val id: Int = 0, private val tiles: Array<Array<Tile>>) {
         return tiles.flatten().firstOrNull { it.type == TileType.EXIT && it.id == exitId }
     }
 
-    fun getFirstCollision(ray: List<Vector>): Tile? {
+    fun getFirstCollision(ray: List<Vec2>): Tile? {
         val vector = ray.firstOrNull { getTile(it.x, it.y).type == TileType.TILE }
         return if (vector != null) {
             getTile(vector.x, vector.y)

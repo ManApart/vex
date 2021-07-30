@@ -2,13 +2,12 @@ package ui
 
 import com.soywiz.korge.scene.Module
 import com.soywiz.korinject.AsyncInjector
-import com.soywiz.korma.geom.*
-import level.LevelTemplate
-import level.levels
-import physics.Vector
+import com.soywiz.korma.geom.Anchor
+import com.soywiz.korma.geom.ScaleMode
+import com.soywiz.korma.geom.Size
+import com.soywiz.korma.geom.SizeInt
 import ui.level.LevelScene
 import ui.worldMap.WorldMapScene
-import worldMap.Exit
 import worldMap.WorldMapManager
 
 const val WINDOW_SIZE = 800
