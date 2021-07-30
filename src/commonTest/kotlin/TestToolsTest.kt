@@ -1,8 +1,6 @@
-import org.junit.Assert.assertEquals
-import org.junit.Test
-import physics.Vector
-import TileTemplateType.*
 import level.TileType
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 class TestToolsTest {
 
@@ -39,42 +37,16 @@ class TestToolsTest {
 
     @Test
     fun createHorizontalPoints() {
-        assertEquals(listOf(Vector()), horizontalPoints(1))
-        assertEquals(listOf(Vector(), Vector(1, 0), Vector(2, 0)), horizontalPoints(3))
-        assertEquals(listOf(Vector(1, 2), Vector(2, 2), Vector(3, 2)), horizontalPoints(3, 1, 2))
+        assertEquals(listOf(Vec2()), horizontalPoints(1))
+        assertEquals(listOf(Vec2(), Vec2(1, 0), Vec2(2, 0)), horizontalPoints(3))
+        assertEquals(listOf(Vec2(1, 2), Vec2(2, 2), Vec2(3, 2)), horizontalPoints(3, 1, 2))
     }
 
     @Test
     fun createVerticalPoints() {
-        assertEquals(listOf(Vector()), verticalPoints(1))
-        assertEquals(listOf(Vector(), Vector(0, 1), Vector(0, 2)), verticalPoints(3))
-        assertEquals(listOf(Vector(1, 2), Vector(1, 3), Vector(1, 4)), verticalPoints(3, 1, 2))
-    }
-
-    @Test
-    fun createAndMoveBuildsCorrectly() {
-        val body = createAndMoveBody(listOf(
-                listOf(S, O, G),
-                listOf(O, C, O),
-                listOf(C, C, C)
-        ))
-
-        assertEquals(Vector(2, 2), body.bounds.source())
-        assertEquals(Vector(2, 0), body.velocity)
-        assertEquals(Vector(-1, 0), body.acceleration)
-    }
-
-    @Test
-    fun createAndMoveBuildsCorrectly2() {
-        val body = createAndMoveBody(listOf(
-                listOf(O, C, O),
-                listOf(C, C, C),
-                listOf(S, O, GG)
-        ))
-
-        assertEquals(Vector(1, 0), body.bounds.source())
-        assertEquals(Vector(2, 0), body.velocity)
-        assertEquals(Vector(-1, 0), body.acceleration)
+        assertEquals(listOf(Vec2()), verticalPoints(1))
+        assertEquals(listOf(Vec2(), Vec2(0, 1), Vec2(0, 2)), verticalPoints(3))
+        assertEquals(listOf(Vec2(1, 2), Vec2(1, 3), Vec2(1, 4)), verticalPoints(3, 1, 2))
     }
 
 

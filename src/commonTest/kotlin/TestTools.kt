@@ -2,9 +2,7 @@ import level.DEFAULT_TILE
 import level.LevelMap
 import level.Tile
 import level.TileType
-import physics.RigidBody
-import physics.RigidBodyStubbedOwner
-import physics.Vector
+import org.jbox2d.common.Vec2
 
 /**
 0 = space
@@ -23,53 +21,15 @@ fun createMap(plan: List<List<Int>>): LevelMap {
             map[x][plan.size-1 - y] = Tile(type, x, plan.size-1 - y)
         }
     }
-    return LevelMap(map)
+    return LevelMap(0, map)
 }
 
-fun createMapFromTemplates(plan: List<List<TileTemplateType>>): LevelMap {
-    return createMap(plan.map { outer -> outer.map { it.solid } })
+
+
+fun horizontalPoints(size: Int, x: Int = 0, y: Int = 0): List<Vec2> {
+    return (0 until size).map { Vec2(x + it, y) }
 }
 
-fun createAndMoveBody(plan: List<List<TileTemplateType>>, width: Float = 1f, height: Float = 1f): RigidBody {
-    var start = Tile()
-    var goal = Tile()
-
-    val map = createMapFromTemplates(plan)
-
-    plan.indices.forEach { y ->
-        plan[y].indices.forEach { x ->
-            val planType = plan[y][x]
-            if (planType == TileTemplateType.S) {
-                start = map.getTile(x, plan.size - 1 - y)
-            }
-            if (planType == TileTemplateType.G || planType == TileTemplateType.GG) {
-                goal = map.getTile(x, plan.size - 1 - y)
-            }
-        }
-    }
-
-    val owner = RigidBodyStubbedOwner()
-    val body = RigidBody(map, owner, width, height)
-    body.bounds.x = start.x.toFloat()
-    body.bounds.y = start.y.toFloat()
-
-    val velocity = goal.vector - start.vector
-    body.velocity.x = velocity.x
-    body.velocity.y = velocity.y
-
-    //prevent acceleration dampening
-    body.velocity.x += 1f
-    body.acceleration.x = -1f
-
-    body.update(1f)
-
-    return body
-}
-
-fun horizontalPoints(size: Int, x: Int = 0, y: Int = 0): List<Vector> {
-    return (0 until size).map { Vector(x + it, y) }
-}
-
-fun verticalPoints(size: Int, x: Int = 0, y: Int = 0): List<Vector> {
-    return (0 until size).map { Vector(x, y + it) }
+fun verticalPoints(size: Int, x: Int = 0, y: Int = 0): List<Vec2> {
+    return (0 until size).map { Vec2(x, y + it) }
 }
