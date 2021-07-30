@@ -1,5 +1,7 @@
 # Vex
 
+[![Build and Test](https://github.com/ManApart/vex/actions/workflows/runTests.yml/badge.svg)](https://github.com/ManApart/vex/actions/workflows/runTests.yml)
+
 Essentially forked / branched from [an older repo](https://github.com/ManApart/vex) when the GDX (JInput) seemed to not recognize Windows 10 and then crash on startup.
 
 ## Running
