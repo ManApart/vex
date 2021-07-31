@@ -1,5 +1,6 @@
 package ui
 
+import com.soywiz.korge.box2d.body
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
@@ -11,7 +12,6 @@ import ui.level.TILE_SIZE
 class Trigger(
     parent: Container,
     rect: Rectangle,
-    private val map: LevelMap,
     private val onContactStart: () -> Unit = {},
     private val onContactEnd: () -> Unit = {},
     display: Boolean = false,
@@ -28,11 +28,9 @@ class Trigger(
 
 
         onCollision(filter = {
-            val tile = map.getTile((it.pos.x / TILE_SIZE).toInt(), (it.pos.y / TILE_SIZE).toInt())
             it is SolidRect
-                    && (tile.x != 0 && tile.y != 0)
                     && !contactedViews.contains(it)
-                    && tile.type != TileType.SPACE
+                    && it.body != null
         }) { other ->
             contactedViews.add(other)
             onContactStart()

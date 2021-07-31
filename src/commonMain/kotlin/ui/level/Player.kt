@@ -38,7 +38,8 @@ private const val JUMP_TIME = 300
 private const val DASH_VELOCITY = 10f
 private const val DASH_TIME = 150.0
 
-class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Unit) : Container() {
+class Player(private val levelId: Int, private val exitLevel: (Int, Int) -> Unit) : Container() {
+//class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Unit) : Container() {
     private lateinit var rigidBody: Body
     private var state = PlayerState.FALLING
     private var stateTime = 0.0
@@ -53,8 +54,10 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
     private var touchingWallRight = false
     private var jumpHeld = false
 
-    suspend fun init(spawnTile: Tile) {
-        position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
+    suspend fun init() {
+        position(0, 0)
+//    suspend fun init(spawnTile: Tile) {
+//        position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
 
         buildSprite()
         addTriggers()
@@ -75,12 +78,11 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
 
     private fun addTriggers() {
         val groundRect = Rectangle(-0.9f * TILE_SIZE / 2, TILE_SIZE / 2f, 0.9f * TILE_SIZE, .3f * TILE_SIZE)
-        Trigger(this, groundRect, map, ::onGroundContact, ::onLeaveGround, true)
+        Trigger(this, groundRect, ::onGroundContact, ::onLeaveGround, true)
 
         Trigger(
             this,
             Rectangle(TILE_SIZE / 2.7f, TILE_SIZE / 3f, TILE_SIZE / 1.5f, .3f * TILE_SIZE),
-            map,
             { touchingWallRight = true },
             { touchingWallRight = false },
             true,
@@ -89,7 +91,6 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
         Trigger(
             this,
             Rectangle(-TILE_SIZE * 1f, TILE_SIZE / 3f, TILE_SIZE / 1.5f, .3f * TILE_SIZE),
-            map,
             { touchingWallLeft = true },
             { touchingWallLeft = false },
             true,
@@ -240,10 +241,10 @@ class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Uni
     }
 
     private fun interact() {
-        val tile = map.getTile((pos.x / TILE_SIZE).toInt(), (pos.y / TILE_SIZE).toInt())
-        if (tile.type == TileType.EXIT) {
-            exitLevel(map.id, tile.id)
-        }
+//        val tile = map.getTile((pos.x / TILE_SIZE).toInt(), (pos.y / TILE_SIZE).toInt())
+//        if (tile.type == TileType.EXIT) {
+//            exitLevel(levelId, tile.id)
+//        }
     }
 
     private fun onLeaveGround() {
