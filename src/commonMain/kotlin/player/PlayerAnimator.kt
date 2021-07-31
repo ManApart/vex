@@ -12,7 +12,7 @@ class PlayerAnimator(image: Bitmap, private val sprite: Sprite) {
         PlayerState.RUNNING to anim(image, 1, 6),
         PlayerState.JUMPING to anim(image, 2, 4),
         PlayerState.FALLING to anim(image, 3, 2),
-        PlayerState.DASHING to anim(image, 15, 4),
+        PlayerState.DASHING to anim(image, 15, 2),
         PlayerState.GRAPPLING to anim(image, 0, 4),
         PlayerState.WALL_RUNNING to anim(image, 12, 4),
         PlayerState.WALL_JUMPING to anim(image, 11, 4),
