@@ -38,13 +38,14 @@ private const val JUMP_TIME = 300
 private const val DASH_VELOCITY = 10f
 private const val DASH_TIME = 150.0
 
-class Player(private val levelId: Int, private val exitLevel: (Int, Int) -> Unit) : Container() {
+class Player(private val interact: (View) -> Unit) : Container() {
 //class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Unit) : Container() {
     private lateinit var rigidBody: Body
     private var state = PlayerState.FALLING
     private var stateTime = 0.0
     private lateinit var sprite: Sprite
     private lateinit var animator: PlayerAnimator
+    private lateinit var interactBox: SolidRect
 
     private var goingRight = true
     private var hasDoubleJump = false
@@ -54,10 +55,8 @@ class Player(private val levelId: Int, private val exitLevel: (Int, Int) -> Unit
     private var touchingWallRight = false
     private var jumpHeld = false
 
-    suspend fun init() {
-        position(0, 0)
-//    suspend fun init(spawnTile: Tile) {
-//        position(spawnTile.x * TILE_SIZE, spawnTile.y * TILE_SIZE)
+    suspend fun init(spawn: SolidRect) {
+        centerOn(spawn)
 
         buildSprite()
         addTriggers()
@@ -108,6 +107,11 @@ class Player(private val levelId: Int, private val exitLevel: (Int, Int) -> Unit
         sprite.anchor(Anchor.BOTTOM_CENTER)
 
         animator.evaluate(state)
+
+        interactBox = solidRect(10.0, 22.0) {
+            alpha = 0.0
+            xy(-5,-15)
+        }
     }
 
     private fun setupControls() {
@@ -117,7 +121,7 @@ class Player(private val levelId: Int, private val exitLevel: (Int, Int) -> Unit
             up(0, GameButton.BUTTON0) { jumpHeld = false }
             down(0, GameButton.L1) { dash(false) }
             down(0, GameButton.R1) { dash(true) }
-            down(0, GameButton.BUTTON2) { interact() }
+            down(0, GameButton.BUTTON2) { interact(interactBox) }
         }
 
         keys {
@@ -125,7 +129,7 @@ class Player(private val levelId: Int, private val exitLevel: (Int, Int) -> Unit
             up(Key.SPACE) { jumpHeld = false }
             justDown(Key.Z) { dash(false) }
             justDown(Key.X) { dash(true) }
-            justDown(Key.ENTER) { interact() }
+            justDown(Key.ENTER) { interact(interactBox) }
         }
 
         addUpdaterWithViews { views: Views, dt: TimeSpan ->
@@ -238,13 +242,6 @@ class Player(private val levelId: Int, private val exitLevel: (Int, Int) -> Unit
             this.state = state
             this.stateTime = 0.0
         }
-    }
-
-    private fun interact() {
-//        val tile = map.getTile((pos.x / TILE_SIZE).toInt(), (pos.y / TILE_SIZE).toInt())
-//        if (tile.type == TileType.EXIT) {
-//            exitLevel(levelId, tile.id)
-//        }
     }
 
     private fun onLeaveGround() {

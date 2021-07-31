@@ -6,47 +6,41 @@ import com.soywiz.korge.scene.AlphaTransition
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korge.tiled.tiledMapView
-import com.soywiz.korge.view.Container
+import com.soywiz.korge.view.*
 import com.soywiz.korge.view.camera.cameraContainer
-import com.soywiz.korge.view.solidRect
-import com.soywiz.korge.view.tiles.TileMap
-import com.soywiz.korge.view.xy
-import com.soywiz.korim.color.Colors
 import com.soywiz.korio.async.launchImmediately
-import level.LevelMap
-import level.LevelMapBuilder
-import level.LevelTemplate
+import com.soywiz.korma.geom.Point
 import org.jbox2d.dynamics.BodyType
 import ui.VIRTUAL_SIZE
 import ui.worldMap.WorldMapScene
 import worldMap.Exit
 import worldMap.WorldMapManager
-import kotlin.properties.Delegates
 
-class LevelScene(private val exit: Exit) : Scene() {
-//    var map: LevelMap by Delegates.notNull()
-    var tiled: TiledMap by Delegates.notNull()
-    var player: Player by Delegates.notNull()
+class LevelScene(private val spawn: Exit) : Scene() {
+    private lateinit var tiled: TiledMap
+    private lateinit var player: Player
+    private lateinit var exits: List<ExitView>
 
     override suspend fun Container.sceneInit() {
-        tiled = Resources.getMap(exit.level)
-//        map = LevelMapBuilder().createMap(exit.level)
-        player = Player(exit.level.id, ::exitLevel)
+        tiled = Resources.getMap(spawn.level)
+        player = Player(::interact)
 
         cameraContainer(VIRTUAL_SIZE.toDouble(), VIRTUAL_SIZE.toDouble(), clip = true) {
-            tiledMapView(tiled, smoothing = false) {
-                addCollision(tiled)
+            tiledMapView(tiled, smoothing = false, showShapes = false) {
+                setupTiledMap(tiled)
                 scale = 3.0
                 addChild(player)
             }
-            player.init()
-//            player.init(map.getSpawnTile(exit.id)!!)
-        }
-//            .follow(player, true)
+            player.init(findSpawn())
+        }.follow(player, true)
 
     }
 
-    private fun Container.addCollision(tiled: TiledMap) {
+    private fun findSpawn(): SolidRect {
+        return (exits.firstOrNull { it.id == spawn.id } ?: exits.first()).view
+    }
+
+    private fun Container.setupTiledMap(tiled: TiledMap) {
         val width = tiled.tilewidth
         val layer = tiled.tileLayers.first()
         val tiles = tiled.tilesets.first().data.tilesById
@@ -54,13 +48,30 @@ class LevelScene(private val exit: Exit) : Scene() {
             (0 until layer.height).forEach { y ->
                 val id = layer[x, y] - 1
                 if (tiles[id]?.type == "collision") {
-                    solidRect(width, width, Colors.BLUE) {
+                    solidRect(width, width) {
                         alpha = 0.0
                         xy(x * width, y * width)
                         registerBodyWithFixture(type = BodyType.STATIC)
                     }
                 }
             }
+        }
+        exits = tiled.objectLayers.first().objects.mapNotNull { obj ->
+            val id = obj.properties["exitId"]?.int
+            if (id != null) {
+                val rect = solidRect(obj.bounds.width, obj.bounds.height) {
+                    alpha = 0.0
+                    xy(obj.bounds.x, obj.bounds.y)
+                }
+                ExitView(id, rect)
+            } else null
+        }
+    }
+
+    private fun interact(view: View) {
+        val exit = exits.firstOrNull { it.view.collidesWith(view) }
+        if (exit != null) {
+            exitLevel(spawn.level.id, exit.id)
         }
     }
 

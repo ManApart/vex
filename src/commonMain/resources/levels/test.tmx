@@ -16,7 +16,7 @@
 </data>
  </layer>
  <objectgroup id="2" name="Objects">
-  <object id="2" x="96.3243" y="15.9626" width="7.68117" height="7.99924" visible="0">
+  <object id="2" x="96.1653" y="15.8035" width="7.68117" height="7.99924" visible="0">
    <properties>
     <property name="exitId" type="int" value="0"/>
    </properties>

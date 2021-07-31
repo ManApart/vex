@@ -26,7 +26,6 @@ class Trigger(
             if (!display) alpha = 0.0
         }
 
-
         onCollision(filter = {
             it is SolidRect
                     && !contactedViews.contains(it)
