@@ -18,7 +18,7 @@ import ui.level.TILE_SIZE
 import worldMap.Exit
 
 class Player(origin: Exit, private val exits: List<MapExit>, private val enterLevel: (Exit) -> Unit) : Container() {
-    private var currentExit = exits.firstOrNull { it.exit == origin }!!
+    private var currentExit = exits.firstOrNull { it.exit.level.id == origin.level.id && it.exit.id == origin.id }!!
     private var goalExit = currentExit
     private var startAnimating = false
 
@@ -26,7 +26,7 @@ class Player(origin: Exit, private val exits: List<MapExit>, private val enterLe
         position(currentExit.view.x, currentExit.view.y)
         solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK) {
             onCollision({ view ->
-                view is SolidRect && exits.any { it.view == view }
+                view is Circle && exits.any { it.view == view }
             }) { view ->
                 currentExit = exits.first { it.view == view }
             }

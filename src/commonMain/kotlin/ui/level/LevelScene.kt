@@ -86,7 +86,6 @@ class LevelScene(private val spawn: Exit) : Scene() {
 
     private fun exitLevel(levelId: Int, exitId: Int) {
         println("Exiting Level $levelId at $exitId")
-//        val exit = WorldMapManager.worldMap.exits.first { it.level.id == levelId && it.id == exitId }
 //        WorldMapManager.worldMap.unlockNeighbors(exit)
         val exit = Exit(0, Resources.levelTemplates[levelId]!!)
         launchImmediately {

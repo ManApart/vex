@@ -25,7 +25,6 @@ object MainModule : Module() {
     override val scaleAnchor: Anchor = Anchor.TOP_LEFT
 
     override suspend fun AsyncInjector.configure() {
-//        mapPrototype { WorldMapManager.worldMap.exits.first() }
         mapPrototype { Exit(0, Resources.levelTemplates[0]!!) }
         mapPrototype { LevelScene(get()) }
         mapPrototype { WorldMapScene(get()) }

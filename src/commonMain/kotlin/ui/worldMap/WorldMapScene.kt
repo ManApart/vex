@@ -24,15 +24,13 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
 
     override suspend fun Container.sceneInit() {
         tiled = Resources.getOverworld()
-//        val exits = paint(WorldMapManager.worldMap)
         cameraContainer(VIRTUAL_SIZE.toDouble(), VIRTUAL_SIZE.toDouble(), clip = true) {
             tiledMapView(tiled, smoothing = false, showShapes = false) {
                 setupTiledMap(tiled)
-                scale = 1.0
-//            addChild(player)
+                scale = 3.0
+                player = Player(spawn, exits, ::enterLevel).also { it.init(); addChild(it) }
             }
-        }
-//        player = Player(spawn, exits, ::enterLevel).also { it.init(); addChild(it) }
+        }.follow(player, true)
 
     }
 
