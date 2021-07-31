@@ -7,8 +7,15 @@ import worldMap.Connection
 import worldMap.Exit
 
 data class MapExit(val exit: Exit, val obj: TiledMap.Object, val view: View) {
+    var unlocked = false
     val connections = mutableListOf<Connection>()
+
     override fun toString(): String {
-        return view.pos.toString()
+        return exit.toString()
+    }
+
+    fun unlock(){
+        unlocked = true
+        connections.filter { it.source == this }.forEach { it.unlock() }
     }
 }

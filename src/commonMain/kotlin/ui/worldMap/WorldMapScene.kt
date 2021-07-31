@@ -28,6 +28,9 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
             tiledMapView(tiled, smoothing = false, showShapes = false) {
                 setupTiledMap(tiled)
                 scale = 3.0
+                val mapSpawn = exits.firstOrNull { it.exit.level.id == spawn.level.id && it.exit.id == spawn.id }!!
+                mapSpawn.unlock()
+                redraw()
                 player = Player(spawn, exits, ::enterLevel).also { it.init(); addChild(it) }
             }
         }.follow(player, true)
@@ -51,7 +54,7 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
             if (id != null) {
                 val levelId = obj.properties["levelId"]!!.int
                 val rect = circle(obj.bounds.width / 2) {
-                    alpha = 0.5
+                    alpha = 0.0
                     xy(obj.bounds.x, obj.bounds.y)
                 }
                 val exit = Exit(id, Resources.levelTemplates[levelId]!!)
@@ -65,18 +68,24 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
             createConnection(mapExit, mapExit.obj.properties["connectC"]?.int)
         }
 
+    }
+
+    private fun Container.redraw() {
         exits.fastForEach { mapExit ->
-            mapExit.connections.filter { it.source == mapExit }.fastForEach { connection ->
-                val source = mapExit.view.pos
-                val destination = connection.destination.view.pos
-                graphics {
-                    stroke(Colors.ALICEBLUE, StrokeInfo(thickness = 2.0)) {
-                        line(source, destination)
+            mapExit.view.alpha = if (mapExit.unlocked) 0.5 else 0.0
+
+            mapExit.connections
+                .filter { it.source == mapExit && it.unlocked }
+                .fastForEach { connection ->
+                    val source = mapExit.view.pos
+                    val destination = connection.destination.view.pos
+                    graphics {
+                        stroke(Colors.ALICEBLUE, StrokeInfo(thickness = 2.0)) {
+                            line(source, destination)
+                        }
                     }
                 }
-            }
         }
-
     }
 
     private fun createConnection(mapExit: MapExit, connectionId: Int?) {
