@@ -23,3 +23,7 @@ fun Vec2(x: Int = 0, y: Int = 0): Vec2 = Vec2(x.toFloat(), y.toFloat())
 fun Rectangle.center(): Point {
     return Point(x + width / 2, y + height / 2)
 }
+
+fun Point.toVector(): Vec2 {
+    return Vec2(x.toFloat(), y.toFloat())
+}

@@ -9,7 +9,6 @@ import com.soywiz.korge.tiled.tiledMapView
 import com.soywiz.korge.view.*
 import com.soywiz.korge.view.camera.cameraContainer
 import com.soywiz.korio.async.launchImmediately
-import com.soywiz.korma.geom.Point
 import org.jbox2d.dynamics.BodyType
 import ui.VIRTUAL_SIZE
 import ui.worldMap.WorldMapScene
@@ -22,7 +21,7 @@ class LevelScene(private val spawn: Exit) : Scene() {
     private val exits = mutableListOf<ExitView>()
 
     override suspend fun Container.sceneInit() {
-        tiled = Resources.getMap(spawn.level)
+        tiled = Resources.getLevel(spawn.level)
         player = Player(::interact)
 
         cameraContainer(VIRTUAL_SIZE.toDouble(), VIRTUAL_SIZE.toDouble(), clip = true) {
