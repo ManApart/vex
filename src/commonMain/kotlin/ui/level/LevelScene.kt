@@ -70,7 +70,7 @@ class LevelScene(private val spawn: Exit) : Scene() {
         tiled.objectLayers.first().objects.fastForEach { obj ->
             val isBounds = obj.properties["bounds"]?.bool ?: false
             if (isBounds) {
-                val rect = solidRect(obj.bounds.width, obj.bounds.height) {
+                solidRect(obj.bounds.width, obj.bounds.height) {
                     alpha = 0.0
                     xy(obj.bounds.x, obj.bounds.y)
                     registerBodyWithFixture(type = BodyType.STATIC)
@@ -87,9 +87,9 @@ class LevelScene(private val spawn: Exit) : Scene() {
     }
 
     private fun exitLevel(levelId: Int, exitId: Int) {
+        println("Exiting Level $levelId at $exitId")
         val exit = WorldMapManager.worldMap.exits.first { it.level.id == levelId && it.id == exitId }
         WorldMapManager.worldMap.unlockNeighbors(exit)
-        println("Exiting Level $levelId at $exitId")
         launchImmediately {
             sceneContainer.changeTo<WorldMapScene>(
                 exit,

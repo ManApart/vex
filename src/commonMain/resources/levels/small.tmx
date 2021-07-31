@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="20" height="10" tilewidth="8" tileheight="8" infinite="0" nextlayerid="3" nextobjectid="3">
+<map version="1.5" tiledversion="1.7.0" orientation="orthogonal" renderorder="right-down" width="20" height="10" tilewidth="8" tileheight="8" infinite="0" nextlayerid="3" nextobjectid="7">
  <tileset firstgid="1" source="forest.tsx"/>
  <layer id="1" name="Background" width="20" height="10">
   <data encoding="csv">
@@ -16,9 +16,24 @@
 </data>
  </layer>
  <objectgroup id="2" name="Objects">
-  <object id="2" x="95.8472" y="15.6445" width="16.0405" height="8.31732" visible="0">
+  <object id="2" x="96.1653" y="15.8035" width="7.68117" height="7.99924" visible="0">
    <properties>
     <property name="exitId" type="int" value="0"/>
+   </properties>
+  </object>
+  <object id="3" x="0" y="-0.159038" width="160.151" height="4.45306">
+   <properties>
+    <property name="bounds" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="5" x="0" y="-1.43134" width="3.97595" height="56.9355">
+   <properties>
+    <property name="bounds" type="bool" value="true"/>
+   </properties>
+  </object>
+  <object id="6" x="156.811" y="-0.954227" width="3.49883" height="57.7307">
+   <properties>
+    <property name="bounds" type="bool" value="true"/>
    </properties>
   </object>
  </objectgroup>
