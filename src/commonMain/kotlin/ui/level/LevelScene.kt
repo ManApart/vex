@@ -19,7 +19,7 @@ import worldMap.WorldMapManager
 class LevelScene(private val spawn: Exit) : Scene() {
     private lateinit var tiled: TiledMap
     private lateinit var player: Player
-    private lateinit var exits: List<ExitView>
+    private val exits = mutableListOf<ExitView>()
 
     override suspend fun Container.sceneInit() {
         tiled = Resources.getMap(spawn.level)
@@ -56,15 +56,26 @@ class LevelScene(private val spawn: Exit) : Scene() {
                 }
             }
         }
-        exits = tiled.objectLayers.first().objects.mapNotNull { obj ->
+        tiled.objectLayers.first().objects.fastForEach { obj ->
             val id = obj.properties["exitId"]?.int
             if (id != null) {
                 val rect = solidRect(obj.bounds.width, obj.bounds.height) {
                     alpha = 0.0
                     xy(obj.bounds.x, obj.bounds.y)
                 }
-                ExitView(id, rect)
-            } else null
+                exits.add(ExitView(id, rect))
+            }
+
+        }
+        tiled.objectLayers.first().objects.fastForEach { obj ->
+            val isBounds = obj.properties["bounds"]?.bool ?: false
+            if (isBounds) {
+                val rect = solidRect(obj.bounds.width, obj.bounds.height) {
+                    alpha = 0.0
+                    xy(obj.bounds.x, obj.bounds.y)
+                    registerBodyWithFixture(type = BodyType.STATIC)
+                }
+            }
         }
     }
 
