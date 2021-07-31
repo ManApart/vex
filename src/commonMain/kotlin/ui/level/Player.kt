@@ -77,14 +77,14 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
     private fun addTriggers() {
         val groundRect = Rectangle(-0.9f * TILE_SIZE / 2, TILE_SIZE / 2f, 0.9f * TILE_SIZE, .3f * TILE_SIZE)
-        Trigger(this, groundRect, ::onGroundContact, ::onLeaveGround, true)
+        Trigger(this, groundRect, ::onGroundContact, ::onLeaveGround, false)
 
         Trigger(
             this,
             Rectangle(TILE_SIZE / 2.7f, TILE_SIZE / 3f, TILE_SIZE / 1.5f, .3f * TILE_SIZE),
             { touchingWallRight = true },
             { touchingWallRight = false },
-            true,
+            false,
             Colors.RED
         )
         Trigger(
@@ -92,7 +92,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
             Rectangle(-TILE_SIZE * 1f, TILE_SIZE / 3f, TILE_SIZE / 1.5f, .3f * TILE_SIZE),
             { touchingWallLeft = true },
             { touchingWallLeft = false },
-            true,
+            false,
             Colors.YELLOWGREEN
         )
     }
@@ -103,14 +103,14 @@ class Player(private val interact: (View) -> Unit) : Container() {
         sprite.smoothing = false
         sprite.scale = 0.8
         animator = PlayerAnimator(image, sprite)
-        sprite.xy(0, 10)
+        sprite.xy(0, 5)
         sprite.anchor(Anchor.BOTTOM_CENTER)
 
         animator.evaluate(state)
 
         interactBox = solidRect(10.0, 22.0) {
             alpha = 0.0
-            xy(-5,-15)
+            xy(-5,-18)
         }
     }
 
@@ -236,8 +236,8 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
     private fun setPlayerState(state: PlayerState) {
         if (this.state != state) {
-            val right = if (goingRight) "right" else "left"
-            println("${this.state} -> $state $right")
+//            val right = if (goingRight) "right" else "left"
+//            println("${this.state} -> $state $right")
             animator.evaluate(state)
             this.state = state
             this.stateTime = 0.0

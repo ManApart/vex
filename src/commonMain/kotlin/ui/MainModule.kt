@@ -19,7 +19,7 @@ object MainModule : Module() {
     override val title: String = "Vex"
     override val size: SizeInt = SizeInt(Size(VIRTUAL_SIZE, VIRTUAL_SIZE))
     override val windowSize = SizeInt(Size(WINDOW_SIZE, WINDOW_SIZE))
-    override val icon: String = "levels/small.png"
+    override val icon: String = "icon.png"
     override val scaleMode: ScaleMode = ScaleMode.SHOW_ALL
     override val clipBorders: Boolean = false
     override val scaleAnchor: Anchor = Anchor.TOP_LEFT

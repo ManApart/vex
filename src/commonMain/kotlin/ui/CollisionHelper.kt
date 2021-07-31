@@ -5,9 +5,6 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
 import com.soywiz.korma.geom.Rectangle
-import level.LevelMap
-import level.TileType
-import ui.level.TILE_SIZE
 
 class Trigger(
     parent: Container,
