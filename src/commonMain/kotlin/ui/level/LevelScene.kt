@@ -13,7 +13,6 @@ import org.jbox2d.dynamics.BodyType
 import ui.VIRTUAL_SIZE
 import ui.worldMap.WorldMapScene
 import worldMap.Exit
-import worldMap.WorldMapManager
 
 class LevelScene(private val spawn: Exit) : Scene() {
     private lateinit var tiled: TiledMap
@@ -87,8 +86,9 @@ class LevelScene(private val spawn: Exit) : Scene() {
 
     private fun exitLevel(levelId: Int, exitId: Int) {
         println("Exiting Level $levelId at $exitId")
-        val exit = WorldMapManager.worldMap.exits.first { it.level.id == levelId && it.id == exitId }
-        WorldMapManager.worldMap.unlockNeighbors(exit)
+//        val exit = WorldMapManager.worldMap.exits.first { it.level.id == levelId && it.id == exitId }
+//        WorldMapManager.worldMap.unlockNeighbors(exit)
+        val exit = Exit(0, Resources.levelTemplates[levelId]!!)
         launchImmediately {
             sceneContainer.changeTo<WorldMapScene>(
                 exit,

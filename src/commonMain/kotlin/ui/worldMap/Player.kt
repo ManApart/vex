@@ -54,11 +54,11 @@ class Player(origin: Exit, private val exits: List<MapExit>, private val enterLe
                 } ?: Angle.ZERO
 
                 if (stickAmount > 0.2) {
-                    val possibleExits = currentExit.exit.connections
+                    val possibleExits = currentExit.connections
                         .filter { it.unlocked }
-                        .map { it.getOther(currentExit.exit) }
+                        .map { it.getOther(currentExit) }
                     val exit = exits
-                        .filter { possibleExits.contains(it.exit) }
+                        .filter { possibleExits.contains(it) }
                         .minByOrNull { angleTowards(stickAngle, it) }
 
                     if (exit != null && angleTowards(stickAngle, exit) < 45.0) {

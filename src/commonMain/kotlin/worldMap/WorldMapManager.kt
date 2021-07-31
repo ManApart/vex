@@ -1,5 +1,5 @@
 package worldMap
 
-object WorldMapManager {
-    val worldMap = WorldMapBuilder.world1
-}
+//object WorldMapManager {
+//    val worldMap = WorldMapBuilder.world1
+//}

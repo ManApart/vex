@@ -8,7 +8,7 @@ import com.soywiz.korma.geom.Size
 import com.soywiz.korma.geom.SizeInt
 import ui.level.LevelScene
 import ui.worldMap.WorldMapScene
-import worldMap.WorldMapManager
+import worldMap.Exit
 
 const val WINDOW_SIZE = 800
 const val VIRTUAL_SIZE = 640
@@ -25,7 +25,8 @@ object MainModule : Module() {
     override val scaleAnchor: Anchor = Anchor.TOP_LEFT
 
     override suspend fun AsyncInjector.configure() {
-        mapPrototype { WorldMapManager.worldMap.exits.first() }
+//        mapPrototype { WorldMapManager.worldMap.exits.first() }
+        mapPrototype { Exit(0, Resources.levelTemplates[0]!!) }
         mapPrototype { LevelScene(get()) }
         mapPrototype { WorldMapScene(get()) }
     }

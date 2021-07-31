@@ -1,17 +1,9 @@
 package worldMap
 
+import ui.worldMap.MapExit
 
-class Connection(val source: Exit, val destination: Exit) {
-    constructor(
-        levelIdA: Int,
-        exitIdA: Int,
-        levelIdB: Int,
-        exitIdB: Int,
-        levels: List<Exit>
-    ) : this(
-        levels.first { it.level.id == levelIdA && it.id == exitIdA },
-        levels.first { it.level.id == levelIdB && it.id == exitIdB })
 
+class Connection(val source: MapExit, val destination: MapExit) {
     var unlocked = true
 
     init {
@@ -19,7 +11,7 @@ class Connection(val source: Exit, val destination: Exit) {
         destination.connections.add(this)
     }
 
-    fun getOther(exit: Exit): Exit {
+    fun getOther(exit: MapExit): MapExit {
         return if (exit == source) destination else source
     }
 

@@ -12,7 +12,6 @@ import com.soywiz.korim.color.Colors
 import com.soywiz.korim.vector.StrokeInfo
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korma.geom.vector.line
-import toVector
 import ui.VIRTUAL_SIZE
 import ui.level.LevelScene
 import worldMap.Connection
@@ -21,7 +20,7 @@ import worldMap.Exit
 class WorldMapScene(private val spawn: Exit) : Scene() {
     private lateinit var tiled: TiledMap
     private lateinit var player: Player
-    private val exits = mutableListOf<MapExit2>()
+    private val exits = mutableListOf<MapExit>()
 
     override suspend fun Container.sceneInit() {
         tiled = Resources.getOverworld()
@@ -57,8 +56,8 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
                     alpha = 0.5
                     xy(obj.bounds.x, obj.bounds.y)
                 }
-                val exit = Exit(id, Resources.levelTemplates[levelId]!!, obj.bounds.position.toVector())
-                exits.add(MapExit2(exit, obj, rect))
+                val exit = Exit(id, Resources.levelTemplates[levelId]!!)
+                exits.add(MapExit(exit, obj, rect))
             }
         }
 
@@ -69,24 +68,23 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
         }
 
         exits.fastForEach { mapExit ->
-            mapExit.exit.connections.filter { it.source == mapExit.exit }.fastForEach { connection ->
+            mapExit.connections.filter { it.source == mapExit }.fastForEach { connection ->
                 val source = mapExit.view.pos
-                val destination = 
+                val destination = connection.destination.view.pos
                 graphics {
-                    stroke(Colors.GREEN, StrokeInfo(thickness = 2.0)) {
+                    stroke(Colors.ALICEBLUE, StrokeInfo(thickness = 2.0)) {
                         line(source, destination)
                     }
                 }
             }
         }
 
-
     }
 
-    private fun createConnection(mapExit: MapExit2, connectionId: Int?) {
+    private fun createConnection(mapExit: MapExit, connectionId: Int?) {
         if (connectionId != null) {
             val other = exits.first { it.obj.id == connectionId }
-            Connection(mapExit.exit, other.exit)
+            Connection(mapExit, other)
         }
     }
 
