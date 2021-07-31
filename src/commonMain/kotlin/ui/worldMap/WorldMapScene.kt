@@ -14,13 +14,13 @@ import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korma.geom.vector.line
 import ui.VIRTUAL_SIZE
 import ui.level.LevelScene
+import ui.worldMap.MapManager.exits
 import worldMap.Connection
 import worldMap.Exit
 
 class WorldMapScene(private val spawn: Exit) : Scene() {
     private lateinit var tiled: TiledMap
     private lateinit var player: Player
-    private val exits = mutableListOf<MapExit>()
 
     override suspend fun Container.sceneInit() {
         tiled = Resources.getOverworld()
@@ -30,8 +30,8 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
                 scale = 3.0
                 val mapSpawn = exits.firstOrNull { it.exit.level.id == spawn.level.id && it.exit.id == spawn.id }!!
                 mapSpawn.unlock()
-                redraw()
                 player = Player(spawn, exits, ::enterLevel).also { it.init(); addChild(it) }
+                redraw()
             }
         }.follow(player, true)
 
@@ -49,30 +49,31 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
     }
 
     private fun Container.setupTiledMap(tiled: TiledMap) {
-        tiled.objectLayers.first().objects.fastForEach { obj ->
-            val id = obj.properties["exitId"]?.int
-            if (id != null) {
-                val levelId = obj.properties["levelId"]!!.int
-                val rect = circle(obj.bounds.width / 2) {
-                    alpha = 0.0
-                    xy(obj.bounds.x, obj.bounds.y)
+        if (exits.isEmpty()) {
+            tiled.objectLayers.first().objects.fastForEach { obj ->
+                val id = obj.properties["exitId"]?.int
+                if (id != null) {
+                    val levelId = obj.properties["levelId"]!!.int
+                    val rect = circle(obj.bounds.width / 2) {
+                        alpha = 0.0
+                        xy(obj.bounds.x, obj.bounds.y)
+                    }
+                    val exit = Exit(id, Resources.levelTemplates[levelId]!!)
+                    exits.add(MapExit(exit, obj, rect))
                 }
-                val exit = Exit(id, Resources.levelTemplates[levelId]!!)
-                exits.add(MapExit(exit, obj, rect))
+            }
+            exits.fastForEach { mapExit ->
+                createConnection(mapExit, mapExit.obj.properties["connectA"]?.int)
+                createConnection(mapExit, mapExit.obj.properties["connectB"]?.int)
+                createConnection(mapExit, mapExit.obj.properties["connectC"]?.int)
             }
         }
-
-        exits.fastForEach { mapExit ->
-            createConnection(mapExit, mapExit.obj.properties["connectA"]?.int)
-            createConnection(mapExit, mapExit.obj.properties["connectB"]?.int)
-            createConnection(mapExit, mapExit.obj.properties["connectC"]?.int)
-        }
-
     }
 
     private fun Container.redraw() {
         exits.fastForEach { mapExit ->
             mapExit.view.alpha = if (mapExit.unlocked) 0.5 else 0.0
+            addChild(mapExit.view)
 
             mapExit.connections
                 .filter { it.source == mapExit && it.unlocked }
