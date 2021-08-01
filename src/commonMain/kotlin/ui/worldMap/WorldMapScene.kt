@@ -67,10 +67,15 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
                 createConnection(mapExit, mapExit.obj.properties["connectB"]?.int)
                 createConnection(mapExit, mapExit.obj.properties["connectC"]?.int)
             }
+
+            if (Debug.allLevelsUnlocked){
+                exits.fastForEach { it.unlock() }
+            }
         }
     }
 
     private fun Container.redraw() {
+        removeChild(player)
         exits.fastForEach { mapExit ->
             mapExit.view.alpha = if (mapExit.unlocked) 0.5 else 0.0
             addChild(mapExit.view)
@@ -87,6 +92,7 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
                     }
                 }
         }
+        addChild(player)
     }
 
     private fun createConnection(mapExit: MapExit, connectionId: Int?) {

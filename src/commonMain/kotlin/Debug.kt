@@ -1,3 +1,3 @@
 object Debug {
-    val allLevelsUnlocked = true
+    const val allLevelsUnlocked = false
 }

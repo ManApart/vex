@@ -43,7 +43,6 @@ class Player(private val interact: (View) -> Unit) : Container() {
     private lateinit var rigidBody: Body
     private var state = PlayerState.FALLING
     private var stateTime = 0.0
-    private lateinit var sprite: Sprite
     private lateinit var animator: PlayerAnimator
     private lateinit var interactBox: SolidRect
 
@@ -99,7 +98,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
     private suspend fun buildSprite() {
         val image = Resources.getImage("character.png")
-        sprite = sprite()
+        val sprite = sprite()
         sprite.smoothing = false
         sprite.scale = 0.8
         animator = PlayerAnimator(image, sprite)

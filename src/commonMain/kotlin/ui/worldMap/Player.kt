@@ -11,27 +11,34 @@ import com.soywiz.korge.tween.get
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korio.async.launchImmediately
+import com.soywiz.korma.geom.Anchor
 import com.soywiz.korma.geom.Angle
 import com.soywiz.korma.geom.abs
 import com.soywiz.korma.geom.degrees
+import player.PlayerAnimator
+import player.PlayerState
 import ui.level.TILE_SIZE
 import worldMap.Exit
 
 class Player(origin: Exit, private val exits: List<MapExit>, private val enterLevel: (Exit) -> Unit) : Container() {
     private var currentExit = exits.firstOrNull { it.exit.level.id == origin.level.id && it.exit.id == origin.id }!!
     private var goalExit = currentExit
-    private var startAnimating = false
+    private var startMoving = false
+    private lateinit var animator: PlayerAnimator
 
     suspend fun init() {
         position(currentExit.view.x, currentExit.view.y)
-        solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE, Colors.PINK) {
+        solidRect(0.9 * TILE_SIZE, 1.5 * TILE_SIZE) {
+            alpha = 0.0
             onCollision({ view ->
-                view is Circle && exits.any { it.view == view }
+                view is Circle && goalExit.view == view
             }) { view ->
                 currentExit = exits.first { it.view == view }
+                animator.evaluate(PlayerState.IDLE)
             }
         }
         setupControls()
+        buildSprite()
         addOnUpdate()
     }
 
@@ -42,6 +49,18 @@ class Player(origin: Exit, private val exits: List<MapExit>, private val enterLe
         keys {
             justDown(Key.SPACE){ enterLevel(currentExit.exit)}
         }
+    }
+
+    private suspend fun buildSprite() {
+        val image = Resources.getImage("character.png")
+        val sprite = sprite()
+        sprite.smoothing = false
+        sprite.scale = 0.8
+        animator = PlayerAnimator(image, sprite)
+        sprite.xy(5, 0)
+        sprite.anchor(Anchor.MIDDLE_CENTER)
+
+        animator.evaluate(PlayerState.IDLE)
     }
 
     private suspend fun addOnUpdate() {
@@ -63,13 +82,16 @@ class Player(origin: Exit, private val exits: List<MapExit>, private val enterLe
 
                     if (exit != null && angleTowards(stickAngle, exit) < 45.0) {
                         println("New Goal: $exit")
+                        val right = exit.view.x > currentExit.view.x
                         goalExit = exit
-                        startAnimating = true
+                        startMoving = true
+                        animator.setFacing(right)
+                        animator.evaluate(PlayerState.RUNNING)
                     }
                 }
             }
-            if (startAnimating && currentExit != goalExit) {
-                startAnimating = false
+            if (startMoving && currentExit != goalExit) {
+                startMoving = false
                 stage?.launchImmediately {
                     animateParallel {
                         tween(::x[pos.x, goalExit.view.x], time = 1.seconds)
