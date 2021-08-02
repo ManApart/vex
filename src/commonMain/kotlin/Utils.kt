@@ -1,5 +1,4 @@
-import com.soywiz.korma.geom.Point
-import com.soywiz.korma.geom.Rectangle
+import com.soywiz.korma.geom.*
 import org.jbox2d.common.Vec2
 
 fun clamp(x: Float, min: Float, max: Float): Float {
@@ -26,4 +25,15 @@ fun Rectangle.center(): Point {
 
 fun Point.toVector(): Vec2 {
     return Vec2(x.toFloat(), y.toFloat())
+}
+
+fun Point.toAngle(): Angle {
+    //TODO Only negative y in certain cases
+    return Angle.between(0.0, 0.0, x, -y)
+}
+
+fun Angle.toPoint(): Point {
+    val x = cosine
+    val y = tangent
+    return Point(x, y)
 }

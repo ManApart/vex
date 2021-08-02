@@ -13,14 +13,12 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korma.geom.Anchor
 import com.soywiz.korma.geom.Rectangle
-import level.LevelMap
-import level.Tile
-import level.TileType
 import org.jbox2d.collision.shapes.CircleShape
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.BodyType
 import player.PlayerAnimator
 import player.PlayerState
+import toAngle
 import ui.Trigger
 import kotlin.math.abs
 
@@ -53,6 +51,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
     private var touchingWallLeft = false
     private var touchingWallRight = false
     private var jumpHeld = false
+    private var grapple: GrapplingHook? = null
 
     suspend fun init(spawn: SolidRect) {
         centerOn(spawn)
@@ -135,12 +134,24 @@ class Player(private val interact: (View) -> Unit) : Container() {
             var dx = 0f
             val scale = dt.milliseconds.toFloat() / 20
             with(views.input) {
-                val buttons = connectedGamepads.firstOrNull()
-                val stickAmount = buttons?.get(GameStick.LEFT)?.x ?: 0.0
+                val gamepad = connectedGamepads.firstOrNull()
+                val leftStick = gamepad?.get(GameStick.LEFT)
+                val stickAmount = leftStick?.x ?: 0.0
                 when {
                     abs(stickAmount) > .1f -> dx = (stickAmount * ACCELERATION * scale).toFloat()
                     keys[Key.RIGHT] -> dx = ACCELERATION * scale
                     keys[Key.LEFT] -> dx = -ACCELERATION * scale
+                }
+                val trigger = gamepad?.get(GameButton.R2) ?: 0.0
+                if (abs(trigger) > .2){
+                    if (grapple == null){
+                        val aim = gamepad!![GameStick.RIGHT].toAngle()
+                        grapple = GrapplingHook(this@Player, aim)
+                        parent?.addChild(grapple!!)
+                    }
+                } else if (grapple != null) {
+                    grapple?.removeFromParent()
+                    grapple = null
                 }
             }
             if (dx != 0f) {
