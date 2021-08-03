@@ -1,5 +1,6 @@
 package ui.worldMap
 
+import center
 import com.soywiz.kds.iterators.fastForEach
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.scene.AlphaTransition
@@ -83,8 +84,8 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
             mapExit.connections
                 .filter { it.source == mapExit && it.unlocked }
                 .fastForEach { connection ->
-                    val source = mapExit.view.pos
-                    val destination = connection.destination.view.pos
+                    val source = mapExit.view.center()
+                    val destination = connection.destination.view.center()
                     graphics {
                         stroke(Colors.ALICEBLUE, StrokeInfo(thickness = 2.0)) {
                             line(source, destination)

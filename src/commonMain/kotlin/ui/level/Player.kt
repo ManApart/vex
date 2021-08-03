@@ -11,14 +11,17 @@ import com.soywiz.korge.input.gamepad
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
+import com.soywiz.korim.vector.StrokeInfo
 import com.soywiz.korma.geom.Anchor
 import com.soywiz.korma.geom.Rectangle
+import com.soywiz.korma.geom.vector.line
 import org.jbox2d.collision.shapes.CircleShape
 import org.jbox2d.dynamics.Body
 import org.jbox2d.dynamics.BodyType
 import player.PlayerAnimator
 import player.PlayerState
 import toAngle
+import toVector
 import ui.Trigger
 import kotlin.math.abs
 
@@ -37,7 +40,7 @@ private const val DASH_VELOCITY = 10f
 private const val DASH_TIME = 150.0
 
 class Player(private val interact: (View) -> Unit) : Container() {
-//class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Unit) : Container() {
+    //class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Unit) : Container() {
     private lateinit var rigidBody: Body
     private var state = PlayerState.FALLING
     private var stateTime = 0.0
@@ -71,6 +74,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
         setupControls()
         addOnUpdate()
+        paintGrapplingHook()
     }
 
     private fun addTriggers() {
@@ -108,7 +112,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
         interactBox = solidRect(10.0, 22.0) {
             alpha = 0.0
-            xy(-5,-18)
+            xy(-5, -18)
         }
     }
 
@@ -143,8 +147,8 @@ class Player(private val interact: (View) -> Unit) : Container() {
                     keys[Key.LEFT] -> dx = -ACCELERATION * scale
                 }
                 val trigger = gamepad?.get(GameButton.R2) ?: 0.0
-                if (abs(trigger) > .2){
-                    if (grapple == null){
+                if (abs(trigger) > .2) {
+                    if (grapple == null) {
                         val aim = gamepad!![GameStick.RIGHT].toAngle()
                         grapple = GrapplingHook(this@Player, aim)
                         parent?.addChild(grapple!!)
@@ -202,6 +206,20 @@ class Player(private val interact: (View) -> Unit) : Container() {
                 }
             }
             rigidBody.linearVelocityY = clamp(rigidBody.linearVelocityY, -MAX_Y_VEL, MAX_Y_VEL)
+        }
+    }
+
+    private fun Container.paintGrapplingHook() {
+        addUpdater {
+            if (grapple != null) {
+//                graphics {
+//                    val source = pos
+//                    val dest = grapple!!.pos
+//                    stroke(Colors.GREEN, StrokeInfo(thickness = 2.0)) {
+//                        line(source, dest)
+//                    }
+//                }
+            }
         }
     }
 

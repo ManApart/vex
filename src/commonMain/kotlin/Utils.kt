@@ -1,5 +1,7 @@
+import com.soywiz.korge.view.View
 import com.soywiz.korma.geom.*
 import org.jbox2d.common.Vec2
+import kotlin.math.abs
 
 fun clamp(x: Float, min: Float, max: Float): Float {
     return when {
@@ -19,7 +21,7 @@ fun clamp(x: Double, min: Double, max: Double): Double {
 
 fun Vec2(x: Int = 0, y: Int = 0): Vec2 = Vec2(x.toFloat(), y.toFloat())
 
-fun Rectangle.center(): Point {
+fun View.center(): Point {
     return Point(x + width / 2, y + height / 2)
 }
 
@@ -28,12 +30,11 @@ fun Point.toVector(): Vec2 {
 }
 
 fun Point.toAngle(): Angle {
-    //TODO Only negative y in certain cases
-    return Angle.between(0.0, 0.0, x, -y)
+    return Angle.between(0.0, 0.0, x, y)
 }
 
 fun Angle.toPoint(): Point {
     val x = cosine
-    val y = tangent
+    val y = sine
     return Point(x, y)
 }

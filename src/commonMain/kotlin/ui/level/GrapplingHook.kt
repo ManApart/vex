@@ -19,7 +19,6 @@ class GrapplingHook(private val player: Player, angle: Angle) : Container() {
         player.parent?.addChild(this)
         solidRect(TILE_SIZE, TILE_SIZE, Colors.RED)
         centerOn(player)
-//        xy(player.x, player.y - 40)
 
         registerBodyWithFixture(
             type = BodyType.DYNAMIC,
@@ -31,6 +30,7 @@ class GrapplingHook(private val player: Player, angle: Angle) : Container() {
             bullet = true
         )
         val initialVelocity = angle.toPoint().toVector()
+        println("Velocity: $initialVelocity")
 
         addUpdater {
             body!!._linearVelocity.x = initialVelocity.x * magnitude
