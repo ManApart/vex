@@ -1,15 +1,10 @@
 package ui.level
 
-import com.soywiz.korge.box2d.BoxShape
 import com.soywiz.korge.box2d.body
-import com.soywiz.korge.box2d.registerBodyWithFixture
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korma.geom.Angle
-import com.soywiz.korma.geom.Rectangle
 import com.soywiz.korma.geom.degrees
-import org.jbox2d.collision.shapes.CircleShape
-import org.jbox2d.dynamics.BodyType
 import toPoint
 import toVector
 

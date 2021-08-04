@@ -1,5 +1,6 @@
 package ui.level
 
+import center
 import clamp
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korev.GameButton
@@ -13,6 +14,7 @@ import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.vector.StrokeInfo
 import com.soywiz.korma.geom.Anchor
+import com.soywiz.korma.geom.Point
 import com.soywiz.korma.geom.Rectangle
 import com.soywiz.korma.geom.vector.line
 import org.jbox2d.collision.shapes.CircleShape
@@ -210,15 +212,22 @@ class Player(private val interact: (View) -> Unit) : Container() {
     }
 
     private fun Container.paintGrapplingHook() {
+        var background = Container()
+        parent?.addChild(background)
         addUpdater {
+            background.removeFromParent()
             if (grapple != null) {
-//                graphics {
-//                    val source = pos
-//                    val dest = grapple!!.pos
-//                    stroke(Colors.GREEN, StrokeInfo(thickness = 2.0)) {
-//                        line(source, dest)
-//                    }
-//                }
+                val source = pos + Point(0, -8)
+                val dest = grapple!!.center()
+                background = Container()
+                parent?.addChildAt(background, parent?.getChildIndex(this@Player) ?: 0)
+
+                background.graphics {
+                    stroke(Colors.GREEN, StrokeInfo(thickness = 1.0 )) {
+                        line(source, dest)
+                    }
+                }
+
             }
         }
     }
