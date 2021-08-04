@@ -1,10 +1,15 @@
 package ui.level
 
+import center
 import com.soywiz.korge.box2d.body
+import com.soywiz.korge.box2d.registerBodyWithFixture
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korma.geom.Angle
 import com.soywiz.korma.geom.degrees
+import org.jbox2d.common.Vec2
+import org.jbox2d.dynamics.BodyType
+import org.jbox2d.dynamics.joints.DistanceJointDef
 import toPoint
 import toVector
 
@@ -15,13 +20,12 @@ class GrapplingHook(private val player: Player, angle: Angle) : Container() {
     private val rect: SolidRect
 
     init {
-        println("Angle: ${angle.degrees}")
         player.parent?.addChild(this)
         rect = solidRect(TILE_SIZE, TILE_SIZE, Colors.RED)
         centerOn(player)
 
         val initialVelocity = angle.toPoint().toVector()
-        println("Velocity: $initialVelocity")
+//        println("Angle: ${angle.degrees}, Velocity: $initialVelocity")
 
         addUpdater {
             if (!collided) {
@@ -34,6 +38,10 @@ class GrapplingHook(private val player: Player, angle: Angle) : Container() {
         }) {
             collided = true
             rect.color = Colors.GREEN
+            registerBodyWithFixture(type = BodyType.STATIC)
+            val jointDef = DistanceJointDef()
+            jointDef.initialize(body!!, player.body!!, pos.toVector(), player.pos.toVector())
+            body!!.world.createJoint(jointDef)
         }
     }
 
