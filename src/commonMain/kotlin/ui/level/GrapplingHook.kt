@@ -10,6 +10,7 @@ import com.soywiz.korma.geom.degrees
 import org.jbox2d.common.Vec2
 import org.jbox2d.dynamics.BodyType
 import org.jbox2d.dynamics.joints.DistanceJointDef
+import org.jbox2d.dynamics.joints.Joint
 import toPoint
 import toVector
 
@@ -18,6 +19,7 @@ private const val magnitude = 10.0f
 class GrapplingHook(private val player: Player, angle: Angle) : Container() {
     private var collided = false
     private val rect: SolidRect
+    private var joint: Joint? = null
 
     init {
         player.parent?.addChild(this)
@@ -40,10 +42,17 @@ class GrapplingHook(private val player: Player, angle: Angle) : Container() {
             rect.color = Colors.GREEN
             registerBodyWithFixture(type = BodyType.STATIC)
             val jointDef = DistanceJointDef()
-            jointDef.initialize(body!!, player.body!!, pos.toVector(), player.pos.toVector())
-            body!!.world.createJoint(jointDef)
+            jointDef.initialize(body!!, player.body!!, body!!.position, player.body!!.position)
+            jointDef.length = 2f
+            joint = body!!.world.createJoint(jointDef)
         }
     }
 
+    fun release() {
+        removeFromParent()
+        player.body!!.m_jointList = null
+        joint?.let { joint -> body!!.world.destroyJoint(joint) }
+        body!!.world.destroyBody(body!!)
+    }
 
 }

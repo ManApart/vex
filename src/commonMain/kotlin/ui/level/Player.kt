@@ -156,7 +156,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
                         parent?.addChild(grapple!!)
                     }
                 } else if (grapple != null) {
-                    grapple?.removeFromParent()
+                    grapple?.release()
                     grapple = null
                 }
             }
