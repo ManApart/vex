@@ -21,6 +21,8 @@ fun clamp(x: Double, min: Double, max: Double): Double {
 
 fun Vec2(x: Int = 0, y: Int = 0): Vec2 = Vec2(x.toFloat(), y.toFloat())
 
+operator fun Vec2.div(scalar: Double) = Vec2((x/scalar).toFloat(), (y/scalar).toFloat())
+
 fun View.center(): Point {
     return Point(x + width / 2, y + height / 2)
 }
