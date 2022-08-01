@@ -10,6 +10,7 @@ import div
 import org.jbox2d.dynamics.BodyType
 import org.jbox2d.dynamics.joints.DistanceJointDef
 import org.jbox2d.dynamics.joints.Joint
+import org.jbox2d.dynamics.joints.RopeJointDef
 import toPoint
 import toVector
 
@@ -42,8 +43,11 @@ class GrapplingHook(private val player: Player, angle: Angle) : Container() {
             registerBodyWithFixture(type = BodyType.STATIC)
             val gb = collidedObject.body!!
             val pb = player.body!!
-            val jointDef = DistanceJointDef()
-            jointDef.initialize(gb, pb, gb.position, pb.position)
+            val jointDef = RopeJointDef().apply {
+                bodyA = gb
+                bodyB = pb
+                maxLength = 5f
+            }
 
             joint = gb.world.createJoint(jointDef)
         }
