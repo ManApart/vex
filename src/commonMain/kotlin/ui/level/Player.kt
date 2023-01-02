@@ -12,10 +12,11 @@ import com.soywiz.korge.input.gamepad
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
-import com.soywiz.korim.vector.StrokeInfo
 import com.soywiz.korma.geom.Anchor
 import com.soywiz.korma.geom.Point
 import com.soywiz.korma.geom.Rectangle
+import com.soywiz.korma.geom.plus
+import com.soywiz.korma.geom.vector.StrokeInfo
 import com.soywiz.korma.geom.vector.line
 import org.jbox2d.collision.shapes.CircleShape
 import org.jbox2d.dynamics.Body
@@ -199,6 +200,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
                         setPlayerState(PlayerState.RUNNING)
                     }
                 }
+                else -> {}
             }
             if (state != PlayerState.DASHING) {
                 if (grounded) {

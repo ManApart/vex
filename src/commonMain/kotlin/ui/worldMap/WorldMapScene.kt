@@ -5,13 +5,13 @@ import com.soywiz.kds.iterators.fastForEach
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.scene.AlphaTransition
 import com.soywiz.korge.scene.Scene
-import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korge.tiled.tiledMapView
 import com.soywiz.korge.view.*
 import com.soywiz.korge.view.camera.cameraContainer
 import com.soywiz.korim.color.Colors
-import com.soywiz.korim.vector.StrokeInfo
+import com.soywiz.korim.tiles.tiled.TiledMap
 import com.soywiz.korio.async.launchImmediately
+import com.soywiz.korma.geom.vector.StrokeInfo
 import com.soywiz.korma.geom.vector.line
 import ui.VIRTUAL_SIZE
 import ui.level.LevelScene
@@ -23,7 +23,7 @@ class WorldMapScene(private val spawn: Exit) : Scene() {
     private lateinit var tiled: TiledMap
     private lateinit var player: Player
 
-    override suspend fun Container.sceneInit() {
+    override suspend fun SContainer.sceneInit() {
         tiled = Resources.getOverworld()
         cameraContainer(VIRTUAL_SIZE.toDouble(), VIRTUAL_SIZE.toDouble(), clip = true) {
             tiledMapView(tiled, smoothing = false, showShapes = false) {

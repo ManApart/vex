@@ -1,7 +1,7 @@
-import com.soywiz.korge.tiled.TiledMap
-import com.soywiz.korge.tiled.readTiledMap
 import com.soywiz.korim.bitmap.Bitmap
 import com.soywiz.korim.format.readBitmap
+import com.soywiz.korim.tiles.tiled.TiledMap
+import com.soywiz.korim.tiles.tiled.readTiledMap
 import com.soywiz.korio.file.std.resourcesVfs
 import level.LevelTemplate
 

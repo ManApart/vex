@@ -4,10 +4,10 @@ import com.soywiz.klock.TimeSpan
 import com.soywiz.korge.box2d.registerBodyWithFixture
 import com.soywiz.korge.scene.AlphaTransition
 import com.soywiz.korge.scene.Scene
-import com.soywiz.korge.tiled.TiledMap
 import com.soywiz.korge.tiled.tiledMapView
 import com.soywiz.korge.view.*
 import com.soywiz.korge.view.camera.cameraContainer
+import com.soywiz.korim.tiles.tiled.TiledMap
 import com.soywiz.korio.async.launchImmediately
 import org.jbox2d.dynamics.BodyType
 import ui.VIRTUAL_SIZE
@@ -19,7 +19,7 @@ class LevelScene(private val spawn: Exit) : Scene() {
     private lateinit var player: Player
     private val exits = mutableListOf<ExitView>()
 
-    override suspend fun Container.sceneInit() {
+    override suspend fun SContainer.sceneInit() {
         tiled = Resources.getLevel(spawn.level)
         player = Player(::interact)
 

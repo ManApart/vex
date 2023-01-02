@@ -1,8 +1,7 @@
 package ui.worldMap
 
-import com.soywiz.korge.tiled.TiledMap
-import com.soywiz.korge.view.SolidRect
 import com.soywiz.korge.view.View
+import com.soywiz.korim.tiles.tiled.TiledMap
 import worldMap.Connection
 import worldMap.Exit
 
