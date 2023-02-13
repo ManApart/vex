@@ -1,6 +1,5 @@
 package ui
 
-import com.soywiz.korge.box2d.body
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
 import com.soywiz.korim.color.RGBA
@@ -26,7 +25,8 @@ class Trigger(
         onCollision(filter = {
             it is SolidRect
                     && !contactedViews.contains(it)
-                    && it.body != null
+//                    && it.body != null
+            //TODO - need to detect solid?
         }) { other ->
             contactedViews.add(other)
             onContactStart()

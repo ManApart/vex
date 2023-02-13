@@ -1,13 +1,11 @@
 package ui.level
 
-import com.soywiz.korge.box2d.registerBodyWithFixture
 import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.container
 import com.soywiz.korge.view.position
 import com.soywiz.korge.view.solidRect
 import level.LevelMap
 import level.TileType
-import org.jbox2d.dynamics.BodyType
 
 const val TILE_SIZE = 10
 
@@ -27,7 +25,7 @@ private fun Container.paint(map: LevelMap, x: Int, y: Int) {
     solidRect(TILE_SIZE, TILE_SIZE, tile.type.color) {
         position(x * TILE_SIZE, y * TILE_SIZE)
         if (tile.type == TileType.TILE) {
-            registerBodyWithFixture(type = BodyType.STATIC, restitution = 0)
+            //TODO - collision
         }
     }
 }

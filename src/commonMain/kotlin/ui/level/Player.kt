@@ -1,13 +1,12 @@
 package ui.level
 
+import RigidBody
 import center
 import clamp
 import com.soywiz.klock.TimeSpan
 import com.soywiz.korev.GameButton
 import com.soywiz.korev.GameStick
 import com.soywiz.korev.Key
-import com.soywiz.korge.box2d.body
-import com.soywiz.korge.box2d.registerBodyWithFixture
 import com.soywiz.korge.input.gamepad
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.view.*
@@ -18,9 +17,6 @@ import com.soywiz.korma.geom.Rectangle
 import com.soywiz.korma.geom.plus
 import com.soywiz.korma.geom.vector.StrokeInfo
 import com.soywiz.korma.geom.vector.line
-import org.jbox2d.collision.shapes.CircleShape
-import org.jbox2d.dynamics.Body
-import org.jbox2d.dynamics.BodyType
 import player.PlayerAnimator
 import player.PlayerState
 import toAngle
@@ -44,7 +40,7 @@ private const val DASH_TIME = 150.0
 
 class Player(private val interact: (View) -> Unit) : Container() {
     //class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Unit) : Container() {
-    private lateinit var rigidBody: Body
+    private val body = RigidBody(this)
     private var state = PlayerState.FALLING
     private var stateTime = 0.0
     private lateinit var animator: PlayerAnimator
@@ -65,15 +61,15 @@ class Player(private val interact: (View) -> Unit) : Container() {
         buildSprite()
         addTriggers()
 
-        registerBodyWithFixture(
-            type = BodyType.DYNAMIC,
-            density = 2,
-            friction = FRICTION,
-            fixedRotation = true,
-            shape = CircleShape(0.225),
-            restitution = 0
-        )
-        this@Player.rigidBody = this.body!!
+//        registerBodyWithFixture(
+//            type = BodyType.DYNAMIC,
+//            density = 2,
+//            friction = FRICTION,
+//            fixedRotation = true,
+//            shape = CircleShape(0.225),
+//            restitution = 0
+//        )
+//        this@Player.rigidBody = this.body!!
 
         setupControls()
         addOnUpdate()
@@ -165,7 +161,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
                 goingRight = dx > 0
                 animator.setFacing(goingRight)
             }
-            rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
+//            rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
         }
     }
 
@@ -180,23 +176,23 @@ class Player(private val interact: (View) -> Unit) : Container() {
                         val newState = if (grounded) PlayerState.RUNNING else PlayerState.FALLING
                         setPlayerState(newState)
                     } else {
-                        rigidBody.linearVelocityX = if (goingRight) DASH_VELOCITY else -DASH_VELOCITY
+                        body.linearVelocityX = if (goingRight) DASH_VELOCITY else -DASH_VELOCITY
                     }
                 }
                 PlayerState.JUMPING -> {
                     if (stateTime < JUMP_TIME && jumpHeld) {
-                        rigidBody.linearVelocityY = -JUMP_VELOCITY
+                        body.linearVelocityY = -JUMP_VELOCITY
                     } else {
                         setPlayerState(PlayerState.FALLING)
                     }
                 }
                 PlayerState.RUNNING -> {
-                    if (abs(rigidBody.linearVelocityX) < .1) {
+                    if (abs(body.linearVelocityX) < .1) {
                         setPlayerState(PlayerState.IDLE)
                     }
                 }
                 PlayerState.IDLE -> {
-                    if (abs(rigidBody.linearVelocityX) > .1) {
+                    if (abs(body.linearVelocityX) > .1) {
                         setPlayerState(PlayerState.RUNNING)
                     }
                 }
@@ -204,12 +200,12 @@ class Player(private val interact: (View) -> Unit) : Container() {
             }
             if (state != PlayerState.DASHING) {
                 if (grounded) {
-                    rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX, -MAX_X_VEL, MAX_X_VEL)
+                    body.linearVelocityX = clamp(body.linearVelocityX, -MAX_X_VEL, MAX_X_VEL)
                 } else {
-                    rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX, -MAX_X_AIR_VEL, MAX_X_AIR_VEL)
+                    body.linearVelocityX = clamp(body.linearVelocityX, -MAX_X_AIR_VEL, MAX_X_AIR_VEL)
                 }
             }
-            rigidBody.linearVelocityY = clamp(rigidBody.linearVelocityY, -MAX_Y_VEL, MAX_Y_VEL)
+            body.linearVelocityY = clamp(body.linearVelocityY, -MAX_Y_VEL, MAX_Y_VEL)
         }
     }
 
@@ -238,22 +234,22 @@ class Player(private val interact: (View) -> Unit) : Container() {
         if (jumpHeld) return
         when {
             grounded -> {
-                rigidBody.linearVelocityY = -JUMP_VELOCITY
+                body.linearVelocityY = -JUMP_VELOCITY
                 setPlayerState(PlayerState.JUMPING)
             }
             touchingWallRight -> {
-                rigidBody.linearVelocityX = -WALL_JUMP_KICKOFF_VELOCITY
-                rigidBody.linearVelocityY = -WALL_JUMP_KICKOFF_VELOCITY_Y
+                body.linearVelocityX = -WALL_JUMP_KICKOFF_VELOCITY
+                body.linearVelocityY = -WALL_JUMP_KICKOFF_VELOCITY_Y
                 setPlayerState(PlayerState.JUMPING)
             }
             touchingWallLeft -> {
-                rigidBody.linearVelocityX = WALL_JUMP_KICKOFF_VELOCITY
-                rigidBody.linearVelocityY = -WALL_JUMP_KICKOFF_VELOCITY_Y
+                body.linearVelocityX = WALL_JUMP_KICKOFF_VELOCITY
+                body.linearVelocityY = -WALL_JUMP_KICKOFF_VELOCITY_Y
                 setPlayerState(PlayerState.JUMPING)
             }
             hasDoubleJump -> {
                 hasDoubleJump = false
-                rigidBody.linearVelocityY = -JUMP_VELOCITY
+                body.linearVelocityY = -JUMP_VELOCITY
                 setPlayerState(PlayerState.JUMPING)
             }
         }
@@ -264,10 +260,10 @@ class Player(private val interact: (View) -> Unit) : Container() {
         hasDash = false
         if (right) {
             goingRight = true
-            rigidBody.linearVelocityX = DASH_VELOCITY
+            body.linearVelocityX = DASH_VELOCITY
         } else {
             goingRight = false
-            rigidBody.linearVelocityX = -DASH_VELOCITY
+            body.linearVelocityX = -DASH_VELOCITY
         }
         animator.setFacing(right)
         setPlayerState(PlayerState.DASHING)

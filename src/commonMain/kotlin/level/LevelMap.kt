@@ -1,6 +1,7 @@
 package level
 
-import org.jbox2d.common.Vec2
+import Vec2
+
 
 /**
  * (0,0) is the bottom left of a map

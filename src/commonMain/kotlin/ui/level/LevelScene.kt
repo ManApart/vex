@@ -1,7 +1,6 @@
 package ui.level
 
 import com.soywiz.klock.TimeSpan
-import com.soywiz.korge.box2d.registerBodyWithFixture
 import com.soywiz.korge.scene.AlphaTransition
 import com.soywiz.korge.scene.Scene
 import com.soywiz.korge.tiled.tiledMapView
@@ -9,7 +8,6 @@ import com.soywiz.korge.view.*
 import com.soywiz.korge.view.camera.cameraContainer
 import com.soywiz.korim.tiles.tiled.TiledMap
 import com.soywiz.korio.async.launchImmediately
-import org.jbox2d.dynamics.BodyType
 import ui.VIRTUAL_SIZE
 import ui.worldMap.WorldMapScene
 import worldMap.Exit
@@ -49,7 +47,7 @@ class LevelScene(private val spawn: Exit) : Scene() {
                     solidRect(width, width) {
                         alpha = 0.0
                         xy(x * width, y * width)
-                        registerBodyWithFixture(type = BodyType.STATIC)
+                        //TODO - need body?
                     }
                 }
             }
@@ -71,7 +69,7 @@ class LevelScene(private val spawn: Exit) : Scene() {
                 solidRect(obj.bounds.width, obj.bounds.height) {
                     alpha = 0.0
                     xy(obj.bounds.x, obj.bounds.y)
-                    registerBodyWithFixture(type = BodyType.STATIC)
+                    //TODO - need body?
                 }
             }
         }
