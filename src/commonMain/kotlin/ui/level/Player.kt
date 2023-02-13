@@ -19,16 +19,17 @@ import com.soywiz.korma.geom.vector.StrokeInfo
 import com.soywiz.korma.geom.vector.line
 import player.PlayerAnimator
 import player.PlayerState
+import sign
 import toAngle
-import toVector
 import ui.Trigger
 import kotlin.math.abs
 
 const val MAX_X_VEL = 2f
 const val MAX_X_AIR_VEL = 6.0f
 const val MAX_Y_VEL = 10.0f
-private const val ACCELERATION = .2f
-private const val FRICTION = 1.0
+private const val ACCELERATION_X = .2f
+private const val FRICTION = .05f
+private const val GRAVITY = 2f
 
 private const val JUMP_VELOCITY = 3f
 private const val WALL_JUMP_KICKOFF_VELOCITY = 5f
@@ -60,16 +61,6 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
         buildSprite()
         addTriggers()
-
-//        registerBodyWithFixture(
-//            type = BodyType.DYNAMIC,
-//            density = 2,
-//            friction = FRICTION,
-//            fixedRotation = true,
-//            shape = CircleShape(0.225),
-//            restitution = 0
-//        )
-//        this@Player.rigidBody = this.body!!
 
         setupControls()
         addOnUpdate()
@@ -135,15 +126,16 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
         addUpdaterWithViews { views: Views, dt: TimeSpan ->
             var dx = 0f
+            //TODO - match scale
             val scale = dt.milliseconds.toFloat() / 20
             with(views.input) {
                 val gamepad = connectedGamepads.firstOrNull()
                 val leftStick = gamepad?.get(GameStick.LEFT)
                 val stickAmount = leftStick?.x ?: 0.0
                 when {
-                    abs(stickAmount) > .1f -> dx = (stickAmount * ACCELERATION * scale).toFloat()
-                    keys[Key.RIGHT] -> dx = ACCELERATION * scale
-                    keys[Key.LEFT] -> dx = -ACCELERATION * scale
+                    abs(stickAmount) > .1f -> dx = (stickAmount * ACCELERATION_X * scale).toFloat()
+                    keys[Key.RIGHT] -> dx = ACCELERATION_X * scale
+                    keys[Key.LEFT] -> dx = -ACCELERATION_X * scale
                 }
                 val trigger = gamepad?.get(GameButton.R2) ?: 0.0
                 if (abs(trigger) > .2) {
@@ -161,14 +153,22 @@ class Player(private val interact: (View) -> Unit) : Container() {
                 goingRight = dx > 0
                 animator.setFacing(goingRight)
             }
-//            rigidBody.linearVelocityX = clamp(rigidBody.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
+            body.linearVelocityX = clamp(body.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
         }
     }
 
     private fun addOnUpdate() {
         addUpdater { dt ->
+            // division after toFloat is to slow game for debugging
+            val delta = (dt.milliseconds / 1000 * 60).toFloat() / 5
             stateTime += dt.milliseconds
             if (grounded) hasDash = true
+            body.linearVelocityY -= GRAVITY * delta
+            val absX = abs(body.linearVelocityX)
+            if (grounded && absX > 0){
+                val frictionDelta = clamp(FRICTION, 0f, absX)
+                body.linearVelocityX += body.linearVelocityX.sign() * -frictionDelta
+            }
 
             when (state) {
                 PlayerState.DASHING -> {
@@ -176,26 +176,31 @@ class Player(private val interact: (View) -> Unit) : Container() {
                         val newState = if (grounded) PlayerState.RUNNING else PlayerState.FALLING
                         setPlayerState(newState)
                     } else {
+                        body.linearVelocityY = 0f
                         body.linearVelocityX = if (goingRight) DASH_VELOCITY else -DASH_VELOCITY
                     }
                 }
+
                 PlayerState.JUMPING -> {
                     if (stateTime < JUMP_TIME && jumpHeld) {
-                        body.linearVelocityY = -JUMP_VELOCITY
+                        body.linearVelocityY = JUMP_VELOCITY
                     } else {
                         setPlayerState(PlayerState.FALLING)
                     }
                 }
+
                 PlayerState.RUNNING -> {
                     if (abs(body.linearVelocityX) < .1) {
                         setPlayerState(PlayerState.IDLE)
                     }
                 }
+
                 PlayerState.IDLE -> {
                     if (abs(body.linearVelocityX) > .1) {
                         setPlayerState(PlayerState.RUNNING)
                     }
                 }
+
                 else -> {}
             }
             if (state != PlayerState.DASHING) {
@@ -205,7 +210,9 @@ class Player(private val interact: (View) -> Unit) : Container() {
                     body.linearVelocityX = clamp(body.linearVelocityX, -MAX_X_AIR_VEL, MAX_X_AIR_VEL)
                 }
             }
-            body.linearVelocityY = clamp(body.linearVelocityY, -MAX_Y_VEL, MAX_Y_VEL)
+            val groundedMinVelocity = if (grounded) 0f else -MAX_Y_VEL
+            body.linearVelocityY = clamp(body.linearVelocityY, groundedMinVelocity, MAX_Y_VEL)
+            body.update(delta)
         }
     }
 
@@ -221,7 +228,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
                 parent?.addChildAt(background, parent?.getChildIndex(this@Player) ?: 0)
 
                 background.graphics {
-                    stroke(Colors.GREEN, StrokeInfo(thickness = 1.0 )) {
+                    stroke(Colors.GREEN, StrokeInfo(thickness = 1.0)) {
                         line(source, dest)
                     }
                 }
@@ -237,16 +244,19 @@ class Player(private val interact: (View) -> Unit) : Container() {
                 body.linearVelocityY = -JUMP_VELOCITY
                 setPlayerState(PlayerState.JUMPING)
             }
+
             touchingWallRight -> {
                 body.linearVelocityX = -WALL_JUMP_KICKOFF_VELOCITY
                 body.linearVelocityY = -WALL_JUMP_KICKOFF_VELOCITY_Y
                 setPlayerState(PlayerState.JUMPING)
             }
+
             touchingWallLeft -> {
                 body.linearVelocityX = WALL_JUMP_KICKOFF_VELOCITY
                 body.linearVelocityY = -WALL_JUMP_KICKOFF_VELOCITY_Y
                 setPlayerState(PlayerState.JUMPING)
             }
+
             hasDoubleJump -> {
                 hasDoubleJump = false
                 body.linearVelocityY = -JUMP_VELOCITY

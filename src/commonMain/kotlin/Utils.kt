@@ -17,6 +17,8 @@ fun clamp(x: Double, min: Double, max: Double): Double {
     }
 }
 
+fun Float.sign() = if (this > 0) 1 else -1
+
 fun View.center(): Point {
     return Point(x + width / 2, y + height / 2)
 }

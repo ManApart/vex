@@ -6,6 +6,6 @@ class RigidBody(private val parent: View) {
     var linearVelocityY = 0f
 
     fun update(deltaTime: Float) {
-        parent.xy(parent.x + linearVelocityX * deltaTime, parent.y + linearVelocityY * deltaTime)
+        parent.xy(parent.x + linearVelocityX * deltaTime, parent.y + -linearVelocityY * deltaTime)
     }
 }
