@@ -21,7 +21,9 @@ import player.PlayerAnimator
 import player.PlayerState
 import sign
 import toAngle
+import ui.CollidableRect
 import ui.Trigger
+import ui.collidableRect
 import kotlin.math.abs
 
 const val MAX_X_VEL = 2f
@@ -29,7 +31,7 @@ const val MAX_X_AIR_VEL = 6.0f
 const val MAX_Y_VEL = 10.0f
 private const val ACCELERATION_X = .2f
 private const val FRICTION = .05f
-private const val GRAVITY = 2f
+private const val GRAVITY = 1f
 
 private const val JUMP_VELOCITY = 3f
 private const val WALL_JUMP_KICKOFF_VELOCITY = 5f
@@ -39,13 +41,18 @@ private const val JUMP_TIME = 300
 private const val DASH_VELOCITY = 10f
 private const val DASH_TIME = 150.0
 
+private const val DEBUG_TIME_SCALE =  10f
+private const val TIME_SCALE =  30f + DEBUG_TIME_SCALE
+//It'd be nice to use a time scale that seems tied to 60 fps: Divide delta time by 60 frames a second
+//private const val TIME_SCALE =  1000f * 60 + DEBUG_TIME_SCALE
+
 class Player(private val interact: (View) -> Unit) : Container() {
     //class Player(private val map: LevelMap, private val exitLevel: (Int, Int) -> Unit) : Container() {
     private val body = RigidBody(this)
     private var state = PlayerState.FALLING
     private var stateTime = 0.0
     private lateinit var animator: PlayerAnimator
-    private lateinit var interactBox: SolidRect
+    private lateinit var interactBox: CollidableRect
 
     private var goingRight = true
     private var hasDoubleJump = false
@@ -69,7 +76,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
     private fun addTriggers() {
         val groundRect = Rectangle(-0.9f * TILE_SIZE / 2, TILE_SIZE / 2f, 0.9f * TILE_SIZE, .3f * TILE_SIZE)
-        Trigger(this, groundRect, ::onGroundContact, ::onLeaveGround, false)
+        Trigger(this, groundRect, ::onGroundContact, ::onLeaveGround, true)
 
         Trigger(
             this,
@@ -100,7 +107,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
         animator.evaluate(state)
 
-        interactBox = solidRect(10.0, 22.0) {
+        interactBox = collidableRect(10, 22) {
             alpha = 0.0
             xy(-5, -18)
         }
@@ -126,8 +133,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
         addUpdaterWithViews { views: Views, dt: TimeSpan ->
             var dx = 0f
-            //TODO - match scale
-            val scale = dt.milliseconds.toFloat() / 20
+            val scale = dt.milliseconds.toFloat() / TIME_SCALE
             with(views.input) {
                 val gamepad = connectedGamepads.firstOrNull()
                 val leftStick = gamepad?.get(GameStick.LEFT)
@@ -159,8 +165,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
     private fun addOnUpdate() {
         addUpdater { dt ->
-            // division after toFloat is to slow game for debugging
-            val delta = (dt.milliseconds / 1000 * 60).toFloat() / 5
+            val delta = dt.milliseconds.toFloat() / TIME_SCALE
             stateTime += dt.milliseconds
             if (grounded) hasDash = true
             body.linearVelocityY -= GRAVITY * delta

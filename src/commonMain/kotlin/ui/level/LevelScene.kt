@@ -8,7 +8,9 @@ import com.soywiz.korge.view.*
 import com.soywiz.korge.view.camera.cameraContainer
 import com.soywiz.korim.tiles.tiled.TiledMap
 import com.soywiz.korio.async.launchImmediately
+import ui.CollidableRect
 import ui.VIRTUAL_SIZE
+import ui.collidableRect
 import ui.worldMap.WorldMapScene
 import worldMap.Exit
 
@@ -44,10 +46,9 @@ class LevelScene(private val spawn: Exit) : Scene() {
             (0 until layer.height).forEach { y ->
                 val id = layer[x, y] - 1
                 if (tiles[id]?.type == "collision") {
-                    solidRect(width, width) {
+                    collidableRect(width, width) {
                         alpha = 0.0
                         xy(x * width, y * width)
-                        //TODO - need body?
                     }
                 }
             }
