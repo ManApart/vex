@@ -23,22 +23,18 @@ class Trigger(
         }
 
         onCollision(filter = {
-            it is CollidableRect
-                    && !contactedViews.contains(it)
-//                    && it.body != null
-            //TODO - need to detect solid?
+            it is CollidableRect && !contactedViews.contains(it)
         }) { other ->
             contactedViews.add(other)
-            collisionRect.color = Colors.WHITE
+            if (display) collisionRect.color = Colors.WHITE
             onContactStart()
         }
         onCollisionExit {
             contactedViews.remove(it)
             if (contactedViews.isEmpty()) {
-                collisionRect.color = color
+                if (display) collisionRect.color = color
                 onContactEnd()
             }
-
         }
     }
 

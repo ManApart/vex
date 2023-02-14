@@ -20,4 +20,9 @@ fun Container.collidableRect(width: Double, height: Double, color: RGBA = Colors
 
 class CollidableRect(width: Double, height: Double, color: RGBA = Colors.WHITE, customizer: SolidRect.() -> Unit = {}) : Container() {
     val rect = solidRect(width, height, color).apply(customizer)
+    var color
+        get() = rect.color;
+        set(value) {
+            rect.color = value
+        }
 }

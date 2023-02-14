@@ -52,7 +52,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
     private var state = PlayerState.FALLING
     private var stateTime = 0.0
     private lateinit var animator: PlayerAnimator
-    private lateinit var interactBox: CollidableRect
+    private lateinit var interactBox: SolidRect
 
     private var goingRight = true
     private var hasDoubleJump = false
@@ -76,7 +76,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
     private fun addTriggers() {
         val groundRect = Rectangle(-0.9f * TILE_SIZE / 2, TILE_SIZE / 2f, 0.9f * TILE_SIZE, .3f * TILE_SIZE)
-        Trigger(this, groundRect, ::onGroundContact, ::onLeaveGround, true)
+        Trigger(this, groundRect, ::onGroundContact, ::onLeaveGround, false)
 
         Trigger(
             this,
@@ -107,10 +107,11 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
         animator.evaluate(state)
 
-        interactBox = collidableRect(10, 22) {
+        interactBox = solidRect(10, 22) {
             alpha = 0.0
             xy(-5, -18)
         }
+        body.addCollision(this, Rectangle(-5,-18,10,22))
     }
 
     private fun setupControls() {
