@@ -8,17 +8,17 @@ import ui.Trigger
 class RigidBody(private val parent: View) {
     var linearVelocityX = 0f
     var linearVelocityY = 0f
-    private var collidedRight = false
-    private var collidedLeft = false
-    private var collidedUp = false
-    private var collidedDown = false
+    private var collidedRight: Trigger? = null
+    private var collidedLeft: Trigger? = null
+    private var collidedUp: Trigger? = null
+    private var collidedDown: Trigger? = null
     private var source: Container? = null
 
     fun update(deltaTime: Float) {
-        if (collidedRight && linearVelocityX > 0) linearVelocityX = 0f
-        if (collidedLeft && linearVelocityX < 0) linearVelocityX = 0f
-        if (collidedUp && linearVelocityY > 0) linearVelocityY = 0f
-        if (collidedDown && linearVelocityY < 0) linearVelocityY = 0f
+        if (collidedRight?.isCollided == true && linearVelocityX > 0) linearVelocityX = 0f
+        if (collidedLeft?.isCollided == true && linearVelocityX < 0) linearVelocityX = 0f
+        if (collidedUp?.isCollided == true && linearVelocityY > 0) linearVelocityY = 0f
+        if (collidedDown?.isCollided == true && linearVelocityY < 0) linearVelocityY = 0f
         parent.xy(parent.x + linearVelocityX * deltaTime, parent.y + -linearVelocityY * deltaTime)
     }
 
@@ -32,16 +32,16 @@ class RigidBody(private val parent: View) {
         val display = true
 
         val rightWall = Rectangle(bounds.x + halfWidth, bounds.y + wallOffset, halfWidth, wallHeight)
-        Trigger(source, rightWall, { collidedRight = true }, { collidedRight = false }, display, Colors.RED)
+        collidedRight = Trigger(source, rightWall, display = display, color = Colors.RED)
 
         val leftWall = Rectangle(bounds.x, bounds.y + wallOffset, halfWidth, wallHeight)
-        Trigger(source, leftWall, { collidedLeft = true }, { collidedLeft = false }, display, Colors.YELLOW)
+        collidedLeft = Trigger(source, leftWall, display = display, color = Colors.YELLOW)
 
         val highFloor = Rectangle(bounds.x + floorOffset, bounds.y, halfWidth, floorHeight)
-        Trigger(source, highFloor, { collidedUp = true }, { collidedUp = false }, display, Colors.AQUA)
+        collidedUp = Trigger(source, highFloor, display = display, color = Colors.AQUA)
 
         val lowFloor = Rectangle(bounds.x + floorOffset, bounds.y + bounds.height - floorHeight, halfWidth, floorHeight)
-        Trigger(source, lowFloor, { collidedDown = true }, { collidedDown = false }, display, Colors.PERU)
+        collidedDown = Trigger(source, lowFloor, display = display, color = Colors.PERU)
 
     }
 }

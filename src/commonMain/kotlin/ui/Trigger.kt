@@ -14,6 +14,7 @@ class Trigger(
     color: RGBA = Colors.GREEN
 ) : Container() {
     private val contactedViews = mutableListOf<View>()
+    var isCollided = false
 
     init {
         parent.addChild(this)
@@ -27,12 +28,14 @@ class Trigger(
         }) { other ->
             contactedViews.add(other)
             if (display) collisionRect.color = Colors.WHITE
+            isCollided = true
             onContactStart()
         }
         onCollisionExit {
             contactedViews.remove(it)
             if (contactedViews.isEmpty()) {
                 if (display) collisionRect.color = color
+                isCollided = false
                 onContactEnd()
             }
         }
