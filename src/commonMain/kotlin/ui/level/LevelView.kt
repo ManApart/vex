@@ -7,7 +7,7 @@ import com.soywiz.korge.view.solidRect
 import level.LevelMap
 import level.TileType
 
-const val TILE_SIZE = 10
+const val TILE_SIZE = 8
 
 fun Container.paint(map: LevelMap) : Container{
     return container {

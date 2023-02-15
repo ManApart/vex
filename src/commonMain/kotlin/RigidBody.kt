@@ -1,9 +1,9 @@
 import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.solidRect
 import com.soywiz.korge.view.xy
 import com.soywiz.korim.color.Colors
 import com.soywiz.korma.geom.Rectangle
 import ui.Trigger
+import ui.level.TILE_SIZE
 import kotlin.math.roundToInt
 
 class RigidBody(private val parent: Container) {
@@ -17,11 +17,15 @@ class RigidBody(private val parent: Container) {
     fun update(deltaTime: Float) {
         var x = linearVelocityX * deltaTime
         var y = linearVelocityY * deltaTime
-        var roundY = false
         if (collidedRight?.isCollided == true && x > 0) x = 0f
         if (collidedLeft?.isCollided == true && x < 0) x = 0f
         if (collidedUp?.isCollided == true && y > 0) y = 0f
         if (collidedDown?.isCollided == true && y < 0) y = 0f
+
+        if (collidedDown?.isCollided == true && linearVelocityY < 0) {
+            parent.y = (parent.y / TILE_SIZE).roundToInt().toDouble() * TILE_SIZE- (TILE_SIZE/4)
+        }
+TILE_SIZE
         parent.xy(parent.x + x, parent.y - y)
     }
 
