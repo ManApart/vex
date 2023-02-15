@@ -33,7 +33,7 @@ private const val ACCELERATION_X = .2f
 private const val FRICTION = .05f
 private const val GRAVITY = 1f
 
-private const val JUMP_VELOCITY = 3f
+private const val JUMP_VELOCITY = 4f
 private const val WALL_JUMP_KICKOFF_VELOCITY = 5f
 private const val WALL_JUMP_KICKOFF_VELOCITY_Y = 6f
 private const val JUMP_TIME = 300
@@ -216,8 +216,6 @@ class Player(private val interact: (View) -> Unit) : Container() {
                     body.linearVelocityX = clamp(body.linearVelocityX, -MAX_X_AIR_VEL, MAX_X_AIR_VEL)
                 }
             }
-//            val groundedMinVelocity = if (grounded) 0f else -MAX_Y_VEL
-//            body.linearVelocityY = clamp(body.linearVelocityY, groundedMinVelocity, MAX_Y_VEL)
             body.linearVelocityY = clamp(body.linearVelocityY, -MAX_Y_VEL, MAX_Y_VEL)
             body.update(delta)
         }

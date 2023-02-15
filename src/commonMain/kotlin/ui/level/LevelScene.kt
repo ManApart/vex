@@ -8,7 +8,6 @@ import com.soywiz.korge.view.*
 import com.soywiz.korge.view.camera.cameraContainer
 import com.soywiz.korim.tiles.tiled.TiledMap
 import com.soywiz.korio.async.launchImmediately
-import ui.CollidableRect
 import ui.VIRTUAL_SIZE
 import ui.collidableRect
 import ui.worldMap.WorldMapScene
@@ -70,7 +69,6 @@ class LevelScene(private val spawn: Exit) : Scene() {
                 solidRect(obj.bounds.width, obj.bounds.height) {
                     alpha = 0.0
                     xy(obj.bounds.x, obj.bounds.y)
-                    //TODO - need body?
                 }
             }
         }

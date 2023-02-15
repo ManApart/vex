@@ -6,13 +6,13 @@ import com.soywiz.korma.geom.Rectangle
 import ui.Trigger
 
 class RigidBody(private val parent: View) {
-    private val contactedViews = mutableListOf<View>()
     var linearVelocityX = 0f
     var linearVelocityY = 0f
     private var collidedRight = false
     private var collidedLeft = false
     private var collidedUp = false
     private var collidedDown = false
+    private var source: Container? = null
 
     fun update(deltaTime: Float) {
         if (collidedRight && linearVelocityX > 0) linearVelocityX = 0f
@@ -23,23 +23,25 @@ class RigidBody(private val parent: View) {
     }
 
     fun addCollision(source: Container, bounds: Rectangle) {
+        this.source = source
         val halfWidth = bounds.width / 2
-        val floorHeight = bounds.width / 5
+        val floorHeight = bounds.width / 2
         val floorOffset = bounds.width / 4
         val wallHeight = bounds.height * .8
         val wallOffset = bounds.height * .1
+        val display = true
 
         val rightWall = Rectangle(bounds.x + halfWidth, bounds.y + wallOffset, halfWidth, wallHeight)
-        Trigger(source, rightWall, { collidedRight = true }, { collidedRight = false }, false, Colors.RED)
+        Trigger(source, rightWall, { collidedRight = true }, { collidedRight = false }, display, Colors.RED)
 
         val leftWall = Rectangle(bounds.x, bounds.y + wallOffset, halfWidth, wallHeight)
-        Trigger(source, leftWall, { collidedLeft = true }, { collidedLeft = false }, false, Colors.YELLOW)
+        Trigger(source, leftWall, { collidedLeft = true }, { collidedLeft = false }, display, Colors.YELLOW)
 
         val highFloor = Rectangle(bounds.x + floorOffset, bounds.y, halfWidth, floorHeight)
-        Trigger(source, highFloor, { collidedUp = true }, { collidedUp = false }, false, Colors.AQUA)
+        Trigger(source, highFloor, { collidedUp = true }, { collidedUp = false }, display, Colors.AQUA)
 
         val lowFloor = Rectangle(bounds.x + floorOffset, bounds.y + bounds.height - floorHeight, halfWidth, floorHeight)
-        Trigger(source, lowFloor, { collidedDown = true }, { collidedDown = false }, false, Colors.PERU)
+        Trigger(source, lowFloor, { collidedDown = true }, { collidedDown = false }, display, Colors.PERU)
 
     }
 }
