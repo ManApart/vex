@@ -216,8 +216,9 @@ class Player(private val interact: (View) -> Unit) : Container() {
                     body.linearVelocityX = clamp(body.linearVelocityX, -MAX_X_AIR_VEL, MAX_X_AIR_VEL)
                 }
             }
-            val groundedMinVelocity = if (grounded) 0f else -MAX_Y_VEL
-            body.linearVelocityY = clamp(body.linearVelocityY, groundedMinVelocity, MAX_Y_VEL)
+//            val groundedMinVelocity = if (grounded) 0f else -MAX_Y_VEL
+//            body.linearVelocityY = clamp(body.linearVelocityY, groundedMinVelocity, MAX_Y_VEL)
+            body.linearVelocityY = clamp(body.linearVelocityY, -MAX_Y_VEL, MAX_Y_VEL)
             body.update(delta)
         }
     }

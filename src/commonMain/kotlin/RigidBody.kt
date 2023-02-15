@@ -17,16 +17,29 @@ class RigidBody(private val parent: View) {
     fun update(deltaTime: Float) {
         if (collidedRight && linearVelocityX > 0) linearVelocityX = 0f
         if (collidedLeft && linearVelocityX < 0) linearVelocityX = 0f
+        if (collidedUp && linearVelocityY > 0) linearVelocityY = 0f
+        if (collidedDown && linearVelocityY < 0) linearVelocityY = 0f
         parent.xy(parent.x + linearVelocityX * deltaTime, parent.y + -linearVelocityY * deltaTime)
     }
 
     fun addCollision(source: Container, bounds: Rectangle) {
+        val halfWidth = bounds.width / 2
+        val floorHeight = bounds.width / 5
+        val floorOffset = bounds.width / 4
+        val wallHeight = bounds.height * .8
+        val wallOffset = bounds.height * .1
 
-        val rightWall = Rectangle(bounds.x + bounds.width / 2, bounds.y - bounds.y * .2, bounds.width / 2, bounds.height * .8)
-        Trigger(source, rightWall, { collidedRight = true }, { collidedRight = false }, true, Colors.RED)
+        val rightWall = Rectangle(bounds.x + halfWidth, bounds.y + wallOffset, halfWidth, wallHeight)
+        Trigger(source, rightWall, { collidedRight = true }, { collidedRight = false }, false, Colors.RED)
 
-        val leftWall = Rectangle(bounds.x, bounds.y - bounds.y * .2, bounds.width / 2, bounds.height * .8)
-        Trigger(source, leftWall, { collidedLeft = true }, { collidedLeft = false }, true, Colors.YELLOW)
+        val leftWall = Rectangle(bounds.x, bounds.y + wallOffset, halfWidth, wallHeight)
+        Trigger(source, leftWall, { collidedLeft = true }, { collidedLeft = false }, false, Colors.YELLOW)
+
+        val highFloor = Rectangle(bounds.x + floorOffset, bounds.y, halfWidth, floorHeight)
+        Trigger(source, highFloor, { collidedUp = true }, { collidedUp = false }, false, Colors.AQUA)
+
+        val lowFloor = Rectangle(bounds.x + floorOffset, bounds.y + bounds.height - floorHeight, halfWidth, floorHeight)
+        Trigger(source, lowFloor, { collidedDown = true }, { collidedDown = false }, false, Colors.PERU)
 
     }
 }
