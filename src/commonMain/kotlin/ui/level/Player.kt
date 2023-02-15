@@ -21,9 +21,7 @@ import player.PlayerAnimator
 import player.PlayerState
 import sign
 import toAngle
-import ui.CollidableRect
 import ui.Trigger
-import ui.collidableRect
 import kotlin.math.abs
 
 const val MAX_X_VEL = 2f
@@ -69,7 +67,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
         buildSprite()
         addTriggers()
 
-        setupControls()
+        setupControls(spawn)
         addOnUpdate()
         paintGrapplingHook()
     }
@@ -111,10 +109,10 @@ class Player(private val interact: (View) -> Unit) : Container() {
             alpha = 0.0
             xy(-5, -18)
         }
-        body.addCollision(this, Rectangle(-5,-18,10,22))
+        body.addCollision(Rectangle(-5,-18,10,22))
     }
 
-    private fun setupControls() {
+    private fun setupControls(spawn: SolidRect) {
 
         gamepad {
             down(0, GameButton.BUTTON0) { jump(); jumpHeld = true }
@@ -122,6 +120,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
             down(0, GameButton.L1) { dash(false) }
             down(0, GameButton.R1) { dash(true) }
             down(0, GameButton.BUTTON2) { interact(interactBox) }
+            down(0, GameButton.XBOX_Y) { centerOn(spawn) }
         }
 
         keys {

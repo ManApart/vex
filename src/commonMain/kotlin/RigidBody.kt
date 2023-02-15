@@ -1,29 +1,31 @@
 import com.soywiz.korge.view.Container
-import com.soywiz.korge.view.View
+import com.soywiz.korge.view.solidRect
 import com.soywiz.korge.view.xy
 import com.soywiz.korim.color.Colors
 import com.soywiz.korma.geom.Rectangle
 import ui.Trigger
+import kotlin.math.roundToInt
 
-class RigidBody(private val parent: View) {
+class RigidBody(private val parent: Container) {
     var linearVelocityX = 0f
     var linearVelocityY = 0f
     private var collidedRight: Trigger? = null
     private var collidedLeft: Trigger? = null
     private var collidedUp: Trigger? = null
     private var collidedDown: Trigger? = null
-    private var source: Container? = null
 
     fun update(deltaTime: Float) {
-        if (collidedRight?.isCollided == true && linearVelocityX > 0) linearVelocityX = 0f
-        if (collidedLeft?.isCollided == true && linearVelocityX < 0) linearVelocityX = 0f
-        if (collidedUp?.isCollided == true && linearVelocityY > 0) linearVelocityY = 0f
-        if (collidedDown?.isCollided == true && linearVelocityY < 0) linearVelocityY = 0f
-        parent.xy(parent.x + linearVelocityX * deltaTime, parent.y + -linearVelocityY * deltaTime)
+        var x = linearVelocityX * deltaTime
+        var y = linearVelocityY * deltaTime
+        var roundY = false
+        if (collidedRight?.isCollided == true && x > 0) x = 0f
+        if (collidedLeft?.isCollided == true && x < 0) x = 0f
+        if (collidedUp?.isCollided == true && y > 0) y = 0f
+        if (collidedDown?.isCollided == true && y < 0) y = 0f
+        parent.xy(parent.x + x, parent.y - y)
     }
 
-    fun addCollision(source: Container, bounds: Rectangle) {
-        this.source = source
+    fun addCollision(bounds: Rectangle) {
         val halfWidth = bounds.width / 2
         val floorHeight = bounds.width / 2
         val floorOffset = bounds.width / 4
@@ -32,16 +34,16 @@ class RigidBody(private val parent: View) {
         val display = true
 
         val rightWall = Rectangle(bounds.x + halfWidth, bounds.y + wallOffset, halfWidth, wallHeight)
-        collidedRight = Trigger(source, rightWall, display = display, color = Colors.RED)
+        collidedRight = Trigger(parent, rightWall, display = display, color = Colors.RED)
 
         val leftWall = Rectangle(bounds.x, bounds.y + wallOffset, halfWidth, wallHeight)
-        collidedLeft = Trigger(source, leftWall, display = display, color = Colors.YELLOW)
+        collidedLeft = Trigger(parent, leftWall, display = display, color = Colors.YELLOW)
 
         val highFloor = Rectangle(bounds.x + floorOffset, bounds.y, halfWidth, floorHeight)
-        collidedUp = Trigger(source, highFloor, display = display, color = Colors.AQUA)
+        collidedUp = Trigger(parent, highFloor, display = display, color = Colors.AQUA)
 
         val lowFloor = Rectangle(bounds.x + floorOffset, bounds.y + bounds.height - floorHeight, halfWidth, floorHeight)
-        collidedDown = Trigger(source, lowFloor, display = display, color = Colors.PERU)
+        collidedDown = Trigger(parent, lowFloor, display = display, color = Colors.PERU)
 
     }
 }
