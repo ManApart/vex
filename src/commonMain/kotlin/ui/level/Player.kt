@@ -7,6 +7,7 @@ import com.soywiz.klock.TimeSpan
 import com.soywiz.korev.GameButton
 import com.soywiz.korev.GameStick
 import com.soywiz.korev.Key
+import com.soywiz.korev.StandardGamepadMapping.Companion.getRawPressureButton
 import com.soywiz.korge.input.gamepad
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.view.*
@@ -39,8 +40,7 @@ private const val JUMP_TIME = 300
 private const val DASH_VELOCITY = 10f
 private const val DASH_TIME = 150.0
 
-private const val DEBUG_TIME_SCALE =  10f
-private const val TIME_SCALE =  30f + DEBUG_TIME_SCALE
+private const val TIME_SCALE = 40f
 //It'd be nice to use a time scale that seems tied to 60 fps: Divide delta time by 60 frames a second
 //private const val TIME_SCALE =  1000f * 60 + DEBUG_TIME_SCALE
 
@@ -63,6 +63,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
 
     suspend fun init(spawn: SolidRect) {
         centerOn(spawn)
+        y -= 18
 
         buildSprite()
         addTriggers()
@@ -109,7 +110,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
             alpha = 0.0
             xy(-5, -18)
         }
-        body.addCollision(Rectangle(-5,-18,10,22))
+        body.addCollision(Rectangle(-5, -18, 10, 22))
     }
 
     private fun setupControls(spawn: SolidRect) {
@@ -119,8 +120,12 @@ class Player(private val interact: (View) -> Unit) : Container() {
             up(0, GameButton.BUTTON0) { jumpHeld = false }
             down(0, GameButton.L1) { dash(false) }
             down(0, GameButton.R1) { dash(true) }
-            down(0, GameButton.BUTTON2) { interact(interactBox) }
-            down(0, GameButton.XBOX_Y) { centerOn(spawn) }
+            down(0, GameButton.XBOX_X) { interact(interactBox) }
+            down(0, GameButton.XBOX_Y) {
+                centerOn(spawn)
+                y -= 18
+            }
+
         }
 
         keys {
@@ -143,7 +148,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
                     keys[Key.RIGHT] -> dx = ACCELERATION_X * scale
                     keys[Key.LEFT] -> dx = -ACCELERATION_X * scale
                 }
-                val trigger = gamepad?.get(GameButton.R2) ?: 0.0
+                val trigger = gamepad?.getRawPressureButton(gamepad.mapping.getButtonIndex(GameButton.RIGHT_TRIGGER)) ?: 0.0
                 if (abs(trigger) > .2) {
                     if (grapple == null) {
                         val aim = gamepad!![GameStick.RIGHT].toAngle()
@@ -155,11 +160,13 @@ class Player(private val interact: (View) -> Unit) : Container() {
                     grapple = null
                 }
             }
-            if (dx != 0f) {
-                goingRight = dx > 0
-                animator.setFacing(goingRight)
+            if (!state.isInState(PlayerState.DASHING)) {
+                if (dx != 0f) {
+                    goingRight = dx > 0
+                    animator.setFacing(goingRight)
+                }
+                body.linearVelocityX = clamp(body.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
             }
-            body.linearVelocityX = clamp(body.linearVelocityX + dx, -MAX_X_VEL, MAX_X_VEL)
         }
     }
 
@@ -170,7 +177,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
             if (grounded) hasDash = true
             body.linearVelocityY -= GRAVITY * delta
             val absX = abs(body.linearVelocityX)
-            if (grounded && absX > 0){
+            if (grounded && absX > 0) {
                 val frictionDelta = clamp(FRICTION, 0f, absX)
                 body.linearVelocityX += body.linearVelocityX.sign() * -frictionDelta
             }

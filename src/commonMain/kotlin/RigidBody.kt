@@ -35,7 +35,7 @@ TILE_SIZE
         val floorOffset = bounds.width / 4
         val wallHeight = bounds.height * .8
         val wallOffset = bounds.height * .1
-        val display = true
+        val display = false
 
         val rightWall = Rectangle(bounds.x + halfWidth, bounds.y + wallOffset, halfWidth, wallHeight)
         collidedRight = Trigger(parent, rightWall, display = display, color = Colors.RED)

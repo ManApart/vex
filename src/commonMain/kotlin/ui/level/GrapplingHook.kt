@@ -18,7 +18,7 @@ class GrapplingHook(private val player: Player, angle: Angle) : Container() {
         centerOn(player)
 
         val initialVelocity = angle.toPoint().toVector()
-//        println("Angle: ${angle.degrees}, Velocity: $initialVelocity")
+        println("Angle: ${angle.degrees}, Velocity: $initialVelocity")
 
         addUpdater {
             if (!collided) {

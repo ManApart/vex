@@ -1,20 +1,20 @@
 package ui.worldMap
 
+import Resources
 import com.soywiz.klock.seconds
 import com.soywiz.korev.GameButton
 import com.soywiz.korev.GameStick
 import com.soywiz.korev.Key
-import com.soywiz.korge.animate.animateParallel
+import com.soywiz.korge.animate.animator
+import com.soywiz.korge.animate.tween
 import com.soywiz.korge.input.gamepad
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.tween.get
 import com.soywiz.korge.view.*
-import com.soywiz.korim.color.Colors
 import com.soywiz.korio.async.launchImmediately
 import com.soywiz.korma.geom.Anchor
 import com.soywiz.korma.geom.Angle
 import com.soywiz.korma.geom.abs
-import com.soywiz.korma.geom.degrees
 import player.PlayerAnimator
 import player.PlayerState
 import ui.level.TILE_SIZE
@@ -47,7 +47,7 @@ class Player(origin: Exit, private val exits: List<MapExit>, private val enterLe
             down(0, GameButton.BUTTON0) { enterLevel(currentExit.exit) }
         }
         keys {
-            justDown(Key.SPACE){ enterLevel(currentExit.exit)}
+            justDown(Key.SPACE) { enterLevel(currentExit.exit) }
         }
     }
 
@@ -93,12 +93,13 @@ class Player(origin: Exit, private val exits: List<MapExit>, private val enterLe
             if (startMoving && currentExit != goalExit) {
                 startMoving = false
                 stage?.launchImmediately {
-                    animateParallel {
-                        tween(::x[pos.x, goalExit.view.x], time = 1.seconds)
-                        tween(::y[pos.y, goalExit.view.y], time = 1.seconds)
+                    animator {
+                        parallel {
+                            tween(::x[pos.x, goalExit.view.x], time = 1.seconds)
+                            tween(::y[pos.y, goalExit.view.y], time = 1.seconds)
+                        }
                     }
                 }
-
             }
         }
 
