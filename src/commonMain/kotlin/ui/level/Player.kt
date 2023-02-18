@@ -12,10 +12,7 @@ import com.soywiz.korge.input.gamepad
 import com.soywiz.korge.input.keys
 import com.soywiz.korge.view.*
 import com.soywiz.korim.color.Colors
-import com.soywiz.korma.geom.Anchor
-import com.soywiz.korma.geom.Point
-import com.soywiz.korma.geom.Rectangle
-import com.soywiz.korma.geom.plus
+import com.soywiz.korma.geom.*
 import com.soywiz.korma.geom.vector.StrokeInfo
 import com.soywiz.korma.geom.vector.line
 import player.PlayerAnimator
@@ -59,7 +56,7 @@ class Player(private val interact: (View) -> Unit) : Container() {
     private var touchingWallLeft = false
     private var touchingWallRight = false
     private var jumpHeld = false
-    private var grapple: GrapplingHook? = null
+    var grapple: GrapplingHook? = null
 
     suspend fun init(spawn: SolidRect) {
         centerOn(spawn)
@@ -157,7 +154,6 @@ class Player(private val interact: (View) -> Unit) : Container() {
                     }
                 } else if (grapple != null) {
                     grapple?.release()
-                    grapple = null
                 }
             }
             if (!state.isInState(PlayerState.DASHING)) {
@@ -238,11 +234,20 @@ class Player(private val interact: (View) -> Unit) : Container() {
                 background = Container()
                 parent?.addChildAt(background, parent?.getChildIndex(this@Player) ?: 0)
 
+                val tanAngle = dest.angleTo(Point(source.x, source.y))
+                val tanDestX = 1
+                val tanDestY = 1
+//                val tanDestX = source + (Point(5,5) * tanAngle.radians)
+//                val tanDestY = source + (Point(5,5) * tanAngle.radians)
                 background.graphics {
                     stroke(Colors.GREEN, StrokeInfo(thickness = 1.0)) {
                         line(source, dest)
                     }
+                    stroke(Colors.BLUE, StrokeInfo(thickness = 1.0)) {
+                        line(source, Point(tanDestX, tanDestY))
+                    }
                 }
+
 
             }
         }

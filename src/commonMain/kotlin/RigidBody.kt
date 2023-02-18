@@ -2,7 +2,9 @@ import com.soywiz.korge.view.Container
 import com.soywiz.korge.view.xy
 import com.soywiz.korim.color.Colors
 import com.soywiz.korma.geom.Rectangle
+import com.soywiz.korma.geom.distanceTo
 import ui.Trigger
+import ui.level.GrapplingHook
 import ui.level.TILE_SIZE
 import kotlin.math.roundToInt
 
@@ -13,6 +15,49 @@ class RigidBody(private val parent: Container) {
     private var collidedLeft: Trigger? = null
     private var collidedUp: Trigger? = null
     private var collidedDown: Trigger? = null
+
+
+    fun update(deltaTime: Float, hook: GrapplingHook? = null) {
+        val distance = hook?.let { h -> parent.distanceTo(h.pos) } ?: 0.0
+        if (hook != null && distance >= hook.slackLength){
+            update(deltaTime, hook, distance)
+        } else {
+            update(deltaTime)
+        }
+    }
+
+    private fun update(deltaTime: Float, hook: GrapplingHook, distance: Double) {
+        //TODO
+        //Invert tan if swinging opposite direction
+        //Apply gravity if not close to bottom
+
+        val angleHookToPlayer = 1
+        val angleHookTan = 1
+
+        var x = linearVelocityX * deltaTime
+        var y = linearVelocityY * deltaTime
+        val parentMag = 1
+        //multiply by magnitu
+        //x = parentMag * angleHookTan
+
+        if (collidedRight?.isCollided == true && x > 0) x = 0f
+        if (collidedLeft?.isCollided == true && x < 0) x = 0f
+        if (collidedUp?.isCollided == true && y > 0) y = 0f
+        if (collidedDown?.isCollided == true && y < 0) y = 0f
+
+        if (collidedDown?.isCollided == true && linearVelocityY < 0) {
+            parent.y = (parent.y / TILE_SIZE).roundToInt().toDouble() * TILE_SIZE- (TILE_SIZE/4)
+        }
+        parent.xy(parent.x + x, parent.y - y)
+        val newDistance = parent.distanceTo(hook.pos)
+        if (newDistance > hook.slackLength){
+            val newAngleHookToPlayer = 1
+//            x = sinOrSomthing(newAngle)
+//            y = sinOrSomthing(newAngle)
+//            parent.xy(x, y)
+        }
+    }
+
 
     fun update(deltaTime: Float) {
         var x = linearVelocityX * deltaTime
