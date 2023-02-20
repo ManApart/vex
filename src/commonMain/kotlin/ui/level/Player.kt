@@ -234,9 +234,12 @@ class Player(private val interact: (View) -> Unit) : Container() {
                 background = Container()
                 parent?.addChildAt(background, parent?.getChildIndex(this@Player) ?: 0)
 
-                val tanAngle = dest.angleTo(Point(source.x, source.y))
+                val tanAngle = dest.angleTo(Point(source.x, source.y)).tangent
                 val tanDestX = 1
                 val tanDestY = 1
+                //Given magnitude (hypotinuse 5)
+                //tanDestX = adjacent
+                //tanDestY = oppositte
 //                val tanDestX = source + (Point(5,5) * tanAngle.radians)
 //                val tanDestY = source + (Point(5,5) * tanAngle.radians)
                 background.graphics {
